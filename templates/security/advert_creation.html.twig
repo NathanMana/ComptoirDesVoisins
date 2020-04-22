@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Création de mon annonce{% endblock %}
+
+{% block body %}
+
+<h1>Créer mon annonce</h1>
+
+{{form_start(form)}}
+{{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Indiquez ce dont vous avez besoin'}})}}
+<button type="submit">Créer mon annonce</button>
+{{form_end(form)}}
+
+{% endblock %}

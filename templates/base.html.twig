@@ -2,11 +2,61 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="author" content="Nathan Manaranche et Aurélien Hémidy">
+        <meta name="keywords" content="">
+        <meta name="copyright" content="Nathan Manaranche et Aurélien Hémidy">
+        <meta name="language" content="fr">
+        <link rel="shortcut icon" href="{{asset('build/images/favicon.png')}}">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        {% block metadescription %}{% endblock %}
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+            <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
+        {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="{{path('index')}}">Comptoir des Voisins</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{path('adverts')}}">Annonces</a>
+                    </li>
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('my_adverts')}}">Mes annonces</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('my_deliveries')}}">Mes livraisons</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('profile')}}">Mon compte</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('logout')}}">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('login')}}">Se connecter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('registration')}}">S'inscrire</a>
+                        </li>   
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        <div class="container">{# Le block body est dans une div container simplement pour tout center avec bootstrap, tu vas virer cette div comme il te plait normalement #}
+            {% block body %}
+                
+            {% endblock %}
+        </div>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </body>
 </html>

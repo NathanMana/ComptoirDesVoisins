@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes livraisons{% endblock %}
+
+{% block body %}
+
+    
+    {% if myDeliveries %}
+        {% for item in myDeliveries %}
+            <article>
+                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
+                <span>Vous pouvez contacter cette personne : {{item.user.phone}}</span>
+                <p>{{item.message}}</p>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pris en charge personne pour le moment</p>       
+    {% endif %}
+
+{% endblock %}

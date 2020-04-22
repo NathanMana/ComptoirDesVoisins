@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Annonces{% endblock %}
+
+{% block body %}
+
+<a href="{{path('create_my_advert')}}">Créer une annonce</a>
+    
+    {% if adverts %}   
+        {% for item in adverts %}
+            <article>
+                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
+                <p>{{item.message}}</p>
+                <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p>Il n'y a pas d'annonces</p>
+    {% endif %}
+
+{% endblock %}

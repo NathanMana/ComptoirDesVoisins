@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Annonce de {{advert.user.name}}{% endblock %}
+
+{% block body %}
+
+    <h1>Annonce de {{advert.user.name}}</h1>
+    <p>{{advert.message}}</p>
+    <a href="{{path('delivery',{id:advert.id})}}">Je livre</a>
+
+{% endblock %}
