@@ -37,13 +37,15 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9_~\-!\?@#\$%\^&\*\(\)\s]+$/")
+     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s]+$/",
+     *                  message="Les caractères spéciaux autorisés sont les suivants : -, /, &")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9_~\-!\?@#\$%\^&\*\(\)\s]+$/")
+     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s]+$/",
+     *              message="Vous ne pouvez pas rentrer de caractères spéciaux dans ce champ")
      */
     private $lastname;
 
@@ -51,7 +53,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9_~\-!\?@#\$%\^&\*\(\)\s]+$/")
+     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s]+$/")
      */
     private $city;
 
@@ -68,13 +70,24 @@ class User implements UserInterface
 
     /**
      * @var string|null
-     * @ORM\Column(type="string",length=255)
+     * @ORM\Column(type="string",length=255, nullable=true)
      */
     private $filename;
 
     /**
      * @var File|null
      * @Vich\UploadableField(mapping="profile_image", fileNameProperty="filename")
+     * @Assert\Image(
+     *    mimeTypes = {"image/jpeg",
+     *                 "image/png",
+     *                 "image/svg"
+     *                },
+     *    mimeTypesMessage = "L'image n'est pas valide. Les extensions acceptées sont jpg, jpeg, png et svg"
+     * )
+     * @Assert\File(
+     *  maxSize = "20M",
+     *  maxSizeMessage = "L'image insérée est trop lourde. Taille maximale autorisée = 20Mo"
+     * )
      */
     private $imageFile;
 
