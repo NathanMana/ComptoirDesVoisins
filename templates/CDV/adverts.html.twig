@@ -4,13 +4,32 @@
 
 {% block body %}
 
+<h1>Annonces</h1>
+
 <a href="{{path('create_my_advert')}}">Créer une annonce</a>
+
+    {{form_start(form)}}
+    {{form_row(form.q)}}
+    <button type="submit" class="btn btn-primary">Filtrer</button>
+    {{form_end(form)}}
     
     {% if adverts %}   
         {% for item in adverts %}
             <article>
                 <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% set difference = date("now").diff(date(item.createdAt)) %}
+                {% set leftDays = difference.days %}
+                {% if leftDays <= 1 %}
+                    {% if leftDays < 1 %}
+                        <span>Aujourd'hui</span>
+                    {% else %}
+                        <span>Il y a un jour</span>
+                    {% endif %}
+                {% else %}
+                    <span>Il y a {{ leftDays }} jours</span>
+                {% endif %}
                 <h3>{{item.user.name}} {{item.user.lastname}}</h3>
+                <h5>{{item.city}}</h5>
                 <p>{{item.message}}</p>
                 <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
             </article>

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
@@ -18,6 +19,8 @@ class Advert
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Regex("/^[^<>#§µ]+$/",
+     *              message = "Les caractères spéciaux suivants ne sont pas autorisés : <,>,#,§,µ")
      */
     private $message;
 
@@ -27,7 +30,7 @@ class Advert
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="adverts")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="myDeliveries")
      */
     private $deliverer;
 
@@ -36,6 +39,22 @@ class Advert
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $communication;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $Cancellation;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s\']+$/")
+     */
+    private $City;
 
     public function getId(): ?int
     {
@@ -86,6 +105,42 @@ class Advert
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCommunication(): ?bool
+    {
+        return $this->communication;
+    }
+
+    public function setCommunication(bool $communication): self
+    {
+        $this->communication = $communication;
+
+        return $this;
+    }
+
+    public function getCancellation(): ?bool
+    {
+        return $this->Cancellation;
+    }
+
+    public function setCancellation(bool $Cancellation): self
+    {
+        $this->Cancellation = $Cancellation;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->City;
+    }
+
+    public function setCity(string $City): self
+    {
+        $this->City = $City;
 
         return $this;
     }

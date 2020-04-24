@@ -22,20 +22,10 @@ class CDVController extends AbstractController
     /**
      * @Route("/mesannonces", name="my_adverts")
      */
-    public function my_adverts(AdvertRepository $RepoAdvert){
-        $myAdverts = $RepoAdvert->findBy(['user'=>$this->getUser()]);
+    public function my_adverts(){
+        $myAdverts = $this->getUser()->getMyAdverts();
         return $this->render("CDV/my_adverts.html.twig", [
             "myAdverts"=>$myAdverts
-        ]);
-    }
-
-    /**
-     * @Route("/annonces", name="adverts")
-     */
-    public function adverts(AdvertRepository $advertRepo){
-        $adverts = $advertRepo->findBy(["deliverer"=>null]);
-        return $this->render("CDV/adverts.html.twig", [
-            "adverts"=>$adverts
         ]);
     }
 
@@ -43,7 +33,7 @@ class CDVController extends AbstractController
      * @Route("/meslivraisons", name="my_deliveries")
      */
     public function my_deliveries(AdvertRepository $RepoAdvert){
-        $myDeliveries= $RepoAdvert->findBy(['deliverer'=>$this->getUser()]);
+        $myDeliveries = $this->getUser()->getMyAdverts();
         return $this->render("CDV/my_deliveries.html.twig", [
             "myDeliveries"=>$myDeliveries
         ]);

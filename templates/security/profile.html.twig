@@ -4,12 +4,13 @@
 
 {% block body %}
 
-<h1>Profil</h1>
+    <h1>Profil</h1>
 
     {% if app.user.filename %}
         <img src="{{ vich_uploader_asset(app.user, 'imageFile')}}" alt="" style="width:100px;height:75px">
     {% endif %}
 
+    <a href="{{path('reset_password')}}">Changer le mot de passe</a>
 
     {{form_start(form)}}
     <fieldset>

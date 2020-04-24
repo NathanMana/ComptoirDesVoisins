@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<h1>Inscription</h1>
+    <h1>Inscription</h1>
 
     {{form_start(form)}}
     <fieldset>
@@ -17,6 +17,9 @@
         <div class="form-group">
             {{form_row(form.lastname, {'label': 'Nom de famille', 'attr': {'placeholder':'Nom de famille'}} )}}
         </div>    
+        <div class="form-group">
+            {{form_row(form.codePostal, {'label': 'Code postal', 'attr': {'placeholder':'Code postal'}})}}
+        </div>  
         <div class="form-group">
             {{form_row(form.city, {'label': 'Ville', 'attr': {'placeholder':'Ville où vous habitez'}})}}
         </div>  
@@ -33,9 +36,10 @@
         <div class="form-group">
             {{form_row(form.confirm_password, {'label': 'Répétez le mot de passe', 'attr': {'placeholder':'Mot de passe'}})}}
         </div>  
-
         <button type="submit">M'inscrire</button>
     </fieldset>
     {{form_end(form)}}
+    
+    <a href="{{path('login')}}">Se connecter</a>
 
 {% endblock %}

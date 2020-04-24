@@ -4,6 +4,8 @@
 
 {% block body %}
 
+    <h1>Mes annonces</h1>
+
     <a href="{{path('create_my_advert')}}">Créer une annonce</a>
 
     {% if myAdverts %}
@@ -13,7 +15,21 @@
                 <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
                 <h3>{{item.user.name}} {{item.user.lastname}}</h3>
                 <p>{{item.message}}</p>
-                <a href="#">Supprimer</a>
+                {% if item.deliverer %}
+                    <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="" style="width:50px;height:50px">
+                    <h3 style="color:red">{{item.deliverer.name}} veut vous aider !</h3>
+                    {% if not item.cancellation %}
+                        <a href="{{path('cancel_advert', {id:item.id})}}">Annuler la réservation</a>
+                    {% endif %}
+                    <a href="{{path('given_advert', {id:item.id})}}">J'ai reçu ma livraison (cette action entrainera la suppression de votre annonce)"</a>
+                {% else %}
+                    <a href="{{path('delete_advert', {id:item.id})}}">Supprimer cette annonce</a>
+                    <a href="{{path('edit_advert', {id:item.id})}}">Modifier cette annonce</a>
+                {% endif %}
+                {% if item.cancellation %}
+                    <h5 style="color:green">Vous avez demandé à annuler la réservation, votre contact doit en faire de même pour que celle-ci soit définitivement supprimée</h5>
+                {% endif %}
+                
             </article>
         {% endfor %}
 

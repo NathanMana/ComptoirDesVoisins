@@ -53,7 +53,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s]+$/")
+     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s\']+$/")
      */
     private $city;
 
@@ -102,7 +102,7 @@ class User implements UserInterface
      */
     private $confirm_password;
 
-    private $old_password;
+    private $new_password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -110,14 +110,19 @@ class User implements UserInterface
     private $resetPassword;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="idDeliverer")
+     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="deliverer")
      */
     private $myDeliveries;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="idUser", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="user", orphanRemoval=true)
      */
     private $myAdverts;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $Points;
 
     public function __construct()
     {
@@ -275,14 +280,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getOldPassword(): ?string
+    public function getNewPassword(): ?string
     {
-        return $this->old_password;
+        return $this->new_password;
     }
 
-    public function setOldPassword(string $old_password): self
+    public function setNewPassword(string $new_password): self
     {
-        $this->old_password = $old_password;
+        $this->new_password = $new_password;
 
         return $this;
     }
@@ -366,6 +371,18 @@ class User implements UserInterface
                 $myAdvert->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPoints(): ?int
+    {
+        return $this->Points;
+    }
+
+    public function setPoints(int $Points): self
+    {
+        $this->Points = $Points;
 
         return $this;
     }

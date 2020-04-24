@@ -4,6 +4,8 @@
 
 {% block body %}
 
+    <h1>Connexion</h1>
+
     <form action="{{path('login')}}" method="post">
         <fieldset>
         <div class="form-group">
@@ -18,5 +20,5 @@
         <button type="submit" class="btn btn-success">Se connecter</button>
         </fieldset>
     </form>
-
+    <a href="{{path('registration')}}">S'inscrire</a>
 {% endblock %}
