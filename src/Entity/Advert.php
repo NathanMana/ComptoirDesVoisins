@@ -52,9 +52,15 @@ class Advert
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s\']+$/")
+     * @Assert\Regex("/^[^<>#§µ]+$/",
+     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
     private $City;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $code_city;
 
     public function getId(): ?int
     {
@@ -141,6 +147,18 @@ class Advert
     public function setCity(string $City): self
     {
         $this->City = $City;
+
+        return $this;
+    }
+
+    public function getCodeCity(): ?int
+    {
+        return $this->code_city;
+    }
+
+    public function setCodeCity(string $code_city): self
+    {
+        $this->code_city = $code_city;
 
         return $this;
     }

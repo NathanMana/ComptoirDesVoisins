@@ -12,11 +12,28 @@
     {{form_row(form.q)}}
     <button type="submit" class="btn btn-primary">Filtrer</button>
     {{form_end(form)}}
+
+    {% if propositionsVille %}
+        <div class="proposition">
+            <table>
+                <tbody>
+                {% for item in propositionsVille %}
+                    <tr><td><a href="/annonces?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
     
-    {% if adverts %}   
+    {% if adverts is not empty %}   
         {% for item in adverts %}
-            <article>
-                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+            <div class="card">
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="http://placehold.it/200x200" alt="">
+                {% endif %}
+                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
                 {% set difference = date("now").diff(date(item.createdAt)) %}
                 {% set leftDays = difference.days %}
                 {% if leftDays <= 1 %}
@@ -27,12 +44,11 @@
                     {% endif %}
                 {% else %}
                     <span>Il y a {{ leftDays }} jours</span>
-                {% endif %}
-                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
+                {% endif %}   
                 <h5>{{item.city}}</h5>
                 <p>{{item.message}}</p>
                 <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
-            </article>
+            </div>
         {% endfor %}
     {% else %}
         <p>Il n'y a pas d'annonces</p>

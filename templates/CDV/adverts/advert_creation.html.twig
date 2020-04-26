@@ -8,6 +8,13 @@
 
     {{form_start(form)}}
     {{form_row(form.city, {'label': 'Ville où vous voulez vous faire livrer'})}}
+    <div class="proposition">
+        <table>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="error"></div>
+    </div>
     {{form_row(form.communication, {'label': 'Moyen de communication souhaité pour échanger avec votre futur livreur'})}}
     {{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Indiquez ce dont vous avez besoin'}})}}
         {% if editing %}

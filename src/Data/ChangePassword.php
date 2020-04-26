@@ -5,7 +5,7 @@ namespace App\Data;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ResetPassword 
+class ChangePassword 
 {
     /**
      * @var string
@@ -14,7 +14,9 @@ class ResetPassword
 
     /**
      * @var string
-     * @Assert\Length(min="8", minMessage="Votre mot de passe doit avoir au minimum 8 caractères")
+     * @Assert\NotCompromisedPassword
+     * @Assert\Regex("/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z0-9\S]{8,}$/",
+     *                 message="Votre mot de passe doit contenir au moins, une lettre minuscule, une lettre majuscule, un caractère spécial, un nombre et doit faire au moins 8 caractères")
      */
     private $new_password;
 

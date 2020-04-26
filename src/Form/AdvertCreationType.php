@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Advert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,6 +15,9 @@ class AdvertCreationType extends AbstractType
     {
         $builder
             ->add("city")
+            ->add("code_city", HiddenType::class,[
+                "required"=>true
+            ])
             ->add('communication', ChoiceType::class, [
                 "choices"=>[
                     "Téléphone"=>true,

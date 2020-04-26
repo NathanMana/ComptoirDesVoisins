@@ -8,11 +8,14 @@
 
     <a href="{{path('create_my_advert')}}">Créer une annonce</a>
 
-    {% if myAdverts %}
-        
+    {% if myAdverts is not empty %} 
         {% for item in myAdverts %}
-            <article>
-                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+            <div class="card">
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                {% else %}
+                    <img src="http://placehold.it/200x200" alt="">
+                {% endif %}  
                 <h3>{{item.user.name}} {{item.user.lastname}}</h3>
                 <p>{{item.message}}</p>
                 {% if item.deliverer %}
@@ -30,7 +33,7 @@
                     <h5 style="color:green">Vous avez demandé à annuler la réservation, votre contact doit en faire de même pour que celle-ci soit définitivement supprimée</h5>
                 {% endif %}
                 
-            </article>
+            </div>
         {% endfor %}
 
     {% else %}

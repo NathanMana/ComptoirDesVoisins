@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Serializable;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -37,8 +39,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s]+$/",
-     *                  message="Les caractères spéciaux autorisés sont les suivants : -, /, &")
+     * @Assert\Regex("/^[^<>#§µ]+$/",
+     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
     private $name;
 
@@ -49,11 +51,10 @@ class User implements UserInterface
      */
     private $lastname;
 
-    private $code_postal;
-
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s\']+$/")
+     * @Assert\Regex("/^[^<>#§µ]+$/",
+     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
     private $city;
 
@@ -93,7 +94,9 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min="8", minMessage="Votre mot de passe doit avoir au minimum 8 caractères")
+     * @Assert\Regex("/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z0-9\S]{8,}$/",
+     *                 message="Votre mot de passe doit contenir, une lettre minuscule, une lettre majuscule, un caractère spécial, un nombre et doit faire au moins 8 caractères")
+     * @Assert\NotCompromisedPassword
      */
     private $password;
 
@@ -124,10 +127,26 @@ class User implements UserInterface
      */
     private $Points;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user", orphanRemoval=true)
+     */
+    private $notifications;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $codeCity;
+
     public function __construct()
     {
         $this->myDeliveries = new ArrayCollection();
         $this->myAdverts = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,18 +186,6 @@ class User implements UserInterface
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    public function getCodePostal(): ?int
-    {
-        return $this->code_postal;
-    }
-
-    public function setCodePostal(string $code_postal): self
-    {
-        $this->code_postal = $code_postal;
 
         return $this;
     }
@@ -240,6 +247,9 @@ class User implements UserInterface
     public function setImageFile(?File $imageFile): User
     {
         $this->imageFile = $imageFile;
+        if($this->imageFile instanceof UploadedFile){
+            $this->updatedAt = new \DateTime('now');
+        }
         return $this;
     }
 
@@ -260,7 +270,7 @@ class User implements UserInterface
         return $this->resetPassword;
     }
 
-    public function setResetPassword(string $resetPassword): self
+    public function setResetPassword(?string $resetPassword): self
     {
         $this->resetPassword = $resetPassword;
 
@@ -383,6 +393,61 @@ class User implements UserInterface
     public function setPoints(int $Points): self
     {
         $this->Points = $Points;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCodeCity(): ?string
+    {
+        return $this->codeCity;
+    }
+
+    public function setCodeCity(string $codeCity): self
+    {
+        $this->codeCity = $codeCity;
 
         return $this;
     }

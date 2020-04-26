@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 
@@ -19,7 +20,9 @@ class RegistrationType extends AbstractType
             ->add('email')
             ->add('name')
             ->add('lastname')
-            ->add('codePostal')
+            ->add('code_city', HiddenType::class, [
+                'required'=>true
+            ])
             ->add('city')
             ->add('phone', TelType::class)
             ->add('imageFile', FileType::class, [

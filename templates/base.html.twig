@@ -8,53 +8,52 @@
         <meta name="language" content="fr">
         <link rel="shortcut icon" href="{{asset('build/images/favicon.png')}}">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         {% block metadescription %}{% endblock %}
+        {{ encore_entry_link_tags('app') }}
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-            <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
-        {% endblock %}
+        {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="{{path('index')}}">Comptoir des Voisins</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{path('adverts')}}">Annonces</a>
-                    </li>
-                    {% if app.user %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('my_adverts')}}">Mes annonces</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('my_deliveries')}}">Mes livraisons</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('profile')}}">Mon compte</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('logout')}}">Déconnexion</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('login')}}">Se connecter</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('registration')}}">S'inscrire</a>
-                        </li>   
-                    {% endif %}
-                </ul>
+        <header>
+            <div class="icon">
+                <div class="hamburger"></div>
             </div>
-        </nav>
-        <div class="container">{# Le block body est dans une div container simplement pour tout center avec bootstrap, tu vas virer cette div comme il te plait normalement #}
-            {% block body %}
+            <div class="menu">
+                <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon">	</a>	
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#">Livrer</a></li>
+                        <li><a href="{{path('adverts')}}">Se faire livrer</a></li>
+                        {% if app.user %}
+                        <li><a href="{{path('my_adverts')}}">Mes annonces</a></li>
+                        <li><a href="{{path('my_deliveries')}}">Mes livraisons</a></li>
+                        <li>Bonjour {{app.user.name}}</li>
+                        {% endif %}
+                        
+                    </ul>
+                </nav>
+                <aside>
+                    <i class="fas fa-sign-out-alt"></i>
+                    {% if app.user %}
+                        <a href="{{path('profile')}}" class="login">Mon compte</a>
+                        <a href="{{path('logout')}}" class="login">Se déconnecter</a>
+                    {% else %}
+                        <a href="{{path('login')}}" class="login">Se connecter</a>
+                        <a href="{{path('registration')}}" class="login">S'inscrire</a>
+                    {% endif %}
+                </aside>
+                </nav>
+            </div>
+        </header>
+        
+        {% block body %}
                 
-            {% endblock %}
-        </div>
+        {% endblock %}
+        
+    
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

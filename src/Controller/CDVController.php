@@ -24,7 +24,7 @@ class CDVController extends AbstractController
      */
     public function my_adverts(){
         $myAdverts = $this->getUser()->getMyAdverts();
-        return $this->render("CDV/my_adverts.html.twig", [
+        return $this->render("cdv/adverts/my_adverts.html.twig", [
             "myAdverts"=>$myAdverts
         ]);
     }
@@ -33,9 +33,16 @@ class CDVController extends AbstractController
      * @Route("/meslivraisons", name="my_deliveries")
      */
     public function my_deliveries(AdvertRepository $RepoAdvert){
-        $myDeliveries = $this->getUser()->getMyAdverts();
-        return $this->render("CDV/my_deliveries.html.twig", [
+        $myDeliveries = $this->getUser()->getMyDeliveries();
+        return $this->render("cdv/deliveries/my_deliveries.html.twig", [
             "myDeliveries"=>$myDeliveries
         ]);
+    }
+
+    /**
+     * @Route("/connexion/motdepasse/envoi", name="email_sent")
+     */
+    public function email_sent(){
+        return $this->render("cdv/account/email_sent.html.twig");
     }
 }
