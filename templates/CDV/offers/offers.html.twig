@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Annonces{% endblock %}
+{% block title %}Offres de livraisons{% endblock %}
 
 {% block body %}
 
-<h1>Annonces</h1>
+    <h1>Offres de livraisons</h1>
 
     <a href="{{path('choice_advert')}}">Créer une annonce</a>
 
@@ -24,9 +24,9 @@
             </table>
         </div>
     {% endif %}
-    
-    {% if adverts is not empty %}   
-        {% for item in adverts %}
+
+    {% if offers is not empty %}
+        {% for item in offers %}
             <div class="card">
                 {% if item.user.filename %}
                     <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
@@ -34,24 +34,12 @@
                     <img src="http://placehold.it/200x200" alt="">
                 {% endif %}
                 <h3>{{item.user.name}} {{item.user.lastname}}</h3>
-                {% set difference = date("now").diff(date(item.createdAt)) %}
-                {% set leftDays = difference.days %}
-                {% if leftDays <= 1 %}
-                    {% if leftDays < 1 %}
-                        <span>Aujourd'hui</span>
-                    {% else %}
-                        <span>Il y a un jour</span>
-                    {% endif %}
-                {% else %}
-                    <span>Il y a {{ leftDays }} jours</span>
-                {% endif %}   
-                <h5>{{item.city}}</h5>
+                <h4>{{item.dateDelivery | date("")}}</h4>
+                <h5>{{item.citiesDelivery}}</h5>
                 <p>{{item.message}}</p>
                 <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
             </div>
         {% endfor %}
-    {% else %}
-        <p>Il n'y a pas d'annonces</p>
     {% endif %}
 
 {% endblock %}

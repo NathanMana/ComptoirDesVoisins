@@ -142,11 +142,23 @@ class User implements UserInterface
      */
     private $codeCity;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Offer", mappedBy="user", orphanRemoval=true)
+     */
+    private $offers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Offer", mappedBy="clients")
+     */
+    private $clientOffers;
+
     public function __construct()
     {
         $this->myDeliveries = new ArrayCollection();
         $this->myAdverts = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->offers = new ArrayCollection();
+        $this->clientOffers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -448,6 +460,65 @@ class User implements UserInterface
     public function setCodeCity(string $codeCity): self
     {
         $this->codeCity = $codeCity;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Offer[]
+     */
+    public function getOffers(): Collection
+    {
+        return $this->offers;
+    }
+
+    public function addOffer(Offer $offer): self
+    {
+        if (!$this->offers->contains($offer)) {
+            $this->offers[] = $offer;
+            $offer->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffer(Offer $offer): self
+    {
+        if ($this->offers->contains($offer)) {
+            $this->offers->removeElement($offer);
+            // set the owning side to null (unless already changed)
+            if ($offer->getUser() === $this) {
+                $offer->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Offer[]
+     */
+    public function getClientOffers(): Collection
+    {
+        return $this->clientOffers;
+    }
+
+    public function addClientOffer(Offer $clientOffer): self
+    {
+        if (!$this->clientOffers->contains($clientOffer)) {
+            $this->clientOffers[] = $clientOffer;
+            $clientOffer->addClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientOffer(Offer $clientOffer): self
+    {
+        if ($this->clientOffers->contains($clientOffer)) {
+            $this->clientOffers->removeElement($clientOffer);
+            $clientOffer->removeClient($this);
+        }
 
         return $this;
     }

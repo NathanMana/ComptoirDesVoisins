@@ -1,0 +1,32 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Création de l'offre de livraison{% endblock %}
+
+{% block body %}
+
+    <h1>Création de mon annonce</h1>
+
+    {{form_start(form)}}
+
+    {{form_row(form.groceryType, {'label': 'Type de course que vous effectuez'})}}
+    {{form_row(form.dateDelivery, {'label': 'Date'})}}
+    {{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Information supplémentaire, condition, prix maximal par personne, etc..'}})}}
+    {{form_row(form.communication, {'label': 'Moyen de communication souhaité'})}}
+    {{form_row(form.limited, {'label': 'Combien de personnes pouvez-vous livrer ?'})}}
+
+    <div class="cities">
+        <label for="cities">Ville(s) où vous livrez</label>
+        <input class="city-in-cities" type="text" name="cities" id="city1">
+    </div>
+    <div class="proposition">
+        <table>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="error"></div>
+    </div>
+
+    <button type="submit">Créer mon annonce</button>
+    {{form_end(form)}}
+
+{% endblock %}

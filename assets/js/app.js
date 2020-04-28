@@ -23,6 +23,8 @@ $(document).ready(function(){
         cityInput = $('#advert_creation_city');
     } else if(h1 === "Profil"){
         cityInput = $('#profile_city');
+    } else if(h1==="Création de mon annonce"){
+        cityInput = $('#city1');
     }
     const apiUrl = "https://geo.api.gouv.fr/communes?nom=";
     const format = "&format=json";
@@ -49,6 +51,10 @@ $(document).ready(function(){
                     } else if (h1 === "Profil"){
                         $('#profile_city').val(CityValue);
                         $('#profile_code_city').val(CityCode);
+                    } else if (h1 === "Création de mon annonce"){
+                        $(cityInput).val(CityValue);
+                        $('#offer_creation_citiesDelivery').val(CityValue);
+                        $('#offer_creation_code_cities').val(CityCode);
                     }
                     $('tbody').empty();
                 })
@@ -66,5 +72,11 @@ $(document).ready(function(){
         $('tbody').empty();
     });
 
+    // let compteurCities = 1;
+    // $('.add-city').click(function(){
+    //     compteurCities++;
+    //     $('.cities').append('<input type="text" class="city-in-cities" name="cities'+ compteurCities +'" id="city'+ compteurCities +'">')
+    //     cityInput = $('#city'+compteurCities);
+    // })
     
 })

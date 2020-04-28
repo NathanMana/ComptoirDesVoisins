@@ -25,7 +25,7 @@
                 <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon">	</a>	
                 <nav class="nav">
                     <ul>
-                        <li><a href="#">Livrer</a></li>
+                        <li><a href="{{path('offers')}}">Livrer</a></li>
                         <li><a href="{{path('adverts')}}">Se faire livrer</a></li>
                         {% if app.user %}
                         <li><a href="{{path('my_adverts')}}">Mes annonces</a></li>

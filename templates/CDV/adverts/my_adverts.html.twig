@@ -6,7 +6,22 @@
 
     <h1>Mes annonces</h1>
 
-    <a href="{{path('create_my_advert')}}">Créer une annonce</a>
+    <a href="{{path('choice_advert')}}">Créer une annonce</a>
+
+    {% if myOffers is not empty %}
+        {% for item in myOffers %}
+            <div class="card" style="border-color:red">
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                {% else %}
+                    <img src="http://placehold.it/200x200" alt="">
+                {% endif %}  
+                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
+                <p>{{item.message}}</p>
+                <a href="{{path('delete_offer', {id:item.id})}}">Supprimer l'annonce</a>
+            </div>
+        {% endfor %}
+    {% endif %}
 
     {% if myAdverts is not empty %} 
         {% for item in myAdverts %}
@@ -24,7 +39,7 @@
                     {% if not item.cancellation %}
                         <a href="{{path('cancel_advert', {id:item.id})}}">Annuler la réservation</a>
                     {% endif %}
-                    <a href="{{path('given_advert', {id:item.id})}}">J'ai reçu ma livraison (cette action entrainera la suppression de votre annonce)"</a>
+                    <a href="{{path('given_advert', {id:item.id})}}">J'ai reçu ma livraison (cette action entrainera la suppression de votre annonce)</a>
                 {% else %}
                     <a href="{{path('delete_advert', {id:item.id})}}">Supprimer cette annonce</a>
                     <a href="{{path('edit_advert', {id:item.id})}}">Modifier cette annonce</a>

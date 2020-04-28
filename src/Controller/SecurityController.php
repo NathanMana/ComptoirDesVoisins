@@ -250,8 +250,8 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/creation", name="create_my_advert")
-     * @Route("/mesannonces/modification/{id}", name="edit_advert")
+     * @Route("/mesannonces/creation/sefairelivrer", name="create_my_advert")
+     * @Route("/mesannonces/modification/sefairelivrer/{id}", name="edit_advert")
      */
     public function creation_or_edit_my_advert(Advert $advert = null, Request $request, EntityManagerInterface $manager){
         if(!$advert){
@@ -440,4 +440,6 @@ class SecurityController extends AbstractController
             throw $this->createNotFoundException('Cette page n\'existe pas');
         }
     }
+
+    
 }

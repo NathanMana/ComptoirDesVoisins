@@ -24,8 +24,11 @@ class CDVController extends AbstractController
      */
     public function my_adverts(){
         $myAdverts = $this->getUser()->getMyAdverts();
+        $myOffers = $this->getUser()->getOffers();
+        
         return $this->render("cdv/adverts/my_adverts.html.twig", [
-            "myAdverts"=>$myAdverts
+            "myAdverts"=>$myAdverts,
+            "myOffers"=>$myOffers
         ]);
     }
 
@@ -44,5 +47,12 @@ class CDVController extends AbstractController
      */
     public function email_sent(){
         return $this->render("cdv/account/email_sent.html.twig");
+    }
+
+    /**
+     * @Route("/annonce/choix", name="choice_advert")
+     */
+    public function choice_advert(){
+        return $this->render("cdv/adverts/choice_advert.html.twig");
     }
 }
