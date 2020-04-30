@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Offer;
 use App\Data\SearchData;
 use Doctrine\Persistence\ManagerRegistry;
@@ -35,6 +36,22 @@ class OfferRepository extends ServiceEntityRepository
                 ->andWhere("p.citiesDelivery LIKE :q")
                 ->setParameter("q", "%{$search->q}%");
         }
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Récupère les produits qui appartiennent à l'utilisateur et qui ont un livreur
+     * @return Offer[]
+     */
+    public function findOffersWithClient(User $user): array
+    {   
+        $query= $this   
+            ->createQueryBuilder('p')
+            ->leftjoin ('p.clients','c')
+            ->andWhere("p.user = :user")
+            ->andWhere("c is not null")
+            ->setParameter("user", $user);
+        
         return $query->getQuery()->getResult();
     }
 

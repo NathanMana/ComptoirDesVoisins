@@ -18,7 +18,7 @@
             <table>
                 <tbody>
                 {% for item in propositionsVille %}
-                    <tr><td><a href="/annonces?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                    <tr><td><a href="/livrer?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -34,10 +34,10 @@
                     <img src="http://placehold.it/200x200" alt="">
                 {% endif %}
                 <h3>{{item.user.name}} {{item.user.lastname}}</h3>
-                <h4>{{item.dateDelivery | date("")}}</h4>
+                <h4>{{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h4>
                 <h5>{{item.citiesDelivery}}</h5>
                 <p>{{item.message}}</p>
-                <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
+                <a href="{{path('offer_information', {id:item.id})}}">En savoir plus</a>
             </div>
         {% endfor %}
     {% endif %}

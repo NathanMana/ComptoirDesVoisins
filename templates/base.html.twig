@@ -25,14 +25,14 @@
                 <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon">	</a>	
                 <nav class="nav">
                     <ul>
-                        <li><a href="{{path('offers')}}">Livrer</a></li>
-                        <li><a href="{{path('adverts')}}">Se faire livrer</a></li>
+                        <li><a href="{{path('offers')}}">Offres de livraison</a></li>
+                        <li><a href="{{path('adverts')}}">Demandes de livraison</a></li>
                         {% if app.user %}
-                        <li><a href="{{path('my_adverts')}}">Mes annonces</a></li>
-                        <li><a href="{{path('my_deliveries')}}">Mes livraisons</a></li>
-                        <li>Bonjour {{app.user.name}}</li>
-                        {% endif %}
-                        
+                            <li><a href="{{path('my_adverts')}}">Mes annonces</a></li>
+                            <li><a href="{{path('my_deliveries')}}">Mes livraisons</a></li>
+                            <li><a href="{{path('choice_advert')}}">Créer une annonce / offre</a></li>
+                            <li>Bonjour {{app.user.name}}</li>
+                        {% endif %}        
                     </ul>
                 </nav>
                 <aside>
@@ -49,11 +49,9 @@
             </div>
         </header>
         
-        {% block body %}
-                
+        {% block body %}       
         {% endblock %}
-        
-    
+
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

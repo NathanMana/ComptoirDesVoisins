@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
-use App\Data\SearchData;
+use App\Entity\User;
 use App\Entity\Advert;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Data\SearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Advert|null find($id, $lockMode = null, $lockVersion = null)
@@ -35,6 +36,21 @@ class AdvertRepository extends ServiceEntityRepository
                 ->andWhere("p.City LIKE :q")
                 ->setParameter("q", "%{$search->q}%");
         }
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Récupère les produits qui appartiennent à l'utilisateur et qui ont un livreur
+     * @return Advert[]
+     */
+    public function findAdvertsWithDeliverer(User $user): array
+    {   
+        $query= $this   
+            ->createQueryBuilder('p')
+            ->andWhere("p.deliverer is not null")
+            ->andWhere("p.user = :user")
+            ->setParameter("user", $user);
+        
         return $query->getQuery()->getResult();
     }
 

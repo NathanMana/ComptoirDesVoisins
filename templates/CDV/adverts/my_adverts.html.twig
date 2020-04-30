@@ -5,19 +5,23 @@
 {% block body %}
 
     <h1>Mes annonces</h1>
+    <p>Vous retrouverez sur cette page toutes vos annonces que cela soit des offres pour livrer ou des demandes de livraison</p>
 
     <a href="{{path('choice_advert')}}">Créer une annonce</a>
 
     {% if myOffers is not empty %}
         {% for item in myOffers %}
-            <div class="card" style="border-color:red">
-                {% if item.user.filename %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+            <div class="card" style="background-color:grey">
+                <h2>Offre de livraison du {{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h2>
+                <h3>{{item.citiesDelivery}}</h3>             	
+                {% set nbrPlace = item.limited - item.available %}
+                {% if nbrPlace != item.limited %}
+                    <h3>{{nbrPlace}} place(s) disponible(s)</h3>
                 {% else %}
-                    <img src="http://placehold.it/200x200" alt="">
-                {% endif %}  
-                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
-                <p>{{item.message}}</p>
+                    <h3>Complet</h3>
+                {% endif %}
+                <a href="{{path('edit_offer', {id:item.id})}}">Modifier l'annonce</a>
+                <a href="{{path('contact_in_my_offer', {id:item.id})}}">Voir les personnes intéressées</a>
                 <a href="{{path('delete_offer', {id:item.id})}}">Supprimer l'annonce</a>
             </div>
         {% endfor %}
@@ -26,13 +30,7 @@
     {% if myAdverts is not empty %} 
         {% for item in myAdverts %}
             <div class="card">
-                {% if item.user.filename %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
-                {% else %}
-                    <img src="http://placehold.it/200x200" alt="">
-                {% endif %}  
-                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
-                <p>{{item.message}}</p>
+                <h2>Demande de livraison du {{item.createdAt | date("j F Y")}} à {{item.createdAt | date("H:i")}}</h2>
                 {% if item.deliverer %}
                     <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="" style="width:50px;height:50px">
                     <h3 style="color:red">{{item.deliverer.name}} veut vous aider !</h3>
@@ -47,7 +45,6 @@
                 {% if item.cancellation %}
                     <h5 style="color:green">Vous avez demandé à annuler la réservation, votre contact doit en faire de même pour que celle-ci soit définitivement supprimée</h5>
                 {% endif %}
-                
             </div>
         {% endfor %}
 

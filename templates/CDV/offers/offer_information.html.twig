@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Annonce de {{offer.user.name}}{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        {% if offer.user.filename %}
+            <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+        {% else %}
+            <img src="http://placehold.it/200x200" alt="">
+        {% endif %}
+        <h3>{{offer.user.name}} {{offer.user.lastname}}</h3>
+        <h4>{{offer.dateDelivery | date("j F Y")}} à {{offer.dateDelivery | date("H:i")}}</h4>
+        <h5>{{offer.citiesDelivery}}</h5>
+        <p>{{offer.message}}</p>
+        {% if offer.available > 1 %}
+            <h3>{{offer.available}} places disponibles</h3>
+        {% else %}
+            <h3>{{offer.available}} place disponible</h3>
+        {% endif %}
+        <a href="{{path('offer_coming', {id:offer.id})}}">Demander à se faire livrer par cette personne</a>
+    </div>
+
+
+{% endblock %}
