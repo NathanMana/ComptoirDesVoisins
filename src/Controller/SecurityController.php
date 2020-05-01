@@ -43,6 +43,9 @@ class SecurityController extends AbstractController
                             ->setCity($response[0]["nom"] . ' ('.$response[0]["codeDepartement"].')')
                             ->setPoints(0)
                             ->setUpdatedAt(new \DateTime);
+                    if(empty($user->getFilename())){
+                        $user->setFilename('default-profile.png');
+                    }
                     $manager->persist($user);
                     $manager->flush();    
                 } else {
@@ -54,7 +57,7 @@ class SecurityController extends AbstractController
            
             return $this->redirectToRoute("login");
         }
-        return $this->render('cdv/account/registration.html.twig', [
+        return $this->render('cdv/security/registration.html.twig', [
             'form'=>$form->createView()
         ]);
     }
@@ -63,7 +66,7 @@ class SecurityController extends AbstractController
      * @Route("/connexion", name="login")
      */
     public function login(){
-        return $this->render("cdv/account/login.html.twig");
+        return $this->render("cdv/security/login.html.twig");
     }
 
     /**
@@ -98,7 +101,7 @@ class SecurityController extends AbstractController
                 throw new \Exception("Cette adresse mail n'existe pas dans notre base de données");
             }
         }
-        return $this->render("cdv/account/forgotten_password.html.twig", [
+        return $this->render("cdv/security/forgotten_password.html.twig", [
             'form'=>$form->createView()
         ]);
     }
@@ -121,7 +124,7 @@ class SecurityController extends AbstractController
 
                     return $this->redirectToRoute("login");
                 }
-                return $this->render("cdv/account/reset_password.html.twig", [
+                return $this->render("cdv/security/reset_password.html.twig", [
                     "form"=>$form->createView()
                 ]);
             } else {
@@ -156,7 +159,7 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute("profile");
             }
         }
-        return $this->render("cdv/account/change_password.html.twig", [
+        return $this->render("cdv/security/change_password.html.twig", [
             "form"=>$form->createView()
         ]);
     }
@@ -191,7 +194,7 @@ class SecurityController extends AbstractController
                 }
             }     
             
-            return $this->render("cdv/account/profile.html.twig", [
+            return $this->render("cdv/security/profile.html.twig", [
                 'form'=>$form->createView()
             ]);
         }

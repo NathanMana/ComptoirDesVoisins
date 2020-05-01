@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes offres{% endblock %}
+
+{% block body %}
+
+    <h1>Mes offres</h1>
+    <p>Vous retrouverez sur cette page toutes vos offres. Les offres sont des propositions publiques dans lesquelles vous indiquez que vous êtes prêt à aider des personnes dans le besoin</p>
+
+    <a href="{{path('offer_creation')}}">Créer une offre</a>
+
+    {% if myOffers is not empty %}
+        {% for item in myOffers %}
+            <div class="card" style="background-color:grey">
+                <h2>Offre de livraison du {{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h2>
+                <h3>{{item.citiesDelivery}}</h3>             	
+                {% set nbrPlace = item.limited - item.available %}
+                {% if item.available != item.limited %}
+                    <h3>{{nbrPlace}} place(s) disponible(s)</h3>
+                {% else %}
+                    <h3>Complet</h3>
+                {% endif %}
+                <a href="{{path('information_for_creator', {id:item.id})}}">Voir l'offre</a>
+                <a href="{{path('edit_offer', {id:item.id})}}">Modifier l'offre</a>
+                {% if item.clients is not empty %}
+                    <a href="{{path('contact_in_my_offer', {id:item.id})}}">Voir les personnes intéressées</a>
+                {% endif %}
+                <a href="{{path('delete_offer', {id:item.id})}}">Supprimer l'annonce</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pas créé d'offre</p>
+    {% endif %}
+    
+{% endblock %}

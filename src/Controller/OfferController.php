@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Offer;
 use App\Service\GeoApi;
 use App\Data\SearchData;
 use App\Form\SearchType;
+use App\Form\OfferEditType;
 use App\Entity\Notification;
 use App\Form\OfferCreationType;
 use App\Repository\OfferRepository;
@@ -18,7 +20,7 @@ class OfferController extends AbstractController
 {
 
     /**
-     * @Route("/livrer", name="offers")
+     * @Route("/offres", name="offers")
      */
     public function offers(OfferRepository $offerRepository, Request $request){
         $search = new SearchData();
@@ -43,6 +45,7 @@ class OfferController extends AbstractController
                 }
             }
         } 
+
         return $this->render("cdv/offers/offers.html.twig", [
             'form'=>$form->createView(),
             'offers'=>$offers,
@@ -51,46 +54,34 @@ class OfferController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/creation/livrer", name="offer_creation")
-     * @Route("/mesannonces/modification/livrer/{id}", name="edit_offer")
+     * @Route("/mesoffres/creation", name="offer_creation")
      */
-    public function offer_creation(Offer $offer = null, Request $request, EntityManagerInterface $manager)
+    public function offer_creation(Request $request, EntityManagerInterface $manager)
     {
-        if(!$offer){
-            $offer = new Offer();
-            $checkUser = true;
-        } else {
-            if($offer->getUser() !== $this->getUser()){    //Si l'utilisateur qui veut modifier l'annonce n'est pas le proprio de l'annonce
-                $checkUser = false;
-                throw $this->createNotFoundException('Cette annonce n\'existe pas');
-            }  else {
-                $checkUser = true;
-            }
-        }
-        if($checkUser){
-            $form = $this->createForm(OfferCreationType::class, $offer);
-            $form->handleRequest($request);
-            if($form->isSubmitted() && $form->isValid()){
+        $offer = new Offer();
 
-                $apiGeo = new GeoApi();
-                $response = $apiGeo->RequestApi("code", $offer->getCodeCities())->toArray();        
+        $form = $this->createForm(OfferCreationType::class, $offer);
+        $form->handleRequest($request);
 
-                if($response[0]['nom']." (".$response[0]['codeDepartement'].")" === $offer->getCitiesDelivery()){ //On vérifie si le front et le bac ont les mêmes infos
-                    if(!$offer->getId()){                      //Si on créer l'annonce
-                        $offer  ->setUser($this->getUser())
-                                ->setAvailable(0)
-                                ->setCreatedAt(new \DateTime());
-                    } else {            //Si on modifie l'annonce
-                        $offer  ->setCreatedAt(new \Datetime);
-                    }
-                } else {
-                    throw new \Exception("Veuillez sélectionner une ville valide");
+        if($form->isSubmitted() && $form->isValid()){
+
+            $apiGeo = new GeoApi();
+            $response = $apiGeo->RequestApi("code", $offer->getCodeCities())->toArray();        
+
+            if($response[0]['nom']." (".$response[0]['codeDepartement'].")" === $offer->getCitiesDelivery()){ //On vérifie si le front et le back ont les mêmes infos
+                if(!$offer->getId()){                      //Si on créer l'annonce
+                    $offer  ->setUser($this->getUser())
+                            ->setAvailable(0)
+                            ->setCreatedAt(new \DateTime());
                 }
-                $manager->persist($offer);
-                $manager->flush();
-
-                return $this->redirectToRoute("my_adverts");
+            } else {
+                throw new \Exception("Veuillez sélectionner une ville valide");
             }
+
+            $manager->persist($offer);
+            $manager->flush();
+
+            return $this->redirectToRoute("my_offers");
         }
 
         return $this->render('cdv/offers/offer_creation.html.twig', [
@@ -99,7 +90,37 @@ class OfferController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/offres/supprimer/{id}", name="delete_offer")
+     * @Route("/mesoffres/modification/{id}", name="edit_offer")
+     */
+    public function edit_offer(Offer $offer, Request $request, EntityManagerInterface $manager){
+        if($offer->getUser() === $this->getUser()){    //Si l'utilisateur qui veut modifier l'annonce n'est pas le proprio de l'annonce
+            
+            $form = $this->createForm(OfferEditType::class, $offer);
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid()){
+                if($offer->getLimited() < $offer->getAvailable()){ //Si on modifie et que l'on baisse le nombre de personne à livrer (ex : je livre 2 personnes, je modifie pour livrer qu'une seule personne)
+                    throw new \Exception("Vous ne pouvez pas mettre un nombre de livraison inférieur au nombre de personne que vous livrez déjà");
+                }
+                else {
+                    $offer->setCreatedAt(new \Datetime);    
+
+                    $manager->persist($offer);
+                    $manager->flush();  
+
+                    return $this->redirectToRoute("my_offers");
+                }
+            } 
+            return $this->render('cdv/offers/edit_offer.html.twig', [
+                "form"=>$form->createView(),
+            ]);
+        } else {
+            throw $this->createNotFoundException('Cette annonce n\'existe pas');
+        }   
+    }
+    
+    /**
+     * @Route("/mesoffres/supprimer/{id}", name="delete_offer")
      */
     public function delete_offer(Offer $offer, EntityManagerInterface $manager){
         if($this->getUser() === $offer->getUser()){
@@ -117,14 +138,22 @@ class OfferController extends AbstractController
             }
             $manager->remove($offer);
             $manager->flush();
-            return $this->redirectToRoute("my_adverts");
-        } else {
+            return $this->redirectToRoute("my_offers");
+        } else if(in_array($this->getUser(), $offer->getClients()->toArray())){     //Si un client décide de supprimer l'offre, il la supprime seulement pour lui
+            $offer->removeClient($this->getUser());
+            $offer->setAvailable($offer->getAvailable() - 1);
+            $manager->persist($offer);
+            $manager->flush();
+
+            return $this->redirectToRoute("my_deliveries");
+        }
+        else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }
     }   
 
     /**
-     * @Route("/annonce/livreur/{id}", name="offer_information")
+     * @Route("/offres/{id}", name="offer_information")
      */
     public function offer_information(Offer $offer){
         if($offer->getAvailable() === $offer->getLimited()){
@@ -133,6 +162,34 @@ class OfferController extends AbstractController
             return $this->render("cdv/offers/offer_information.html.twig", [
                 "offer"=>$offer
             ]);
+        }
+    }
+
+    /**
+     * @Route("/mesoffres/{id}", name="information_for_creator")
+     */
+    public function information_for_creator(Offer $offer)
+    {
+        if($this->getUser() === $offer->getUser()){
+            return $this->render("cdv/offers/information_for_creator.html.twig", [
+                'offer'=>$offer
+            ]);
+        } else {
+            throw $this->createNotFoundException('Cette offre n\'existe pas');
+        }
+    }
+
+    /**
+     * @Route("/meslivraisons/offres/{id}", name="information_for_client")
+     */
+    public function information_for_client(Offer $offer)
+    {
+        if(in_array($this->getUser(), $offer->getClients()->toArray())){
+            return $this->render("cdv/offers/information_for_client.html.twig", [
+                'offer'=>$offer
+            ]);
+        } else {
+            throw $this->createNotFoundException('Cette offre n\'existe pas');
         }
     }
 
@@ -158,7 +215,7 @@ class OfferController extends AbstractController
 
             return $this->redirectToRoute("my_deliveries");
         } else {
-            throw $this->createNotFoundException('Cette annonce n\'existe pas');
+            throw new Exception("Une erreur est intervenue");
         }
     }
 

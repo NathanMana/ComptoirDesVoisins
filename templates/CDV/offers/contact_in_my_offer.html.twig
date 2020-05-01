@@ -10,13 +10,11 @@
 
     {% for item in myOffer.clients %}
         <div class="cadre" style="width: 40%">
-            {% if item.filename %}
-                <img src="{{vich_uploader_asset(item, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-            {% else %}
-                <img src="http://placehold.it/200x200" alt="">
-            {% endif %}
-            <h3>{{item.name}} {{item.lastname}}</h3>
+
+            <img src="{{vich_uploader_asset(item, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+            <h3>{{item.name}}</h3>
             <h4>Vous pouvez contacter cette personne via téléphone au {{item.phone}}</h4>
+            
         </div>
     {% endfor %}
 

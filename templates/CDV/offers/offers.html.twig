@@ -28,15 +28,15 @@
     {% if offers is not empty %}
         {% for item in offers %}
             <div class="card">
-                {% if item.user.filename %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-                {% else %}
-                    <img src="http://placehold.it/200x200" alt="">
+
+                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                <h3>{{item.user.name}}</h3>
+                {% if item.user.points > 0 %}
+                    <span>{{item.user.points}} livraison(s) effectuée(s)</span>
                 {% endif %}
-                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
+                <h3>Type de course : {{item.groceryType}}</h3>
                 <h4>{{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h4>
                 <h5>{{item.citiesDelivery}}</h5>
-                <p>{{item.message}}</p>
                 <a href="{{path('offer_information', {id:item.id})}}">En savoir plus</a>
             </div>
         {% endfor %}

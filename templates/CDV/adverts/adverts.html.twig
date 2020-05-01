@@ -28,12 +28,6 @@
     {% if adverts is not empty %}   
         {% for item in adverts %}
             <div class="card">
-                {% if item.user.filename %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-                {% else %}
-                    <img src="http://placehold.it/200x200" alt="">
-                {% endif %}
-                <h3>{{item.user.name}} {{item.user.lastname}}</h3>
                 {% set difference = date("now").diff(date(item.createdAt)) %}
                 {% set leftDays = difference.days %}
                 {% if leftDays <= 1 %}
@@ -45,8 +39,10 @@
                 {% else %}
                     <span>Il y a {{ leftDays }} jours</span>
                 {% endif %}   
+
+                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                <h3>{{item.user.name}}</h3>
                 <h5>{{item.city}}</h5>
-                <p>{{item.message}}</p>
                 <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
             </div>
         {% endfor %}

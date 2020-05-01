@@ -29,7 +29,7 @@ class OfferRepository extends ServiceEntityRepository
     {   
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.available > 0");
+            ->andWhere("p.available <= p.limited");
         
         if(!empty($search->q)){
             $query = $query 
@@ -40,7 +40,7 @@ class OfferRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère les produits qui appartiennent à l'utilisateur et qui ont un livreur
+     * Récupère les offres créées par l'utilisateur et qui ont un client (au moins 1)
      * @return Offer[]
      */
     public function findOffersWithClient(User $user): array

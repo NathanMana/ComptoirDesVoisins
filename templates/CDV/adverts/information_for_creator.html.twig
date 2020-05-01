@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Information sur mon annonce{% endblock %}
+
+{% block body %}
+
+    <h1>Demande de livraison du {{advert.createdAt | date('j F Y')}}</h1>
+
+    <h2>{{advert.city}}</h2>
+    <p>{{advert.message}}</p>
+
+    {% if advert.deliverer is not null %}
+
+        <img src="{{vich_uploader_asset(advert.deliverer, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+
+        <h2>{{advert.deliverer.name}} est votre livreur !</h2>
+        <p>Cette personne rentrera en contact avec vous</p>
+
+        {% if not advert.cancellation %}
+            <a href="{{path('cancel_advert', {id:advert.id})}}">Annuler la demande</a>
+            <a href="{{path('given_advert', {id:advert.id})}}">J'ai reçu ma demande</a>
+        {% else %}
+            <h5 style="color:green">Vous avez demandé à annuler la livraison, votre voisin doit en faire de même pour que celle-ci soit définitivement supprimée</h5>
+        {% endif %}
+    {% else %}
+        <a href="{{path('delete_advert', {id:advert.id})}}">Supprimer cette demande</a>
+        <a href="{{path('edit_advert', {id:advert.id})}}">Modifier cette demande</a>
+    {% endif %}
+
+    
+    <a href="{{path('my_adverts')}}">Retourner à mes demandes</a>
+
+{% endblock %}

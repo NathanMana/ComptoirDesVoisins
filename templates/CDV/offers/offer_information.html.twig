@@ -5,19 +5,22 @@
 {% block body %}
 
     <div class="card">
-        {% if offer.user.filename %}
-            <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-        {% else %}
-            <img src="http://placehold.it/200x200" alt="">
-        {% endif %}
-        <h3>{{offer.user.name}} {{offer.user.lastname}}</h3>
-        <h4>{{offer.dateDelivery | date("j F Y")}} à {{offer.dateDelivery | date("H:i")}}</h4>
+        <h2>Livraison du {{offer.dateDelivery | date("j F Y")}} à {{offer.dateDelivery | date("H:i")}}</h2>
         <h5>{{offer.citiesDelivery}}</h5>
+
+        <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+
+        <h3>{{offer.user.name}}</h3>
+        {% if offer.user.points > 0 %}
+            <span>{{offer.user.points}} livraison(s) effectuée(s)</span>
+        {% endif %}
+        <h3>Type de course : {{offer.groceryType}}</h3>
         <p>{{offer.message}}</p>
-        {% if offer.available > 1 %}
-            <h3>{{offer.available}} places disponibles</h3>
+        {% set nbrePlace = offer.limited - offer.available %}
+        {% if offer.available + 1 != offer.limited  %}
+            <h3>{{nbrePlace}} places disponibles</h3>
         {% else %}
-            <h3>{{offer.available}} place disponible</h3>
+            <h3>{{nbrePlace}} place disponible</h3>
         {% endif %}
         <a href="{{path('offer_coming', {id:offer.id})}}">Demander à se faire livrer par cette personne</a>
     </div>

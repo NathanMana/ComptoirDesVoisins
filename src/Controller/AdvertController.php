@@ -26,7 +26,7 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/annonces", name="adverts")
+     * @Route("/demandes", name="adverts")
      */
     public function adverts(AdvertRepository $advertRepo, Request $request){
         
@@ -60,8 +60,8 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/creation/sefairelivrer", name="create_my_advert")
-     * @Route("/mesannonces/modification/sefairelivrer/{id}", name="edit_advert")
+     * @Route("/mesdemandes/creation/sefairelivrer", name="create_advert")
+     * @Route("/mesdemandes/modification/sefairelivrer/{id}", name="edit_advert")
      */
     public function creation_or_edit_my_advert(Advert $advert = null, Request $request, EntityManagerInterface $manager){
         if(!$advert){
@@ -111,7 +111,7 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/suppression/{id}", name="delete_advert")
+     * @Route("/mesdemandes/suppression/{id}", name="delete_advert")
      */
     public function delete_advert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getUser() && !$advert->getDeliverer()){
@@ -124,7 +124,7 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/annulation/{id}", name="cancel_advert")
+     * @Route("/mesdemandes/annulation/{id}", name="cancel_advert")
      */
     public function cancel_advert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getUser() && $advert->getDeliverer()){
@@ -148,7 +148,7 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/annonce/{id}", name="advert_information")
+     * @Route("/demandes/{id}", name="advert_information")
      */
     public function advert_information(Advert $advert){
         if($advert->getDeliverer() !== null){
@@ -159,9 +159,38 @@ class AdvertController extends AbstractController
             ]);
         }
     }
+
+    /**
+     * @Route("/mesdemandes/{id}", name="information_for_creator_advert")
+     */
+    public function information_for_creator(Advert $advert)
+    {
+        if($this->getUser() === $advert->getUser()){
+            return $this->render("cdv/adverts/information_for_creator.html.twig", [
+                'advert'=>$advert
+            ]);
+        } else {
+            throw $this->createNotFoundException('Cette demande n\'existe pas');
+        }
+    }
+
+    /**
+     * @Route("/meslivraisons/demandes/{id}", name="information_for_deliverer_advert")
+     */
+    public function information_for_deliverer(Advert $advert)
+    {
+        if($this->getUser() === $advert->getDeliverer()){
+            return $this->render("cdv/adverts/information_for_deliverer.html.twig", [
+                'advert'=>$advert
+            ]);
+        } else {
+            throw $this->createNotFoundException('Cette demande n\'existe pas');
+        }
+    }
+
     
     /**
-     * @Route("/annonce/{id}/livraison", name="delivery")
+     * @Route("/demandes/{id}/livraison", name="delivery")
      */
     public function delivery(Advert $advert, EntityManagerInterface $manager){
         if($advert->getDeliverer() === null && $advert->getUser() !== $this->getUser()){
@@ -185,7 +214,7 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/meslivraisons/annulation/{id}", name="confirm_cancellation_advert")
+     * @Route("/mesdemandes/annulation/{id}", name="confirm_cancellation_advert")
      */
     public function confirm_cancellation_advert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getDeliverer()){
@@ -206,7 +235,7 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/mesannonces/reception/{id}", name="given_advert")
+     * @Route("/mesdemandes/reception/{id}", name="given_advert")
      */
     public function given_advert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getUser()){
@@ -215,7 +244,7 @@ class AdvertController extends AbstractController
             $advert->getDeliverer()->setPoints($points);
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("my_adverts");
+            return $this->redirectToRoute("my_deliveries");
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }

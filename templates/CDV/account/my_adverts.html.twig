@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes annonces{% endblock %}
+
+{% block body %}
+
+    <h1>Mes annonces</h1>
+    <p>Vous retrouverez sur cette page toutes vos demandes d'aide. Une demande d'aide est une annonce publique où vous indiquez vos besoins. Une personne peut récupérer votre annonce et rentrer en contact avez vous.</p>
+
+    <a href="{{path('create_advert')}}">Créer une annonce</a>
+
+    {% if myAdverts is not empty %} 
+        {% for item in myAdverts %}
+            <div class="card">
+                <h2>Demande de livraison du {{item.createdAt | date("j F Y")}}</h2>
+                <h2>{{item.city}}</h2>
+                {% if item.deliverer %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                    <h3 style="color:red">{{item.deliverer.name}} est votre voisin !</h3>
+                    <h3>Livraison prévue à {{item.city}}</h3>
+
+                    <a href="{{path('information_for_creator_advert', {id:item.id})}}">Voir l'annonce</a>
+
+                    {% if not item.cancellation %}
+                        <a href="{{path('cancel_advert', {id:item.id})}}">Annuler la livraison</a>
+                    {% endif %}
+                    <a href="{{path('given_advert', {id:item.id})}}">J'ai reçu ma livraison (cette action entrainera la suppression de votre annonce)</a>
+                {% else %}
+                    <a href="{{path('information_for_creator_advert', {id:item.id})}}">Voir l'annonce</a>
+                    <a href="{{path('delete_advert', {id:item.id})}}">Supprimer cette annonce</a>
+                    <a href="{{path('edit_advert', {id:item.id})}}">Modifier cette annonce</a>
+                {% endif %}
+                {% if item.cancellation %}
+                    <h5 style="color:green">Annulation en cours. En attente de la confirmation du voisin</h5>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pas créé de demande pour le moment</p>       
+    {% endif %}
+{% endblock %}

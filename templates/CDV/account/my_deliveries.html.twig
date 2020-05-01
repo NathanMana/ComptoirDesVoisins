@@ -1,0 +1,92 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes livraisons{% endblock %}
+
+{% block body %}
+
+    <h1>Mes livraisons</h1>
+    <p>Vous retrouverez ici toutes vos livraisons prévues. Que vous soyez le livreur ou le livré.</p>
+
+    {% if myDeliveriesForAdvert is not empty %}
+        {% for item in myDeliveriesForAdvert %}
+            <div class="card">
+                <h2>Vous livrez</h2>
+
+                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                
+                <h2>{{item.user.name}}</h2>
+                <h3>A {{item.city}}</h3>
+
+                <a href="{{path('information_for_deliverer_advert', {id:item.id})}}">Voir l'annonce</a>
+
+                {% if item.cancellation %}
+                    <h5 style="color:green">Votre contact a demandé à supprimer cette annonce, confirmez-vous la suppression ?</h5>
+                    <a href="{{path('confirm_cancellation_advert', {id:item.id})}}">Je confirme l'annulation de cette annonce</a>
+                    <a href="#">Signaler un abus</a>
+                {% endif %} 
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pris en charge aucune demande</p>
+    {% endif %} 
+
+    {% if myAdvertsWithDeliverer is not empty %} 
+        {% for item in myAdvertsWithDeliverer %}
+            <div class="card">
+                <h2>Votre demande d'aide du {{item.createdAt | date("j F Y")}} à trouvé un voisin !</h2>
+                
+                <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="">  
+                <h3 style="color:red">{{item.deliverer.name}} est votre livreur !</h3>
+                <h3>Livraison prévue à {{item.city}}</h3>
+
+                <a href="{{path('information_for_creator_advert', {id:item.id})}}">Voir l'annonce</a>
+
+                {% if not item.cancellation %}
+                    <a href="{{path('cancel_advert', {id:item.id})}}">Annuler la demande</a>
+                {% endif %}
+                <a href="{{path('given_advert', {id:item.id})}}">J'ai reçu ma livraison</a>
+                {% if item.cancellation %}
+                    <h5 style="color:green">Vous avez demandé à annuler la réservation, votre contact doit en faire de même pour que celle-ci soit définitivement supprimée</h5>
+                {% endif %} 
+            </div>
+        {% endfor %}     
+    {% endif %}
+
+    {% if myOffersWithClient is not empty %} 
+        {% for item in myOffersWithClient %}
+            <div class="card" style="background:green">
+                <h2>Offre de livraison du {{item.dateDelivery | date("j F Y")}} à {{item.citiesDelivery}}</h2>
+                <h2>{{item.groceryType}}</h2>
+                <h2>{{item.available}} voisin(s) à livrer</h2>
+
+                {% if item.limited - item.available != 0 %}
+                    <h2>{{item.limited - item.available}} place(s) disponible(s)</h2>
+                {% else %}
+                    <h2>Votre offre est complète</h2>
+                {% endif %}
+
+                <a href="{{path('information_for_creator', {id:item.id})}}">Voir l'offre</a>
+                <a href="{{path('edit_offer', {id:item.id})}}">Modifier l'offre</a>
+                <a href="{{path('delete_offer', {id:item.id})}}">Supprimer l'offre</a>
+            </div>
+        {% endfor %}     
+    {% endif %}
+
+    {% if ClientOfOffer is not empty %} 
+        {% for item in ClientOfOffer %}
+            <div class="card" style="background:yellow">
+                <h2>Livraison du {{item.dateDelivery | date("j F Y")}} à {{item.citiesDelivery}}</h2>
+
+                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                <h2>{{item.user.name}} est votre livreur</h2>
+                {% if item.user.points > 0 %}
+                    <span>{{item.user.points}} livraison(s) effectuée(s)</span>
+                {% endif %}
+                <h2>{{item.groceryType}}</h2>
+                <a href="{{path('information_for_client', {id:item.id})}}">Voir l'offre</a>
+                <a href="{{path('delete_offer', {id:item.id})}}">Supprimer l'offre de mes livraisons</a>
+            </div>
+        {% endfor %}     
+    {% endif %}
+
+{% endblock %}

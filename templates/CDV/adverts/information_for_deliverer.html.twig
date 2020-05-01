@@ -1,0 +1,31 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Informations sur ma livraison{% endblock %}
+
+{% block body %}
+
+    <h1>Vous livrez</h1>
+
+    <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="">  
+    <h2>{{advert.user.name}}</h2>
+    <h2>
+        {% if advert.communication %}
+            Tel : {{advert.user.phone}}
+        {% else %}
+            Mail : {{advert.user.email}}
+        {% endif %}
+    </h2>
+
+    <h3>Livraison prévue à {{advert.city}}</h3>
+
+    <p>Son message : {{advert.message}}</p>
+    
+    {% if advert.cancellation %}
+        <h5 style="color:green">Votre voisin a demandé à supprimer cette annonce, confirmez-vous la suppression ?</h5>
+        <a href="{{path('confirm_cancellation_advert', {id:advert.id})}}">Je confirme l'annulation de cette annonce</a>
+        <a href="#">Signaler un abus</a>
+    {% endif %} 
+
+    <a href="{{path('my_deliveries')}}">Retourner à mes livraisons</a>
+
+{% endblock %}

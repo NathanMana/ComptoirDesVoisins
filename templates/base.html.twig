@@ -28,7 +28,8 @@
                         <li><a href="{{path('offers')}}">Offres de livraison</a></li>
                         <li><a href="{{path('adverts')}}">Demandes de livraison</a></li>
                         {% if app.user %}
-                            <li><a href="{{path('my_adverts')}}">Mes annonces</a></li>
+                            <li><a href="{{path('my_adverts')}}">Mes demandes</a></li>
+                            <li><a href="{{path('my_offers')}}">Mes offres</a></li>
                             <li><a href="{{path('my_deliveries')}}">Mes livraisons</a></li>
                             <li><a href="{{path('choice_advert')}}">Créer une annonce / offre</a></li>
                             <li>Bonjour {{app.user.name}}</li>

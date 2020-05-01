@@ -1,0 +1,32 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Informations sur la livraison{% endblock %}
+
+{% block body %}
+
+    <h1>Livraison du {{offer.dateDelivery | date("j F Y")}} à {{offer.citiesDelivery}}</h1>
+
+    <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+
+    <h2>{{offer.user.name}} est votre livreur</h2>
+
+    {% if offer.user.points > 0 %}
+        <span>{{offer.user.points}} livraison(s) effectuée(s)</span>
+    {% endif %}
+
+    <h3>
+        {% if offer.communication %}
+            Tel : {{offer.user.phone}}
+        {% else %}
+            Mail : {{offer.user.mail}}
+        {% endif %}
+    </h3>
+    
+    <h2>{{offer.groceryType}}</h2>
+
+    <p>Son message : {{offer.message}}</p>
+
+    <a href="{{path('delete_offer', {id:offer.id})}}">Supprimer l'offre de mes livraisons</a>
+    <a href="{{path('my_deliveries')}}">Revenir à mes livraisons</a>    
+
+{% endblock %}
