@@ -22,7 +22,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * )
  * @Vich\Uploadable()
  */
-class User implements UserInterface
+class User implements UserInterface, Serializable
 {
     /**
      * @ORM\Id()
@@ -151,6 +151,9 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity="App\Entity\Offer", mappedBy="clients")
      */
     private $clientOffers;
+
+    private $username;
+    private $salt;
 
     public function __construct()
     {
@@ -322,7 +325,8 @@ class User implements UserInterface
 
     public function getSalt()
     {
-        
+        $this->salt = null;
+        return  $this->salt;
     }
 
     public function getRoles():array
@@ -332,7 +336,8 @@ class User implements UserInterface
 
     public function getUsername()
     {
-        return $this->name;
+        $this->username = $this->getName();
+        return $this->username;
     }
 
     /**
@@ -521,5 +526,28 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->name,
+            $this->salt,
+            $this->password
+        ));
+    }
+
+    /**
+     * @see \Serializable::unserialize()
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->name,
+            $this->salt,
+            $this->password
+        ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 }
