@@ -29,8 +29,8 @@ class AccountController extends AbstractController
     /**
      * @Route("/mesoffres", name="my_offers")
      */
-    public function my_offers(){
-        $myOffers = $this->getUser()->getOffers();
+    public function my_offers(OfferRepository $offerRepository){
+        $myOffers = $offerRepository->findBy(['user'=>$this->getUser()], ['dateDelivery'=>'DESC']);
         return $this->render("cdv/account/my_offers.html.twig", [
             "myOffers"=>$myOffers
         ]);
@@ -39,9 +39,8 @@ class AccountController extends AbstractController
     /**
      * @Route("/mesdemandes", name="my_adverts")
      */
-    public function my_adverts(){
-        $myAdverts = $this->getUser()->getMyAdverts();
-        
+    public function my_adverts(AdvertRepository $advertRepository){
+        $myAdverts = $advertRepository->findBy(['user'=>$this->getUser()], ['createdAt'=>'DESC']);
         
         return $this->render("cdv/account/my_adverts.html.twig", [
             "myAdverts"=>$myAdverts

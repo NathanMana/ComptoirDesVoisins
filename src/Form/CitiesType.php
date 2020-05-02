@@ -2,30 +2,26 @@
 
 namespace App\Form;
 
-use App\Entity\Advert;
+use App\Data\Cities;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AdvertCreationType extends AbstractType
+class CitiesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add("city")
-            ->add('message')
-            ->add('codeCity', HiddenType::class, [
-                'required'=>true
-            ])
+            ->add("city", HiddenType::class)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Advert::class,
+            'data_class' => Cities::class,
         ]);
     }
 }

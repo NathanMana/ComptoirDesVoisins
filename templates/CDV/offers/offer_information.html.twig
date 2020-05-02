@@ -8,7 +8,11 @@
         <h2>Livraison du {{offer.dateDelivery | date("j F Y")}} à {{offer.dateDelivery | date("H:i")}}</h2>
         <h5>{{offer.citiesDelivery}}</h5>
 
-        <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+        {% if offer.user.filename %}
+            <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+        {% else %}
+            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+        {% endif %}
 
         <h3>{{offer.user.name}}</h3>
         {% if offer.user.points > 0 %}

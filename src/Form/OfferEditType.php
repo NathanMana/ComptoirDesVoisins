@@ -34,13 +34,6 @@ class OfferEditType extends AbstractType
                     4=>4
                 ]
             ])
-            ->add('communication', ChoiceType::class, [
-                "choices"=>[
-                    "Téléphone"=>true,
-                    "Email"=>false
-                ],
-                "required"=>true
-            ])
         ;
     }
 

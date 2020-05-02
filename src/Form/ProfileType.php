@@ -18,9 +18,6 @@ class ProfileType extends AbstractType
             ->add('lastname', TextType::class, [
                 'required'=>false
             ])
-            ->add('code_city', HiddenType::class, [
-                "required"=>true
-            ])
             ->add('city', TextType::class, [
                 'required'=>false
             ])
@@ -28,6 +25,9 @@ class ProfileType extends AbstractType
                 'required'=>false
             ])
             ->add('imageFile', FileType::class, [
+                'required'=>false
+            ])
+            ->add('codeCity', HiddenType::class, [
                 'required'=>false
             ])
         ;

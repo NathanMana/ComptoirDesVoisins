@@ -40,7 +40,12 @@
                     <span>Il y a {{ leftDays }} jours</span>
                 {% endif %}   
 
-                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %}
+
                 <h3>{{item.user.name}}</h3>
                 <h5>{{item.city}}</h5>
                 <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>

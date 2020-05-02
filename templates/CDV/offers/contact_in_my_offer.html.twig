@@ -11,7 +11,11 @@
     {% for item in myOffer.clients %}
         <div class="cadre" style="width: 40%">
 
-            <img src="{{vich_uploader_asset(item, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+            {% if item.filename %}
+                <img src="{{vich_uploader_asset(item, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+            {% else %}
+                <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+            {% endif %} 
             <h3>{{item.name}}</h3>
             <h4>Vous pouvez contacter cette personne via téléphone au {{item.phone}}</h4>
             

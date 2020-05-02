@@ -12,7 +12,11 @@
             <div class="card">
                 <h2>Vous livrez</h2>
 
-                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %}
                 
                 <h2>{{item.user.name}}</h2>
                 <h3>A {{item.city}}</h3>
@@ -35,7 +39,12 @@
             <div class="card">
                 <h2>Votre demande d'aide du {{item.createdAt | date("j F Y")}} à trouvé un voisin !</h2>
                 
-                <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="">  
+                {% if item.deliverer.filename %}
+                    <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %} 
+
                 <h3 style="color:red">{{item.deliverer.name}} est votre livreur !</h3>
                 <h3>Livraison prévue à {{item.city}}</h3>
 
@@ -77,7 +86,12 @@
             <div class="card" style="background:yellow">
                 <h2>Livraison du {{item.dateDelivery | date("j F Y")}} à {{item.citiesDelivery}}</h2>
 
-                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %}
+                
                 <h2>{{item.user.name}} est votre livreur</h2>
                 {% if item.user.points > 0 %}
                     <span>{{item.user.points}} livraison(s) effectuée(s)</span>

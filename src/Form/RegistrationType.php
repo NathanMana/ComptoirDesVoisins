@@ -20,9 +20,6 @@ class RegistrationType extends AbstractType
             ->add('email')
             ->add('name')
             ->add('lastname')
-            ->add('code_city', HiddenType::class, [
-                'required'=>true
-            ])
             ->add('city')
             ->add('phone', TelType::class)
             ->add('imageFile', FileType::class, [
@@ -30,6 +27,7 @@ class RegistrationType extends AbstractType
             ])
             ->add('password', PasswordType::class)
             ->add('confirm_password', PasswordType::class)
+            ->add('codeCity', HiddenType::class)
         ;
     }
 

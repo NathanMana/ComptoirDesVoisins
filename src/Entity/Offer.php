@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OfferRepository")
@@ -19,14 +20,24 @@ class Offer
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Regex("/^[^<>#§µ]+$/",
+     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
     private $citiesDelivery;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @Assert\Length(
+     *                 min="5", max="5", 
+     *                 minMessage = "Rentrez une ville valide",
+     *                 maxMessage = "Rentrez une ville valide"
+     * )
+     * @Assert\Regex(
+     *              "/^[0-9]+$/",
+     *              message="Rentrez une ville valide"
+     * )
      */
-    private $code_cities;
+    private $codeCities;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -52,11 +63,6 @@ class Offer
      * @ORM\Column(type="smallint")
      */
     private $limited;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $communication;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="offers")
@@ -89,21 +95,21 @@ class Offer
         return $this->citiesDelivery;
     }
 
-    public function setCitiesDelivery(string $citiesDelivery): self
+    public function setCitiesDelivery(?string $citiesDelivery): self
     {
         $this->citiesDelivery = $citiesDelivery;
 
         return $this;
     }
 
-    public function getCodeCities(): ?int
+    public function getCodeCities(): ?string
     {
-        return $this->code_cities;
+        return $this->codeCities;
     }
 
-    public function setCodeCities(string $code_cities): self
+    public function setCodeCities(string $codeCities): self
     {
-        $this->code_cities = $code_cities;
+        $this->codeCities = $codeCities;
 
         return $this;
     }
@@ -164,18 +170,6 @@ class Offer
     public function setLimited(int $limited): self
     {
         $this->limited = $limited;
-
-        return $this;
-    }
-
-    public function getCommunication(): ?bool
-    {
-        return $this->communication;
-    }
-
-    public function setCommunication(bool $communication): self
-    {
-        $this->communication = $communication;
 
         return $this;
     }

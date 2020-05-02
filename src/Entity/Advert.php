@@ -43,24 +43,28 @@ class Advert
     /**
      * @ORM\Column(type="boolean")
      */
-    private $communication;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
     private $Cancellation;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\Regex("/^[^<>#§µ]+$/",
      *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
     private $City;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @Assert\Length(
+     *                 min="5", max="5", 
+     *                 minMessage = "Rentrez une ville valide",
+     *                 maxMessage = "Rentrez une ville valide"
+     * )
+     * @Assert\Regex(
+     *              "/^[0-9]+$/",
+     *              message="Rentrez une ville valide"
+     * )
+     * @ORM\Column(type="string",length=5, nullable=false)
      */
-    private $code_city;
+    private $codeCity;
 
     public function getId(): ?int
     {
@@ -115,18 +119,6 @@ class Advert
         return $this;
     }
 
-    public function getCommunication(): ?bool
-    {
-        return $this->communication;
-    }
-
-    public function setCommunication(bool $communication): self
-    {
-        $this->communication = $communication;
-
-        return $this;
-    }
-
     public function getCancellation(): ?bool
     {
         return $this->Cancellation;
@@ -144,21 +136,21 @@ class Advert
         return $this->City;
     }
 
-    public function setCity(string $City): self
+    public function setCity(?string $City): self
     {
         $this->City = $City;
 
         return $this;
     }
 
-    public function getCodeCity(): ?int
+    public function getCodeCity(): ?string
     {
-        return $this->code_city;
+        return $this->codeCity;
     }
 
-    public function setCodeCity(string $code_city): self
+    public function setCodeCity(string $codeCity): self
     {
-        $this->code_city = $code_city;
+        $this->codeCity = $codeCity;
 
         return $this;
     }

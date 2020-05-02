@@ -27,7 +27,11 @@
 
             <div class="card">
 
-                <img src="{{vich_uploader_asset(client, 'imageFile')}}" alt="">  
+                {% if client.filename %}
+                    <img src="{{vich_uploader_asset(client, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %} 
                 <h3>{{client.name}}</h3>
                 <h4>Tel : {{client.phone}}</h4>
                 

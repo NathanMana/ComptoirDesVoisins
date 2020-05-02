@@ -7,11 +7,10 @@ use App\Data\SearchData;
 use App\Form\SearchType;
 use App\Entity\Notification;
 use App\Form\AdvertCreationType;
-use App\Repository\OfferRepository;
 use App\Repository\AdvertRepository;
 use App\Service\GeoApi;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpClient\HttpClient;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,33 +80,43 @@ class AdvertController extends AbstractController
         if($checkUser){
             $form = $this->createForm(AdvertCreationType::class, $advert);
             $form->handleRequest($request);
+
             if($form->isSubmitted() && $form->isValid()){
+
                 $apiGeo = new GeoApi();
                 $response = $apiGeo->RequestApi("code", $advert->getCodeCity())->toArray();
 
-                if($response[0]['nom']." (".$response[0]['codeDepartement'].")" === $advert->getCity()){ //On vérifie si le front et le bac ont les mêmes infos
-                    if(!$advert->getId()){                      //Si on créer l'annonce
-                        $advert->setCreatedAt(new \Datetime)
-                            ->setUser($this->getUser())
-                            ->setCancellation(false);
-                    } else {            //Si on modifie l'annonce
-                        $advert->setCreatedAt(new \Datetime);
-                    }
-                } else {
-                    throw new \Exception("Veuillez sélectionner une ville valide");
-                }
+                if($response && $response[0]['nom']." (".$response[0]['codeDepartement'].")" === $advert->getCity()) {
 
+                    if(!$advert->getId()){     
+                                         //Si on créer l'annonce
+                        $advert ->setCreatedAt(new \Datetime)
+                                ->setUser($this->getUser())
+                                ->setCancellation(false);
+
+                    } else {                                    //Si on modifie l'annonce
+                        $advert ->setCreatedAt(new \Datetime);
+                    }
+
+                } else {
+                    throw new Exception('Veuillez entrer une ville valide');
+                }
+                
                 $manager->persist($advert);
                 $manager->flush();
-    
+
                 return $this->redirectToRoute('my_adverts');
+
             }
+    
+            return $this->render("cdv/adverts/advert_creation.html.twig",[
+                "form"=>$form->createView(),
+                "editing"=>$advert->getId() !== null
+            ]);
+        } else {
+            throw $this->createNotFoundException();
         }
 
-        return $this->render("cdv/adverts/advert_creation.html.twig",[
-            "form"=>$form->createView(),
-            "editing"=>$advert->getId() !== null
-        ]);
     }
 
     /**

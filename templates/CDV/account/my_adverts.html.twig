@@ -15,7 +15,12 @@
                 <h2>Demande de livraison du {{item.createdAt | date("j F Y")}}</h2>
                 <h2>{{item.city}}</h2>
                 {% if item.deliverer %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                    {% if item.deliverer.filename %}
+                        <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                    {% else %}
+                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                    {% endif %}
+                
                     <h3 style="color:red">{{item.deliverer.name}} est votre voisin !</h3>
                     <h3>Livraison prévue à {{item.city}}</h3>
 

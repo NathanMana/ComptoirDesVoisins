@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Data\Cities;
 use App\Entity\User;
+use App\Entity\Advert;
 use App\Service\GeoApi;
+use App\Form\CitiesType;
 use App\Form\ProfileType;
 use App\Data\ChangePassword;
 use App\Entity\Notification;
@@ -13,7 +16,10 @@ use App\Form\ResetPasswordType;
 use App\Form\ChangePasswordType;
 use App\Repository\UserRepository;
 use App\Form\ForgottenPasswordType;
+use App\Repository\AdvertRepository;
+use App\Repository\OfferRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,10 +43,10 @@ class SecurityController extends AbstractController
                 $apiGeo = new GeoApi();
                 $response = $apiGeo->RequestApi("code", $user->getCodeCity())->toArray();
 
-                if($response[0]['nom']." (".$response[0]['codeDepartement'].")" === $user->getCity()){
+
+                if($response && $response[0]['nom']." (".$response[0]['codeDepartement'].")" === $user->getCity()){
                     $hash = $encoder->encodePassword($user, $user->getPassword());
                     $user   ->setPassword($hash)
-                            ->setCity($response[0]["nom"] . ' ('.$response[0]["codeDepartement"].')')
                             ->setPoints(0)
                             ->setUpdatedAt(new \DateTime);
                     if(empty($user->getFilename())){
@@ -188,7 +194,8 @@ class SecurityController extends AbstractController
                 $apiGeo = new GeoApi();
                 $response = $apiGeo->RequestApi("code", $user->getCodeCity())->toArray();
     
-                if($response[0]['nom']." (".$response[0]['codeDepartement'].")" === $user->getCity()){
+                if($response && $response[0]['nom']." (".$response[0]['codeDepartement'].")" === $user->getCity())
+                {
                     $manager->persist($user);
                     $manager->flush();
                 }
@@ -228,6 +235,4 @@ class SecurityController extends AbstractController
             throw $this->createNotFoundException('Cette page n\'existe pas');
         }
     }
-
-    
 }

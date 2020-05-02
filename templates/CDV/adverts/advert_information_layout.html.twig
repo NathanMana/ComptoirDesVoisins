@@ -18,7 +18,11 @@
         {% endif %}   
         <h2>Demande de </h2>
         
-        <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+        {% if advert.user.filename %}
+            <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+        {% else %}
+            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+        {% endif %}
 
         <h3>{{advert.user.name}}</h3>
         <h5>{{advert.city}}</h5>

@@ -29,7 +29,8 @@ class OfferRepository extends ServiceEntityRepository
     {   
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.available <= p.limited");
+            ->andWhere("p.available <= p.limited")
+            ->orderBy('p.dateDelivery','ASC');
         
         if(!empty($search->q)){
             $query = $query 

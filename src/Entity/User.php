@@ -59,6 +59,20 @@ class User implements UserInterface, Serializable
     private $city;
 
     /**
+     * @Assert\Length(
+     *                 min="5", max="5", 
+     *                 minMessage = "Rentrez une ville valide",
+     *                 maxMessage = "Rentrez une ville valide"
+     * )
+     * @Assert\Regex(
+     *              "/^[0-9]+$/",
+     *              message="Rentrez une ville valide"
+     * )
+     * @ORM\Column(type="string",length=5, nullable=false)
+     */
+    private $codeCity;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex("/^[0-9\s]+$/")
      * @Assert\Length(min="10",
@@ -138,11 +152,6 @@ class User implements UserInterface, Serializable
     private $notifications;
 
     /**
-     * @ORM\Column(type="string", length=10)
-     */
-    private $codeCity;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Offer", mappedBy="user", orphanRemoval=true)
      */
     private $offers;
@@ -213,6 +222,18 @@ class User implements UserInterface, Serializable
     public function setCity(string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getCodeCity(): ?string
+    {
+        return $this->codeCity;
+    }
+
+    public function setCodeCity(string $codeCity): self
+    {
+        $this->codeCity = $codeCity;
 
         return $this;
     }
@@ -453,18 +474,6 @@ class User implements UserInterface, Serializable
                 $notification->setUser(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCodeCity(): ?string
-    {
-        return $this->codeCity;
-    }
-
-    public function setCodeCity(string $codeCity): self
-    {
-        $this->codeCity = $codeCity;
 
         return $this;
     }

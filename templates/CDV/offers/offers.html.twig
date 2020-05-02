@@ -29,7 +29,11 @@
         {% for item in offers %}
             <div class="card">
 
-                <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %} 
                 <h3>{{item.user.name}}</h3>
                 {% if item.user.points > 0 %}
                     <span>{{item.user.points}} livraison(s) effectuée(s)</span>

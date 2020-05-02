@@ -66,22 +66,21 @@ class OfferController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
 
             $apiGeo = new GeoApi();
-            $response = $apiGeo->RequestApi("code", $offer->getCodeCities())->toArray();        
-
-            if($response[0]['nom']." (".$response[0]['codeDepartement'].")" === $offer->getCitiesDelivery()){ //On vérifie si le front et le back ont les mêmes infos
-                if(!$offer->getId()){                      //Si on créer l'annonce
-                    $offer  ->setUser($this->getUser())
-                            ->setAvailable(0)
-                            ->setCreatedAt(new \DateTime());
-                }
+            $response = $apiGeo->RequestApi("code", $offer->getCodeCities())->toArray();  
+            
+            if($response && $response[0]['nom']." (".$response[0]['codeDepartement'].")" === $offer->getCitiesDelivery()){
+                $offer  ->setUser($this->getUser())
+                        ->setAvailable(0)
+                        ->setCreatedAt(new \DateTime());
             } else {
-                throw new \Exception("Veuillez sélectionner une ville valide");
+                throw new Exception("Veuillez entrer une ville valide");
             }
 
             $manager->persist($offer);
             $manager->flush();
 
             return $this->redirectToRoute("my_offers");
+
         }
 
         return $this->render('cdv/offers/offer_creation.html.twig', [
