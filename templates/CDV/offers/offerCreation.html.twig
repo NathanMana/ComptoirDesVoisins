@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Créer ma course{% endblock %}
+
+{% block body %}
+
+    <h1>Créer ma course</h1>
+
+    {{form_start(form)}}
+
+    {{form_row(form.groceryType, {'label': 'Type de course que vous effectuez'})}}
+    {{form_row(form.dateDelivery, {'label': 'Date'})}}
+    {{form_row(form.citiesDelivery, {'label': 'Ville où vous livrez'})}}
+    <div class="btn-city">Trouver ma ville</div>
+    <div class="proposition">
+        <table>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="error"></div>
+    </div>
+    {{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Information supplémentaire, condition, prix maximal par personne, etc..'}})}}
+    {{form_row(form.limited, {'label': 'Combien de personnes pouvez-vous livrer ?'})}}
+
+    <button type="submit">Créer ma course</button>
+    {{form_end(form)}}
+
+{% endblock %}

@@ -25,14 +25,14 @@ $(document).ready(function(){
         cityInput = $('#registration_city');
     } else if (h1 === "Profil") {
         cityInput = $('#profile_city');
-    } else if (h1 === "Créer mon annonce") {
+    } else if (h1 === "Créer ma demande") {
         cityInput = $('#advert_creation_city');
-    } else if (h1 === "Création de mon annonce"){
+    } else if (h1 === "Créer ma course"){
         cityInput = $('#offer_creation_citiesDelivery');
+        console.log("in shine");
     }
 
     $('.btn-city').click(function(){
-        
         let cityName = $(cityInput).val();
         let url = apiUrl + cityName + format;
         fetch(url, {method: "get"}).then(response=>response.json()).then(results => {
@@ -51,10 +51,10 @@ $(document).ready(function(){
                     } else if (h1 === "Inscription") {
                         $('#registration_city').val(CityValue);
                         $('#registration_codeCity').val(CityCode);
-                    } else if (h1 === "Créer mon annonce"){
+                    } else if (h1 === "Créer ma demande"){
                         $('#advert_creation_city').val(CityValue);
                         $('#advert_creation_codeCity').val(CityCode);
-                    } else if (h1 === "Création de mon annonce"){
+                    } else if (h1 === "Créer ma course"){
                         $('#offer_creation_citiesDelivery').val(CityValue);
                         $('#offer_creation_codeCities').val(CityCode);
                     }            
@@ -75,5 +75,4 @@ $(document).ready(function(){
         $('tbody').empty();
     });
 
-    
 })

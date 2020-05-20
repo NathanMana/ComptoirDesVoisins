@@ -12,7 +12,7 @@ a{
 }
 
 html{
-  font-size: 10px;
+  font-size: 0.5em;
   scroll-behavior: smooth;
 }
 
@@ -363,4 +363,180 @@ label {
 .card h5,
 .card a {
     font-size: 3em;
+}
+
+table {
+  width: 100%!important;
+}
+
+.container-calendar {
+  width: 300px;
+  display: block;
+  margin: 0 auto;
+  border : 1px solid #4b4949;
+}
+
+.container-calendar .title-calendar {
+  width: 100%;
+  text-align: center;
+  padding: 0.5em 0;
+  border-bottom: 1px solid #4b4949;
+}
+
+#calendar {
+  width: 100%;
+  height: auto;
+  color : #111;
+}
+
+.fc-header-toolbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 1.5em 0;
+}
+
+.fc button {
+  width: 16px;
+  height : 16px;
+}
+
+.fc-left,
+.fc-right,
+.fc-center {
+  text-align: center;
+}
+
+.fc-list-heading {
+  background : #E4E0E0;
+  padding: 0.6em 0;
+}
+
+.select-creation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.select-creation a {
+  padding: 10px;
+  background: #3F5496;
+  color:#fff;
+  margin: 10px;
+  font-size: 2em;
+}
+
+.board {
+  margin: 10px 3em;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.my-informations {
+  flex : 1 1 700px;
+  display: block;
+  margin: 10px;
+}
+
+.exchange {
+  display: block;
+  width: 100%;
+}
+
+.exchange-legend  {
+  width: 100%;
+  font-size: 1em;
+  display: inline-block;
+  border: 1px solid #111;
+}
+
+.exchange-legend__legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.exchange-legend__legend div {
+  font-size: 2em;
+  margin: 10px;
+}
+
+.schedule {
+  flex : 0 0 400px;
+  display: block;
+  background: green;
+}
+
+.exchange-items {
+  width: 100%;
+  margin: 10px 0;
+  display: block;
+}
+
+.item {
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  background: #3F5496;
+  color:#fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.message {
+  display: block;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.floating-message 
+{
+  position: absolute;
+  background: #fff;
+  bottom: 0;
+  width: 100%;
+  padding: 1.5em;
+  -webkit-box-shadow: -4px -6px 24px -13px rgba(0,0,0,0.75);
+  -moz-box-shadow: -4px -6px 24px -13px rgba(0,0,0,0.75);
+  box-shadow: -4px -6px 24px -13px rgba(0,0,0,0.75);
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+}
+
+.col-12 {
+  flex : 1 1 100%;
+  margin: 10px;
+}
+
+.col-6 {
+  flex: 1 0 300px;
+  margin: 10px;
+}
+
+.small-img {
+  width : 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.default-color-1 {
+  color:#3F5496;
+}
+
+.default-color-2 {
+  color:#46111B;
 }

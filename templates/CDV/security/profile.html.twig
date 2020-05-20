@@ -12,14 +12,11 @@
         <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
     {% endif %}
 
-    <a href="{{path('change_password')}}">Changer le mot de passe</a>
+    <a href="{{path('changePassword')}}">Changer le mot de passe</a>
     <a href="{{path('notifications')}}">Voir les notifications</a>
 
     {{form_start(form)}}
     <fieldset>
-        <div class="form-group">
-            {{form_row(form.lastname, {'label': 'Nom de famille', 'attr': {'placeholder':'Nom de famille'}} )}}
-        </div>    
         <div class="form-group">
             {{form_row(form.city, {'label': 'Ville', 'attr': {'placeholder':'Ville où vous habitez'}})}}
         </div>  
@@ -41,6 +38,6 @@
     </fieldet>
     {{form_end(form)}}
 
-    <a href="{{path('delete_account', {id:app.user.id})}}" style="font-size:2em;color:red">Supprimer le compte</a>
+    <a href="{{path('deleteAccount', {id:app.user.id})}}" style="font-size:2em;color:red">Supprimer le compte</a>
 
 {% endblock %}

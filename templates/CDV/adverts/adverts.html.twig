@@ -1,12 +1,12 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Annonces{% endblock %}
+{% block title %}Demandes de course{% endblock %}
 
 {% block body %}
 
-<h1>Annonces</h1>
+<h1>Demandes de course</h1>
 
-    <a href="{{path('choice_advert')}}">Créer une annonce</a>
+    <a href="{{path('choiceAdvert')}}">Créer ma demande</a>
 
     {{form_start(form)}}
     {{form_row(form.q)}}
@@ -18,7 +18,7 @@
             <table>
                 <tbody>
                 {% for item in propositionsVille %}
-                    <tr><td><a href="/annonces?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                    <tr><td><a href="/demandes?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -48,11 +48,11 @@
 
                 <h3>{{item.user.name}}</h3>
                 <h5>{{item.city}}</h5>
-                <a href="{{path('advert_information', {id:item.id})}}">En savoir plus</a>
+                <a href="{{path('advertInformation', {id:item.id})}}">En savoir plus</a>
             </div>
         {% endfor %}
     {% else %}
-        <p>Il n'y a pas d'annonces</p>
+        <p>Il n'y a pas de demande</p>
     {% endif %}
 
 {% endblock %}

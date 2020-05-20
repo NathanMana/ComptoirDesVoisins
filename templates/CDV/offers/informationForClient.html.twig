@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Informations sur l'échange{% endblock %}
+
+{% block body %}
+
+    <h1>Echange du {{offer.dateDelivery | date("j F Y")}} à {{offer.citiesDelivery}}</h1>
+
+    {% if offer.user.filename %}
+        <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+    {% else %}
+        <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+    {% endif %}
+
+    <h2>{{offer.user.name}} est votre livreur</h2>
+
+    {% if offer.user.points > 0 %}
+        <span>{{offer.user.points}} livraison(s) effectuée(s)</span>
+    {% endif %}
+
+    <h3>Tel : {{offer.user.phone}}</h3>
+    
+    <h2>{{offer.groceryType}}</h2>
+
+    <p>Son message : {{offer.message}}</p>
+
+    <a href="{{path('deleteOffer', {id:offer.id})}}">Supprimer la course de mes échanges</a>
+    <a href="{{path('myDeliveries')}}">Revenir à mes échanges</a>    
+
+{% endblock %}

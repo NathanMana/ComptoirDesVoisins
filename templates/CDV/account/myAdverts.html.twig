@@ -1,0 +1,46 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes demandes de course{% endblock %}
+
+{% block body %}
+
+    <h1>Mes demandes de course</h1>
+    <p>Retrouvez ici, toutes vos demandes de courses.</p>
+
+    <a href="{{path('createAdvert')}}">Créer ma demande de course</a>
+
+    {% if myAdverts is not empty %} 
+        {% for item in myAdverts %}
+            <div class="card">
+                <h2>Demande de livraison du {{item.createdAt | date("j F Y")}}</h2>
+                <h2>{{item.city}}</h2>
+                {% if item.deliverer %}
+                    {% if item.deliverer.filename %}
+                        <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                    {% else %}
+                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                    {% endif %}
+                
+                    <h3 style="color:red">{{item.deliverer.name}} est votre voisin !</h3>
+                    <h3>Livraison prévue à {{item.city}}</h3>
+
+                    <a href="{{path('informationForCreatorAdvert', {id:item.id})}}">Voir la demande</a>
+
+                    {% if not item.cancellation %}
+                        <a href="{{path('cancelAdvert', {id:item.id})}}">Annuler l'échange</a>
+                    {% endif %}
+                    <a href="{{path('givenAdvert', {id:item.id})}}">J'ai reçu ma demande</a>
+                {% else %}
+                    <a href="{{path('informationForCreatorAdvert', {id:item.id})}}">Voir la demande</a>
+                    <a href="{{path('deleteAdvert', {id:item.id})}}">Supprimer cette demande</a>
+                    <a href="{{path('editAdvert', {id:item.id})}}">Modifier cette demande</a>
+                {% endif %}
+                {% if item.cancellation %}
+                    <h5 style="color:green">Annulation en cours. En attente de la confirmation du voisin</h5>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pas créé de demande de course pour le moment</p>       
+    {% endif %}
+{% endblock %}

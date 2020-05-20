@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mes propositions de course{% endblock %}
+
+{% block body %}
+
+    <h1>Mes propositions de course</h1>
+    <p>Retrouvez sur cette page toutes vos propositions de course. Les propositions de course sont des propositions publiques que les autres utilisateurs peuvent rejoindre (dans la limite de place disponible)</p>
+
+    <a href="{{path('offerCreation')}}">Créer une proposition de course</a>
+
+    {% if myOffers is not empty %}
+        {% for item in myOffers %}
+            <div class="card" style="background-color:grey">
+                <h2>Offre de livraison du {{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h2>
+                <h3>{{item.citiesDelivery}}</h3>             	
+                {% set nbrPlace = item.limited - item.available %}
+                {% if item.available != item.limited %}
+                    <h3>{{nbrPlace}} place(s) disponible(s)</h3>
+                {% else %}
+                    <h3>Complet</h3>
+                {% endif %}
+                <a href="{{path('informationForCreator', {id:item.id})}}">Voir la course</a>
+                <a href="{{path('editOffer', {id:item.id})}}">Modifier la course</a>
+                {% if item.clients is not empty %}
+                    <a href="{{path('contactInMyOffer', {id:item.id})}}">Voir mes voisins à livrer</a>
+                {% endif %}
+                <a href="{{path('deleteOffer', {id:item.id})}}">Supprimer la course</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pas créé de proposition de course</p>
+    {% endif %}
+    
+{% endblock %}

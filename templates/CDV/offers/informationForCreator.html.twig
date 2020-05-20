@@ -1,0 +1,48 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Informations sur ma course{% endblock %}
+
+{% block body %}
+
+    <h1>Informations sur ma course</h1>
+
+    <h2>Course du {{offer.dateDelivery | date("j F Y")}}</h2>
+    <h2>Echange prévu à {{offer.citiesDelivery}}</h2>
+
+    <h2>Type de course : {{offer.groceryType}}</h2>
+
+    <p>Votre message : {{offer.message}}</p>
+
+    <h2>{{offer.available}} voisin(s) à livrer</h2>
+    {% if offer.limited - offer.available != 0 %}
+        <h2>{{offer.limited - offer.available}} place(s) disponible(s)</h2>
+    {% else %}
+        <h2>Votre course est complète</h2>
+    {% endif %}
+
+    {% if offer.clients is not empty %}
+
+        <h2>Voisin(s) à livrer :</h2>
+        {% for client in offer.clients %}
+
+            <div class="card">
+
+                {% if client.filename %}
+                    <img src="{{vich_uploader_asset(client, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                {% endif %} 
+                <h3>{{client.name}}</h3>
+                <h4>Tel : {{client.phone}}</h4>
+                <a href="{{path('removeClient', {id:offer.id, user:client.id})}}">Retirer cette personne de ma course</a>
+            </div>
+            
+        {% endfor %}
+
+    {% endif %}
+
+    <a href="{{path('editOffer', {id:offer.id})}}">Modifier la course</a>
+    <a href="{{path('deleteOffer', {id:offer.id})}}">Supprimer la course</a>
+    <a href="{{path('myOffers')}}">Revenir à mes courses</a>
+
+{% endblock %}

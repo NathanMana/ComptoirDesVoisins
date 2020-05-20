@@ -37,6 +37,13 @@ class OfferRepository extends ServiceEntityRepository
                 ->andWhere("p.citiesDelivery LIKE :q")
                 ->setParameter("q", "%{$search->q}%");
         }
+
+        if(!empty($search->groceryType)){
+            $query = $query 
+                ->andWhere("p.groceryType IN (:groceryType)")
+                ->setParameter("groceryType", $search->groceryType);
+        }
+
         return $query->getQuery()->getResult();
     }
 
@@ -52,6 +59,21 @@ class OfferRepository extends ServiceEntityRepository
             ->andWhere("p.user = :user")
             ->andWhere("c is not null")
             ->setParameter("user", $user);
+        
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Récupère seulement les champs nécéssaires à l'affichage dans le calendrier
+     */
+    public function findCalendar(User $user):array
+    {
+        $query = $this  ->createQueryBuilder('p')
+                        ->addSelect('p.id', 'p.dateDelivery', 'p.available')
+                        ->leftjoin ('p.clients','c')
+                        ->andWhere("p.user = :user")
+                        ->andWhere("c is not null")
+                        ->setParameter("user", $user);
         
         return $query->getQuery()->getResult();
     }

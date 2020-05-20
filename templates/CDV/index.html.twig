@@ -3,11 +3,13 @@
 {% block title %}Comptoir des Voisins{% endblock %}
 
 {% block body %}
-
     <section class="main between-sec">
         <h1 class="custom-font">Comptoir Des Voisins</h1>
         <h2 class="custom-font-secondary between-sec-color">Une plateforme basée </br>sur le partage et la solidarité.</h2>
         <a href="{{path('login')}}" class="btn-main main-btn">Commencer</a>
     </section>
+    {% if CGUToValidate %}
+         {{ render(path('CGUValidation')) }}
+    {% endif %}
 
 {% endblock %}

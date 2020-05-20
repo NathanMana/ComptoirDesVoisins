@@ -12,7 +12,7 @@
                 <span>{{item.createdAt | date('j/F/Y', "Europe/Paris")}} à {{ item.createdAt | date("G:h", "Europe/Paris") }}</span>
                 <h2>{{item.object}}</h2>
                 <p>{{item.message}}</p>
-                <a href="{{path('delete_notification', {id:item.id})}}">Supprimer la notification</a>
+                <a href="{{path('deleteNotification', {id:item.id})}}">Supprimer la notification</a>
             </article>
         {% endfor %}
     {% else %}

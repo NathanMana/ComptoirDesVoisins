@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Advert;
+use App\Service\API\GeoApi;
 use App\Data\SearchData;
-use App\Form\SearchType;
-use App\Entity\Notification;
+use App\Form\SearchAdvertType;
 use App\Form\AdvertCreationType;
 use App\Repository\AdvertRepository;
-use App\Service\GeoApi;
+use App\Service\NotificationManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,10 +18,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdvertController extends AbstractController
 {
     /**
-     * @Route("/annonce/choix", name="choice_advert")
+     * @Route("/annonce/choix", name="choiceAdvert")
      */
-    public function choice_advert(){
-        return $this->render("cdv/adverts/choice_advert.html.twig");
+    public function choiceAdvert(){
+        return $this->render("cdv/adverts/choiceAdvert.html.twig");
     }
 
     /**
@@ -31,22 +31,26 @@ class AdvertController extends AbstractController
         
         $search = new SearchData();
 
-        $form= $this->createForm(SearchType::class, $search);
+        $form= $this->createForm(SearchAdvertType::class, $search);
         $form->handleRequest($request);
 
         $adverts = $advertRepo->findSearch($search);
 
         if($form->isSubmitted() && $form->isValid()){
             if(substr($search->q,-1) !== ")"){
-                $apiGeo = new GeoApi();
-                $response = $apiGeo->RequestApi("nom", $search->q)->toArray();
-    
-                if(count($response) > 1){
-                    return $this->render("cdv/adverts/adverts.html.twig", [
-                        "adverts"=>$adverts,
-                        "form"=>$form->createView(),
-                        "propositionsVille"=>$response
-                    ]);
+                if(empty($search->q)){
+                    $search->q = "";
+                } else {
+                    $apiGeo = new GeoApi();
+                    $response = $apiGeo->RequestApi("nom", $search->q)->toArray();
+        
+                    if(count($response) > 1){
+                        return $this->render("cdv/adverts/adverts.html.twig", [
+                            "adverts"=>$adverts,
+                            "form"=>$form->createView(),
+                            "propositionsVille"=>$response
+                        ]);
+                    }
                 }
             }
         } 
@@ -59,10 +63,10 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/mesdemandes/creation/sefairelivrer", name="create_advert")
-     * @Route("/mesdemandes/modification/sefairelivrer/{id}", name="edit_advert")
+     * @Route("/mesdemandes/creation/sefairelivrer", name="createAdvert")
+     * @Route("/mesdemandes/modification/sefairelivrer/{id}", name="editAdvert")
      */
-    public function creation_or_edit_my_advert(Advert $advert = null, Request $request, EntityManagerInterface $manager){
+    public function creationOrEditMyAdvert(Advert $advert = null, Request $request, EntityManagerInterface $manager){
         if(!$advert){
             $advert = new Advert();
             $checkUser = true;
@@ -105,11 +109,11 @@ class AdvertController extends AbstractController
                 $manager->persist($advert);
                 $manager->flush();
 
-                return $this->redirectToRoute('my_adverts');
+                return $this->redirectToRoute('myAdverts');
 
             }
     
-            return $this->render("cdv/adverts/advert_creation.html.twig",[
+            return $this->render("cdv/adverts/advertCreation.html.twig",[
                 "form"=>$form->createView(),
                 "editing"=>$advert->getId() !== null
             ]);
@@ -120,62 +124,58 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/mesdemandes/suppression/{id}", name="delete_advert")
+     * @Route("/mesdemandes/suppression/{id}", name="deleteAdvert")
      */
-    public function delete_advert(Advert $advert, EntityManagerInterface $manager){
+    public function deleteAdvert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getUser() && !$advert->getDeliverer()){
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("my_adverts");
+            return $this->redirectToRoute("myAdverts");
         } else {
             throw new \Exception("Vous n'avez pas les droits de modification pour cet article !");
         }
     }
 
     /**
-     * @Route("/mesdemandes/annulation/{id}", name="cancel_advert")
+     * @Route("/mesdemandes/annulation/{id}", name="cancelAdvert")
      */
-    public function cancel_advert(Advert $advert, EntityManagerInterface $manager){
+    public function cancelAdvert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getUser() && $advert->getDeliverer()){
             $advert->setCancellation(true);
 
-            $notification = new Notification();
-            $notification->setObject($advert->getUser()->getName(). " veut annuler ça demande")
-                        ->setMessage($advert->getUser()->getName(). " veut annuler cet échange, contactez le si vous n'étiez pas au courant.")
-                        ->setSeen(false)
-                        ->setUser($advert->getDeliverer())
-                        ->setCreatedAt(new \DateTime());
+            $notification = new NotificationManager();
+            $notification = $notification->advertDelete($advert, $this->getUser());
 
-            $manager->persist($advert);
             $manager->persist($notification);
-
+            $manager->persist($advert);
             $manager->flush();
-            return $this->redirectToRoute("my_adverts");
+
+            return $this->redirectToRoute("myAdverts");
         } else {
             throw new \Exception("Vous n'avez pas les droits de modification pour cet article !");
         }
     }
 
     /**
-     * @Route("/demandes/{id}", name="advert_information")
+     * @Route("/demandes/{id}", name="advertInformation")
      */
-    public function advert_information(Advert $advert){
+    public function advertInformation(Advert $advert){
         if($advert->getDeliverer() !== null){
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         } else {
-            return $this->render("cdv/adverts/advert_information_layout.html.twig", [
+            return $this->render("cdv/adverts/advertInformationLayout.html.twig", [
                 "advert"=>$advert
             ]);
         }
     }
 
     /**
-     * @Route("/mesdemandes/{id}", name="information_for_creator_advert")
+     * @Route("/mesdemandes/{id}", name="informationForCreatorAdvert")
      */
-    public function information_for_creator(Advert $advert)
+    public function informationForCreator(Advert $advert)
     {
         if($this->getUser() === $advert->getUser()){
-            return $this->render("cdv/adverts/information_for_creator.html.twig", [
+            return $this->render("cdv/adverts/informationForCreator.html.twig", [
                 'advert'=>$advert
             ]);
         } else {
@@ -184,12 +184,12 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/meslivraisons/demandes/{id}", name="information_for_deliverer_advert")
+     * @Route("/meslivraisons/demandes/{id}", name="informationForDelivererAdvert")
      */
-    public function information_for_deliverer(Advert $advert)
+    public function informationForDeliverer(Advert $advert)
     {
         if($this->getUser() === $advert->getDeliverer()){
-            return $this->render("cdv/adverts/information_for_deliverer.html.twig", [
+            return $this->render("cdv/adverts/informationForDeliverer.html.twig", [
                 'advert'=>$advert
             ]);
         } else {
@@ -204,56 +204,49 @@ class AdvertController extends AbstractController
     public function delivery(Advert $advert, EntityManagerInterface $manager){
         if($advert->getDeliverer() === null && $advert->getUser() !== $this->getUser()){
             $advert->setDeliverer($this->getUser());
-    
-            $notification = new Notification();
-            $notification->setObject("Votre annonce a trouvé preneur !")
-                        ->setMessage("Votre annonce a été prise en charge par ". $this->getUser()->getName() . ". Elle rentrera bientôt en contact avec vous !")
-                        ->setSeen(false)
-                        ->setUser($advert->getUser())
-                        ->setCreatedAt(new \DateTime());
-    
+
+            $notification = new NotificationManager();
+            $notification = $notification->delivererAdvert($advert, $this->getUser());
+
             $manager->persist($advert);
             $manager->persist($notification);
     
             $manager->flush();
-            return $this->redirectToRoute("my_deliveries");
+            return $this->redirectToRoute("myDeliveries");
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }
     }
 
     /**
-     * @Route("/mesdemandes/annulation/{id}", name="confirm_cancellation_advert")
+     * @Route("/mesdemandes/annulation/{id}", name="confirmCancellationAdvert")
      */
-    public function confirm_cancellation_advert(Advert $advert, EntityManagerInterface $manager){
+    public function confirmCancellationAdvert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getDeliverer()){
-            $notification = new Notification();
-            $notification->setObject("Suppression de l'annonce")
-                        ->setMessage("Votre contact a confirmé l'annulation de l'annonce. Elle est donc supprimée")
-                        ->setSeen(false)
-                        ->setUser($advert->getUser())
-                        ->setCreatedAt(new \DateTime());
 
+            $notification = new NotificationManager();
+            $notification = $notification->advertDeleteConfirmation($advert, $this->getUser());
+           
             $manager->persist($notification);
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("my_deliveries");
+            return $this->redirectToRoute("myDeliveries");
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }
     }
 
     /**
-     * @Route("/mesdemandes/reception/{id}", name="given_advert")
+     * @Route("/mesdemandes/reception/{id}", name="givenAdvert")
      */
-    public function given_advert(Advert $advert, EntityManagerInterface $manager){
+    public function givenAdvert(Advert $advert, EntityManagerInterface $manager){
         if($this->getUser() === $advert->getUser()){
             $points = $advert->getDeliverer()->getPoints();
             $points += 1;
             $advert->getDeliverer()->setPoints($points);
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("my_deliveries");
+            return $this->redirectToRoute("myDeliveries");
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }

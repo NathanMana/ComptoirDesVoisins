@@ -50,7 +50,7 @@ class Offer
     private $message;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     private $dateDelivery;
 

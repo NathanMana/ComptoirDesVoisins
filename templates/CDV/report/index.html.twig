@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Signaler un comportement{% endblock %}
+
+{% block body %}
+
+    <h1>Signaler un comportement</h1>
+
+    {{form_start(form)}}
+
+    {{form_row(form.content, {'label':'Donnez-nous des précisions sur le comportement à signaler'})}}
+
+    <button type="submit">Envoyer</button>
+
+    {{form_end(form)}}
+
+
+{% endblock %}

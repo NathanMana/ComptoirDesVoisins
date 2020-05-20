@@ -9,6 +9,13 @@ class SearchData
      */
     public $q = '';
 
+    /**
+     * Radio buttons
+     *
+     * @var string
+     */
+    public $groceryType;
+
 }
 
 

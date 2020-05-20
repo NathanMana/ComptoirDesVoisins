@@ -1,0 +1,28 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Demandes CDV{% endblock %}
+
+{% block body %}
+
+    <h1>Demandes CDV</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-1">ID</div>
+            <div class="col-4">Prénom</div>
+            <div class="col-3">Ville</div>
+            <div class="col-2">Modifier</div>
+            <div class="col-2">Supprimer</div>
+        </div>
+        <br>
+        {% for advert in adverts %}
+            <div class="row">
+                <div class="col-1">{{advert.id}}</div>
+                <div class="col-4">{{advert.user.name}}</div>
+                <div class="col-3">{{advert.user.email}}</div>
+                <div class="col-2">Modifier</div>
+                <div class="col-2"><a href="#">Supprimer</a></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

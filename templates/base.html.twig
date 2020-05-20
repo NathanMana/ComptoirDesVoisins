@@ -8,7 +8,6 @@
         <meta name="language" content="fr">
         <link rel="shortcut icon" href="{{asset('build/images/favicon.png')}}">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
-        <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         {% block metadescription %}{% endblock %}
@@ -22,16 +21,16 @@
                 <div class="hamburger"></div>
             </div>
             <div class="menu">
-                <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon">	</a>	
+                <a href="{{path('index')}}"><img src="{{ asset('build/images/logo2.png') }}"  alt="Site Icon">	</a>	
                 <nav class="nav">
                     <ul>
-                        <li><a href="{{path('offers')}}">Offres de livraison</a></li>
-                        <li><a href="{{path('adverts')}}">Demandes de livraison</a></li>
+                        <li><a href="{{path('offers')}}">Propositions de course</a></li>
+                        <li><a href="{{path('adverts')}}">Demandes de course</a></li>
                         {% if app.user %}
-                            <li><a href="{{path('my_adverts')}}">Mes demandes</a></li>
-                            <li><a href="{{path('my_offers')}}">Mes offres</a></li>
-                            <li><a href="{{path('my_deliveries')}}">Mes livraisons</a></li>
-                            <li><a href="{{path('choice_advert')}}">Créer une annonce / offre</a></li>
+                            <li><a href="{{path('myAdverts')}}">Mes demandes</a></li>
+                            <li><a href="{{path('myOffers')}}">Mes courses</a></li>
+                            <li><a href="{{path('myDeliveries')}}">Mes échanges</a></li>
+                            <li><a href="{{path('choiceAdvert')}}">Créer une demande / course</a></li>
                             <li>Bonjour {{app.user.name}}</li>
                         {% endif %}        
                     </ul>
@@ -53,8 +52,15 @@
         {% block body %}       
         {% endblock %}
 
+        <footer>
+            <ul>
+                <li><a href="{{path('CGU')}}">Nos Conditions Générales d'Utilisation</a></li>
+                <li><a href="{{path('PrivacyPolicies')}}">Nos Politiques de Confidentialité</a></li>
+            </ul>
+        </footer>
+
+        {{ encore_entry_script_tags('app') }}
         {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </body>
 </html>

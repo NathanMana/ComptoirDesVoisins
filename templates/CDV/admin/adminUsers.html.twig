@@ -1,0 +1,28 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Utilisateurs CDV{% endblock %}
+
+{% block body %}
+
+    <h1>Utilisateurs CDV</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-1">ID</div>
+            <div class="col-4">Prénom</div>
+            <div class="col-3">Ville</div>
+            <div class="col-2">Modifier</div>
+            <div class="col-2">Supprimer</div>
+        </div>
+        <br>
+        {% for user in users %}
+            <div class="row">
+                <div class="col-1">{{user.id}}</div>
+                <div class="col-4">{{user.name}}</div>
+                <div class="col-3">{{user.email}}</div>
+                <div class="col-2">Modifier</div>
+                <div class="col-2"><a href="{{path('adminDeleteUser', {id:user.id})}}">Supprimer</a></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

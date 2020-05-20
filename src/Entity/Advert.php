@@ -36,6 +36,8 @@ class Advert
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="myAdverts")
+     * 
+     
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

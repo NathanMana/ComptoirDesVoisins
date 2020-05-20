@@ -1,0 +1,8 @@
+<div class="floating-message">
+    <p>Les nouvelles CGU sont là, nous vous invitons à aller les lire en suivant ce lien : <a href="{{path('CGU')}}">http://localhost/CGU</a></p>
+
+    {{form_start(form)}}
+    {{form_row(form.CGUValidated, {'label': 'J\'ai lu et j\'accepte les nouvelles CGU'})}}
+    <button type="submit">Confirmer</button>
+    {{form_end(form)}}
+</div>

@@ -8,6 +8,9 @@
         <h1 class="heading">SE CONNECTER</h1>
         <form action="{{path('login')}}" method="post">
             <fieldset>
+                {% if error %}
+                    <div class="error alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
                 <label class="adjust" for="_username">Mail</label>
                 <input class="input-inscri adjust" type="text" name="_username" placeholder="votreadressemail@mail.com">
             
@@ -15,7 +18,7 @@
                 <label class="adjust" for="_password">Mot de passe</label>
                 <input class="input-inscri adjust" type="password" name="_password">
             
-                <span><a class="dechet" href="{{path('forgotten_password')}}">Mot de passe oublié ?</a></span>
+                <span><a class="dechet" href="{{path('forgottenPassword')}}">Mot de passe oublié ?</a></span>
                 
                 <div class="btn-container">
                     <button type="submit" class="btn btn-success">Se connecter</button>

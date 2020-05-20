@@ -4,9 +4,10 @@ namespace App\Form;
 
 use App\Data\SearchData;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class SearchType extends AbstractType 
 {
@@ -19,6 +20,21 @@ class SearchType extends AbstractType
                 'attr'=>[
                     'placeholder'=>'Rechercher'
                 ]
+            ])
+            ->add('groceryType', ChoiceType::class, [
+                'required'=>false,
+                'label'=>false,
+                'choices'=>[
+                    "Supermarché"=>"Supermarché",
+                    "Boulangerie"=>"Boulangerie",
+                    "Boucherie"=>"Boucherie",
+                    "Pharmacie"=>"Pharmacie",
+                    "Epicerie"=>"Epicerie",
+                    "Papeterie"=>"Papeterie",
+                    "Autre"=>"Autre"
+                ],
+                "expanded"=>true,
+                "multiple"=>true
             ]);
     }
 

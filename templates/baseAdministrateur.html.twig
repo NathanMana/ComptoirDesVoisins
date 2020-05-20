@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Nathan Manaranche et Aurélien Hémidy">
+        <meta name="keywords" content="">
+        <meta name="copyright" content="Nathan Manaranche et Aurélien Hémidy">
+        <meta name="language" content="fr">
+        <link rel="shortcut icon" href="{{asset('build/images/favicon.png')}}">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        {% block metadescription %}{% endblock %}
+        {{ encore_entry_link_tags('app') }}
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <header>
+            <div class="icon">
+                <div class="hamburger"></div>
+            </div>
+            <div class="menu">
+                <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon">	</a>	
+                <nav class="nav">
+                    <ul>
+                        <li><a href="{{path('adminUsers')}}">Utilisateurs</a></li>
+                        <li><a href="{{path('adminOffers')}}">Courses</a></li>
+                        <li><a href="{{path('adminAdverts')}}">Demandes</a></li>
+                        <li><a href="{{path('adminReports')}}">Signalements</a></li>
+                    </ul>
+                </nav>
+                <aside>
+                    <i class="fas fa-sign-out-alt"></i>
+                    <a href="{{path('profile')}}" class="login">Mon compte</a>
+                     <a href="{{path('logout')}}" class="login">Se déconnecter</a>
+                </aside>
+                </nav>
+            </div>
+        </header>
+        
+        {% block body %}       
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
+</html>

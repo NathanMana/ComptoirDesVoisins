@@ -46,13 +46,6 @@ class User implements UserInterface, Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[A-Za-z0-9\-\&\/\s]+$/",
-     *              message="Vous ne pouvez pas rentrer de caractères spéciaux dans ce champ")
-     */
-    private $lastname;
-
-    /**
-     * @ORM\Column(type="string", length=255)
      * @Assert\Regex("/^[^<>#§µ]+$/",
      *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
@@ -92,16 +85,14 @@ class User implements UserInterface, Serializable
     /**
      * @var File|null
      * @Vich\UploadableField(mapping="profile_image", fileNameProperty="filename")
-     * @Assert\Image(
-     *    mimeTypes = {"image/jpeg",
+     * @Assert\File(
+     *  maxSize = "160M",
+     *  maxSizeMessage = "L'image insérée est trop lourde. Taille maximale autorisée = 20Mo",
+     *  mimeTypes = {"image/jpeg",
      *                 "image/png",
      *                 "image/svg"
      *                },
-     *    mimeTypesMessage = "L'image n'est pas valide. Les extensions acceptées sont jpg, jpeg, png et svg"
-     * )
-     * @Assert\File(
-     *  maxSize = "20M",
-     *  maxSizeMessage = "L'image insérée est trop lourde. Taille maximale autorisée = 20Mo"
+     *  mimeTypesMessage = "L'image n'est pas valide. Les extensions acceptées sont jpg, jpeg, png et svg"
      * )
      */
     private $imageFile;
@@ -127,12 +118,12 @@ class User implements UserInterface, Serializable
     private $resetPassword;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="deliverer")
+     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="deliverer", cascade={"persist", "remove"})
      */
     private $myDeliveries;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="user", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $myAdverts;
 
@@ -147,22 +138,47 @@ class User implements UserInterface, Serializable
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user", orphanRemoval=true)
+     * @ORM\Column(type="datetime")
+     */
+    private $lastLogin;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $notifications;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Offer", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Offer", mappedBy="user", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $offers;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Offer", mappedBy="clients")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Offer", mappedBy="clients", cascade={"persist", "remove"})
      */
     private $clientOffers;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $LatestVersionCGUValidationDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\cgu", inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $latestCGUVersionValidated;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="user")
+     */
+    private $roles;
+
     private $username;
     private $salt;
+
+    private $checkAge = false;
+    private $privacyPolicies = false;
+
 
     public function __construct()
     {
@@ -171,6 +187,7 @@ class User implements UserInterface, Serializable
         $this->notifications = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->clientOffers = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,18 +215,6 @@ class User implements UserInterface, Serializable
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getLastname(): ?string
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname(string $lastname): self
-    {
-        $this->lastname = $lastname;
 
         return $this;
     }
@@ -350,11 +355,6 @@ class User implements UserInterface, Serializable
         return  $this->salt;
     }
 
-    public function getRoles():array
-    {   
-        return ['ROLE_USER'];
-    }
-
     public function getUsername()
     {
         $this->username = $this->getName();
@@ -443,6 +443,30 @@ class User implements UserInterface, Serializable
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(\DateTimeInterface $lastLogin): self
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    public function getLatestVersionCGUValidationDate(): ?\DateTimeInterface
+    {
+        return $this->LatestVersionCGUValidationDate;
+    }
+
+    public function setLatestVersionCGUValidationDate(\DateTimeInterface $LatestVersionCGUValidationDate): self
+    {
+        $this->LatestVersionCGUValidationDate = $LatestVersionCGUValidationDate;
 
         return $this;
     }
@@ -537,6 +561,75 @@ class User implements UserInterface, Serializable
         return $this;
     }
 
+    public function getCheckAge(): bool
+    {
+        return $this->checkAge;
+    }
+
+    public function setCheckAge(bool $checkAge): self
+    {
+        $this->checkAge = $checkAge;
+        return $this;
+    }
+
+    public function getPrivacyPolicies(): bool
+    {
+        return $this->privacyPolicies;
+    }
+
+    public function setPrivacyPolicies(bool $privacyPolicies): self
+    {
+        $this->privacyPolicies = $privacyPolicies;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+        
+    public function getRoles():array
+    {   
+        if(!empty($this->roles)){
+            $roles = $this->roles->toArray();
+            $roles = $roles[0]->getRole();
+        } else {
+            $roles[] = 'ROLE_USER';
+        }
+        return $roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+            $role->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+            $role->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getLatestCGUVersionValidated(): ?cgu
+    {
+        return $this->latestCGUVersionValidated;
+    }
+
+    public function setLatestCGUVersionValidated(?cgu $latestCGUVersionValidated): self
+    {
+        $this->latestCGUVersionValidated = $latestCGUVersionValidated;
+
+        return $this;
+    }
+
     public function serialize()
     {
         return serialize(array(
@@ -559,4 +652,6 @@ class User implements UserInterface, Serializable
             $this->password
         ) = unserialize($serialized, ['allowed_classes' => false]);
     }
+
+    
 }

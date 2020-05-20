@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Information sur ma demande{% endblock %}
+
+{% block body %}
+
+    <h1>Demande de course du {{advert.createdAt | date('j F Y')}}</h1>
+
+    <h2>{{advert.city}}</h2>
+    <p>{{advert.message}}</p>
+
+    {% if advert.deliverer is not null %}
+
+        {% if advert.deliverer.filename %}
+            <img src="{{vich_uploader_asset(advert.deliverer, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+        {% else %}
+            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+        {% endif %}  
+
+        <h2>{{advert.deliverer.name}} est votre livreur !</h2>
+        <h2>Tel : {{advert.deliverer.phone}}</h2>
+
+        {% if not advert.cancellation %}
+            <a href="{{path('cancelAdvert', {id:advert.id})}}">Annuler la demande</a>
+            <a href="{{path('givenAdvert', {id:advert.id})}}">J'ai reçu ma demande</a>
+        {% else %}
+            <h5 style="color:green">Vous avez demandé à annuler l'échange, votre voisin doit en faire de même pour que celui-ci soit définitivement supprimé</h5>
+        {% endif %}
+    {% else %}
+        <a href="{{path('deleteAdvert', {id:advert.id})}}">Supprimer cette demande</a>
+        <a href="{{path('editAdvert', {id:advert.id})}}">Modifier cette demande</a>
+    {% endif %}
+
+    
+    <a href="{{path('myAdverts')}}">Retourner à mes demandes</a>
+
+{% endblock %}

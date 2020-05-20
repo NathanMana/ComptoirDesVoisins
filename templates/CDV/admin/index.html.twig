@@ -1,0 +1,27 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Environnement Administrateur{% endblock %}
+
+{% block body %}
+
+    <h1>Environnement Administrateur</h1>
+
+    <div class="row">
+        <div class="col-3">
+            <h2>Side bar menu</h2>
+            <ul>
+                <li><a href="{{path('adminAddCGU')}}">Ajouter une CGU</a></li>
+            </ul>
+            <ul>
+                <li><a href="">Lien 2</a></li>
+            </ul>
+            <ul>
+                <li><a href="">Lien 3</a></li>
+            </ul>
+        </div>
+        <div class="col-9">
+
+        </div>
+    </div>
+
+{% endblock %}

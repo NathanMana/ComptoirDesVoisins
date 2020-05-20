@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -19,7 +20,6 @@ class RegistrationType extends AbstractType
         $builder
             ->add('email')
             ->add('name')
-            ->add('lastname')
             ->add('city')
             ->add('phone', TelType::class)
             ->add('imageFile', FileType::class, [
@@ -28,6 +28,12 @@ class RegistrationType extends AbstractType
             ->add('password', PasswordType::class)
             ->add('confirm_password', PasswordType::class)
             ->add('codeCity', HiddenType::class)
+            ->add('checkAge', CheckboxType::class, [
+                'required'=>true
+            ])
+            ->add('PrivacyPolicies', CheckboxType::class, [
+                'required'=>true
+            ])
         ;
     }
 

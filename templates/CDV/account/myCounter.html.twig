@@ -1,0 +1,176 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mon comptoir{% endblock %}
+
+{% block body %}
+
+    <h1>Mon comptoir</h1>
+    
+    <div class="select-creation">
+        <a href="">Créer une demande</a>
+        <a href="">Créer une course</a>
+    </div>
+
+    <div class="board">
+        <div class="my-informations">
+            <div class="exchange">
+                <div class="exchange-legend">
+                    <h3>Mes échanges</h3>
+                    <div class="exchange-legend__legend">
+                        <div>Je livre</div>
+                        <div>On me livre</div>
+                        <div>Ma proposition de course</div>
+                    </div>
+                </div>
+                <div class="exchange-items">
+                    {% if myDeliveriesForAdvert is not empty %}
+                        {% for item in myDeliveriesForAdvert %}
+
+                            <div class="row" style="background:blue">
+                                <div class="row">
+                                    <div class="col-12">
+                                        {% if app.user.filename %}
+                                            <img src="{{vich_uploader_asset(app.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %}
+                                        ->>>
+                                        {% if item.user.filename %}
+                                            <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="message col-12 default-color-1">
+                                    <span>Vous livrez {{item.user.name}}</span>
+                                </div>
+                            </div>
+                            
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if myAdvertsWithDeliverer is not empty %}
+                        {% for item in myAdvertsWithDeliverer %}
+
+                            <div class="row" style="background:red">
+                                <div class="row">
+                                    <div class="col-12">
+                                        {% if item.user.filename %}
+                                            <img src="{{vich_uploader_asset(item.deliverer, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %} 
+                                        ->>>
+                                        {% if app.user.filename %}
+                                            <img src="{{vich_uploader_asset(app.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="message col-12 default-color-1">
+                                    <span>{{item.user.name}} vous livre</span>
+                                </div>
+                            </div>
+                            
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if myOffersWithClient is not empty %}
+                        {% for item in myOffersWithClient %}
+
+                            <div class="row" style="background:green">
+                                <div class="row">
+                                    <div class="col-12">
+                                        {% if app.user.filename %}
+                                            <img src="{{vich_uploader_asset(app.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %} 
+                                        ->>>
+                                        {% for client in item.clients %}
+                                            {% if client.filename %}
+                                                <img src="{{vich_uploader_asset(client, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                            {% else %}
+                                                <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                            {% endif %} 
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="message col-12 default-color-1">
+                                    <span>
+                                        Vous livrez
+                                        {% set compteur = 0 %}
+                                        {% for client in item.clients %}
+                                            {{client.name}},
+                                        {% endfor %} 
+                                    </span>
+                                </div>
+                            </div>
+                            
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if ClientOfOffer is not empty %}
+                        {% for item in ClientOfOffer %}
+
+                            <div class="row" style="background:orange">
+                                <div class="row">
+                                    <div class="col-12">
+                                        {% if item.user.filename %}
+                                            <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %} 
+                                        ->>>
+                                        {% if app.user.filename %}
+                                            <img src="{{vich_uploader_asset(app.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
+                                        {% else %}
+                                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="message col-12 default-color-1">
+                                    <span>{{item.user.name}} vous livre</span>
+                                </div>
+                            </div>
+                            
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6" style="background:red">
+                    <h2>Mes annonces en attente de prise en charge</h2>
+                    <div class="row">
+                        <span>Ma demande du 16/05/2020 </br> à CHammes</span>
+                    </div>
+                </div>
+                <div class="col-6" style="background:blue">
+                    <h2>Mes courses en attente de client</h2>
+                    <div class="row">
+                        <div class="row">
+                            <span>Ma course du 16/05/2020 </br> à CHammes</span>
+                        </div>
+                        <div class="row">
+                            <span class="col-6">2 places disponibles</span>
+                            <span class="col-6">2 voisins à livrer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="schedule">
+            <div class="container-calendar">
+                <h2 class="title-calendar">Mon Agenda</h2>
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascript %}
+        {{ encore_entry_script_tags('calendar') }}
+    {% endblock %}
+
+{% endblock %}

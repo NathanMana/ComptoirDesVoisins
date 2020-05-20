@@ -1,15 +1,16 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Offres de livraisons{% endblock %}
+{% block title %}Courses proposées{% endblock %}
 
 {% block body %}
 
-    <h1>Offres de livraisons</h1>
+    <h1>Courses proposées</h1>
 
-    <a href="{{path('choice_advert')}}">Créer une annonce</a>
+    <a href="{{path('choiceAdvert')}}">Créer une course</a>
 
     {{form_start(form)}}
     {{form_row(form.q)}}
+    {{form_row(form.groceryType)}}
     <button type="submit" class="btn btn-primary">Filtrer</button>
     {{form_end(form)}}
 
@@ -18,7 +19,7 @@
             <table>
                 <tbody>
                 {% for item in propositionsVille %}
-                    <tr><td><a href="/livrer?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                    <tr><td><a href="/offres?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -41,9 +42,11 @@
                 <h3>Type de course : {{item.groceryType}}</h3>
                 <h4>{{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h4>
                 <h5>{{item.citiesDelivery}}</h5>
-                <a href="{{path('offer_information', {id:item.id})}}">En savoir plus</a>
+                <a href="{{path('offerInformation', {id:item.id})}}">En savoir plus</a>
             </div>
         {% endfor %}
+    {% else %}
+        <h2>Aucune course</h2>
     {% endif %}
 
 {% endblock %}
