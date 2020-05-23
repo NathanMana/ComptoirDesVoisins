@@ -66,6 +66,7 @@ class OfferController extends AbstractController
     public function offerCreation(Request $request, EntityManagerInterface $manager)
     {
         $offer = new Offer();
+        $offer->setDateDelivery(new DateTime());
 
         $form = $this->createForm(OfferCreationType::class, $offer);
         $form->handleRequest($request);
@@ -91,7 +92,7 @@ class OfferController extends AbstractController
                 $manager->persist($offer);
                 $manager->flush();
 
-                return $this->redirectToRoute("myOffers");
+                return $this->redirectToRoute("myCounter");
             } else {
                 throw new Exception("Veuillez rentrer une date valide");
             }
@@ -123,7 +124,7 @@ class OfferController extends AbstractController
                         $manager->persist($offer);
                         $manager->flush();  
     
-                        return $this->redirectToRoute("myOffers");
+                        return $this->redirectToRoute("myCounter");
                     } else {
                         throw new Exception("Veuillez rentrer une date valide");
                     }
@@ -207,7 +208,7 @@ class OfferController extends AbstractController
             throw $this->createNotFoundException('Cette offre n\'existe pas');
         }
     }
-
+    
     /**
      * @Route("/annonce/livraison/rejoindre/{id}", name="offerComing")
      */
@@ -220,25 +221,13 @@ class OfferController extends AbstractController
             $notif = new NotificationManager();
             $notif = $notif->offerClient($offer, $this->getUser());
             $manager->persist($notif);
-            $manager->persist($offer);
             $manager->flush();
 
-            return $this->redirectToRoute("myDeliveries");
+            return $this->redirectToRoute("myCounter");
+        } if($offer->getUser() === $this->getUser()){
+            throw new Exception("Vous ne pouvez pas vous livrer");
         } else {
             throw new Exception("Une erreur est intervenue");
-        }
-    }
-
-    /**
-     * @Route("/mesannonces/{id}/contact", name="contactInMyOffer")
-     */
-    public function contactInMyOffer(Offer $offer){
-        if($this->getUser() === $offer->getUser()){
-            return $this->render("cdv/offers/contactInMyOffer.html.twig", [
-                'myOffer'=>$offer
-            ]);
-        } else {
-            throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }
     }
 }

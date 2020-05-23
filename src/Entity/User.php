@@ -99,14 +99,12 @@ class User implements UserInterface, Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z0-9\S]{8,}$/",
-     *                 message="Votre mot de passe doit contenir, une lettre minuscule, une lettre majuscule, un caractère spécial, un nombre et doit faire au moins 8 caractères")
-     * @Assert\NotCompromisedPassword
-     */
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire au minimum 8 caractères")
+    */
     private $password;
 
     /**
-     * @Assert\EqualTo(propertyPath="password", message="Tu n'as pas tapé le même mot de passe")
+     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe")
      */
     private $confirm_password;
 

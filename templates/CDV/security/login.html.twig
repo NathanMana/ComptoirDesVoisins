@@ -3,28 +3,26 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
+    <h1>ME CONNECTER</h1>
+    <section class="login__container">
 
-    <div class="container">
-        <h1 class="heading">SE CONNECTER</h1>
-        <form action="{{path('login')}}" method="post">
-            <fieldset>
-                {% if error %}
-                    <div class="error alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
-                <label class="adjust" for="_username">Mail</label>
-                <input class="input-inscri adjust" type="text" name="_username" placeholder="votreadressemail@mail.com">
+        <article class="login-icon">
+            <img style="object-fit:contain" src="{{asset('build/images/favicon.png')}}">
+        </article>
+
+        <article class="login-form">
+            <form action="{{path('login')}}" method="post">
+                <label for="_username">Mail</label>
+                <input class="login-input" type="text" name="_username" placeholder="Adresse mail">
             
+                <label class="" for="_password">Mot de passe</label>
+                <input class="login-input" type="password" name="_password" placeholder="Mot de passe">
             
-                <label class="adjust" for="_password">Mot de passe</label>
-                <input class="input-inscri adjust" type="password" name="_password">
-            
-                <span><a class="dechet" href="{{path('forgottenPassword')}}">Mot de passe oublié ?</a></span>
+                <span style="text-align:center"><a href="{{path('forgottenPassword')}}">Mot de passe oublié ?</a></span>
                 
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-success">Se connecter</button>
-                </div>
-            </fieldset>
-        </form>
-        <a class="dechet" href="{{path('registration')}}">S'inscrire</a>
-    </div>
+                <button type="submit" class="btn btn--center-form">Me connecter</button>
+                <a style="text-align:center;" href="{{path('registration')}}">M'inscrire</a>
+            </form>
+        </article>
+    </section>
 {% endblock %}

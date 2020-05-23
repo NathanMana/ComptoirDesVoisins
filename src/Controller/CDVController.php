@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CDVController extends AbstractController
 {
+
     /**
      * @Route("/", name="index")
      */
@@ -78,6 +79,13 @@ class CDVController extends AbstractController
 
     }
 
+    /**
+     * @Route("/rechercher/choix", name="searchChoice")
+     */
+    public function searchChoice()
+    {
+        return $this->render("cdv/searchChoiceType.html.twig");
+    }
 
     /**
      * @Route("/CDV/CGU", name="CGU")
@@ -94,6 +102,7 @@ class CDVController extends AbstractController
     {
         return $this->render("cdv/privacyPolicies.html.twig");
     }
+
 
     
 }

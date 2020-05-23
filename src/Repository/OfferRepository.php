@@ -29,7 +29,7 @@ class OfferRepository extends ServiceEntityRepository
     {   
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.available <= p.limited")
+            ->andWhere("p.available < p.limited")
             ->orderBy('p.dateDelivery','ASC');
         
         if(!empty($search->q)){
@@ -73,6 +73,19 @@ class OfferRepository extends ServiceEntityRepository
                         ->leftjoin ('p.clients','c')
                         ->andWhere("p.user = :user")
                         ->andWhere("c is not null")
+                        ->setParameter("user", $user);
+        
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Récupère un tableau d'offres de l'utilisateur qui ne sont pas remplie (available != limited)
+     * @return Advert[]
+     */
+    public function findMyOffersWithPlace(User $user): array
+    {
+        $query = $this  ->createQueryBuilder('a')
+                        ->andWhere("a.user = :user AND a.available < a.limited")
                         ->setParameter("user", $user);
         
         return $query->getQuery()->getResult();

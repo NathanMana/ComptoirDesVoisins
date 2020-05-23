@@ -1,58 +1,64 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Demandes de course{% endblock %}
+{% block title %}Demandes de livraison{% endblock %}
 
 {% block body %}
 
-<h1>Demandes de course</h1>
-
-    <a href="{{path('choiceAdvert')}}">Créer ma demande</a>
-
-    {{form_start(form)}}
-    {{form_row(form.q)}}
-    <button type="submit" class="btn btn-primary">Filtrer</button>
-    {{form_end(form)}}
-
-    {% if propositionsVille %}
-        <div class="proposition">
-            <table>
-                <tbody>
-                {% for item in propositionsVille %}
-                    <tr><td><a href="/demandes?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
-                {% endfor %}
-                </tbody>
-            </table>
+    <h1>Demandes de livraison</h1>
+    <p>Vous retrouverez sur cette page des <b>demandes de livraison</b>. Filtrez ces demandes par ville et regardez qui vous pourriez aider. Cliquez sur le bouton "Voir" d'une demande pour obtenir plus d'information (message de la personne notamment).</p>
+    <section class="global__container">
+        <div style="width:100%;text-align:center">
+            <a class="margin-simple" href="{{path('choiceAdvert')}}"><button class="btn">Créer</button></a>
         </div>
-    {% endif %}
+
+        <div class="filter" style="width:500px">
+            {{form_start(form)}}
+            {{form_row(form.q, {'label':'Recherchez par ville'})}}
+            <button type="submit" class="btn btn--m">Filtrer</button>
+            {{form_end(form)}}
+
+            {% if propositionsVille %}
+                <div class="proposition">
+                    <table>
+                        <tbody>
+                        {% for item in propositionsVille %}
+                            <tr><td><a href="/demandes?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </section>
     
+    <section class="global__container">
     {% if adverts is not empty %}   
         {% for item in adverts %}
             <div class="card">
+                {% if item.user.filename %}
+                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                {% endif %}
                 {% set difference = date("now").diff(date(item.createdAt)) %}
                 {% set leftDays = difference.days %}
                 {% if leftDays <= 1 %}
                     {% if leftDays < 1 %}
-                        <span>Aujourd'hui</span>
+                        <h2>Aujourd'hui</h2>
                     {% else %}
-                        <span>Il y a un jour</span>
+                        <h2>Il y a un jour</h2>
                     {% endif %}
                 {% else %}
-                    <span>Il y a {{ leftDays }} jours</span>
+                    <h2>Il y a {{ leftDays }} jours</h2>
                 {% endif %}   
 
-                {% if item.user.filename %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-                {% else %}
-                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
-                {% endif %}
-
-                <h3>{{item.user.name}}</h3>
-                <h5>{{item.city}}</h5>
-                <a href="{{path('advertInformation', {id:item.id})}}">En savoir plus</a>
+                <p>{{item.user.name}}</p>
+                <p>{{item.city}}</p>
+                <a href="{{path('advertInformation', {id:item.id})}}"><button class="btn btn--card">Voir</button></a>
             </div>
         {% endfor %}
     {% else %}
-        <p>Il n'y a pas de demande</p>
+        <p>Il n'y a pas d'annonces</p>
     {% endif %}
-
+    </section>
 {% endblock %}

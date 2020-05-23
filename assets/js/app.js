@@ -25,54 +25,123 @@ $(document).ready(function(){
         cityInput = $('#registration_city');
     } else if (h1 === "Profil") {
         cityInput = $('#profile_city');
-    } else if (h1 === "Créer ma demande") {
+    } else if (h1 === "Création de ma demande") {
         cityInput = $('#advert_creation_city');
-    } else if (h1 === "Créer ma course"){
+    } else if (h1 === "Création de ma course"){
         cityInput = $('#offer_creation_citiesDelivery');
-        console.log("in shine");
     }
 
-    $('.btn-city').click(function(){
-        let cityName = $(cityInput).val();
-        let url = apiUrl + cityName + format;
-        fetch(url, {method: "get"}).then(response=>response.json()).then(results => {
-            if(results.length){
-                $('.error').hide();
-                $.each(results, function(key, value){
-                    $('tbody').append('<tr><td class="CityVal" alt="'+value.code+'">'+ value.nom +' ('+ value.codeDepartement +')</td></tr>');
-                });
-                $('tr td').click(function(){
-                    let CityValue = $(this).text();
-                    let CityCode = $(this).attr('alt');
+    let timeout = null;
 
-                    if(h1 === "Profil"){
-                        $('#profile_city').val(CityValue);
-                        $('#profile_codeCity').val(CityCode);
-                    } else if (h1 === "Inscription") {
-                        $('#registration_city').val(CityValue);
-                        $('#registration_codeCity').val(CityCode);
-                    } else if (h1 === "Créer ma demande"){
-                        $('#advert_creation_city').val(CityValue);
-                        $('#advert_creation_codeCity').val(CityCode);
-                    } else if (h1 === "Créer ma course"){
-                        $('#offer_creation_citiesDelivery').val(CityValue);
-                        $('#offer_creation_codeCities').val(CityCode);
-                    }            
-                   
-                    $('tbody').empty();
-                })
-            } else {
-                if($(cityName).val()){
-                    $('.error').text("Nous ne trouvons pas cette ville");
-                } else {
-                    $('.error').hide();
-                }
+
+    $(cityInput).keyup(function(){
+        clearTimeout(timeout);
+        $('.proposition').empty();
+        
+        timeout = setTimeout(() => {
+
+            let cityName = $(cityInput).val();
+            let url = apiUrl + cityName + format;
+
+            if(cityName != "" && cityName.length > 1){
+                fetch(url, {method: "get"}).then(response=>response.json()).then(results => {
+                    if(results.length > 0){
+
+                        $('.proposition').append('<table><tbody>');
+                        $.each(results.slice(0,5), function(key, value){
+                            $('tbody').append('<tr class="CityVal"><td alt="'+value.code+'">'+ value.nom +' ('+ value.codeDepartement +')</td></tr>');
+                        });
+                        $('.proposition').append('</tbody></table>');
+
+                        $('.CityVal').click(function(){
+
+                            let CityValue = $(this).children().text();
+                            let CityCode = $(this).children().attr('alt');
+        
+                            if(h1 === "Profil"){
+                                $('#profile_city').val(CityValue);
+                                $('#profile_codeCity').val(CityCode);
+                            } else if (h1 === "Inscription") {
+                                $('#registration_city').val(CityValue);
+                                $('#registration_codeCity').val(CityCode);
+                            } else if (h1 === "Création de ma demande"){
+                                $('#advert_creation_city').val(CityValue);
+                                $('#advert_creation_codeCity').val(CityCode);
+                            } else if (h1 === "Création de ma course"){
+                                $('#offer_creation_citiesDelivery').val(CityValue);
+                                $('#offer_creation_codeCities').val(CityCode);
+                            }            
+                            $('.proposition').empty();
+                        });
+
+                    } else {
+                        $('.proposition').append('<table><tbody><tr><td class="error">Nous ne trouvons pas cette ville</td></tr></table></tbody>');
+                    }
+                });
             }
-        });
+        }, 500);
+    });
+
+    $('#registration_password').keyup((e) => {
+        console.log("hlkjsdfl");
+        let condition = document.getElementById('condition');
+        if(e.target.value.length >= 8){
+            condition.style.color = "green";
+        } else {
+            condition.style.color = null;
+        }
     });
 
     $(cityInput).focus(function(){
-        $('tbody').empty();
+        $('.proposition').empty();
+    });
+
+    let burger = document.querySelector('.burger');
+    let icon = document.querySelector('.icon');
+    let layout = document.querySelector('.mobile-layout');
+    let menu = document.querySelector('.menu-mobile');
+    let links = document.querySelectorAll('.menu-mobile__link');
+    let nav = document.querySelector('.menu');
+    let isOpen = true;
+
+    burger.addEventListener('click', () => {
+        isOpen ? burger.classList.add('active') : burger.classList.remove('active');
+        isOpen ? layout.classList.add('active') : layout.classList.remove('active');
+        isOpen ? nav.classList.add('active') : nav.classList.remove('active');
+        if (isOpen) {
+            setTimeout(() => {
+                links[0].classList.add('active');
+                setTimeout(() => {
+                    links[1].classList.add('active');
+                    setTimeout(() => {
+                        links[2].classList.add('active');
+                        setTimeout(() => {
+                            links[3].classList.add('active');
+                            setTimeout(() => {
+                                links[4].classList.add('active');
+                            }, 130);
+                        }, 110);
+                    }, 90);
+                }, 70);
+            }, 50);
+        } else {
+            setTimeout(() => {
+                links[4].classList.remove('active');
+                setTimeout(() => {
+                    links[3].classList.remove('active');
+                    setTimeout(() => {
+                        links[2].classList.remove('active');
+                        setTimeout(() => {
+                            links[1].classList.remove('active');
+                            setTimeout(() => {
+                                links[0].classList.remove('active');
+                            }, 130);
+                        }, 110);
+                    }, 90);
+                }, 70);
+            }, 50);
+        }
+        isOpen = !isOpen;
     });
 
 })

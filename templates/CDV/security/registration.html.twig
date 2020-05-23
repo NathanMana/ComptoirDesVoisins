@@ -6,44 +6,48 @@
     <div class="container">
     <h1>Inscription</h1>
 
-    {{form_start(form)}}
-    <fieldset>
-        <div class="form-group">
-            {{form_row(form.email, {'label': 'Mail', 'attr': {'placeholder':'utilisateur@gmail.com'}})}}
-        </div>
-        <div class="form-group">
-            {{form_row(form.name, {'label': 'Prénom', 'attr': {'placeholder':'Prénom'}} )}}
-        </div> 
-        <div class="form-group">
-            {{form_row(form.city, {'label': 'Ville', 'attr': {'placeholder':'Ville où vous habitez'}})}}
-            <div class="btn-city">Trouver ma ville</div>
-            <div class="proposition">
-                <table>
-                    <tbody>
-                    </tbody>
-                </table>
-                <div class="error"></div>
-            </div>
-        </div>  
-        <div class="form-group">
-            {{form_row(form.phone, {'label': 'Numéro de téléphone', 'attr': {'placeholder':'0254872123'}})}}
-        </div>
-        <div class="form-group">
-            {{form_row(form.imageFile, {'label': 'Photo de profil', 'attr' : {'class':'inpFile'}})}}
-            <img class="js-imagePreview" src="" alt="">
-        </div>
-        <div class="form-group">
-            {{form_row(form.password, {'label': 'Mot de passe', 'attr': {'placeholder':'Mot de passe'}})}}
-        </div>  
-        <div class="form-group">
-            {{form_row(form.confirm_password, {'label': 'Répétez le mot de passe', 'attr': {'placeholder':'Mot de passe'}})}}
-        </div>  
-        {{form_row(form.checkAge, {'label': 'Je certifie avoir au moins 18 ans'})}}
-        {{form_row(form.PrivacyPolicies, {'label': 'J\'accepte les confitions d\'utilisation de Comptoir des Voisins'})}}
-        <button type="submit">M'inscrire</button>
-    </fieldset>
-    {{form_end(form)}}
+    <section class="global__container">
+        <article class="form__container">
+            {{form_start(form)}}
+            <fieldset>
+                <div style="color:var(--bordeau);font-size:12px;text-align:right">* champs obligatoire</div>
+                <div class="form-group form-group-required">
+                    {{form_row(form.email, {'label': 'Mail', 'attr': {'placeholder':'utilisateur@gmail.com'}})}}
+                </div>
+                <div class="form-group form-group-required">
+                    {{form_row(form.name, {'label': 'Prénom', 'attr': {'placeholder':'Prénom'}} )}}
+                </div> 
+                <div class="form-group form-group-required">
+                    {{form_row(form.city, {'label': 'Ville', 'attr': {'placeholder':'Ville où vous habitez'}})}}
+                    <div class="proposition"></div>
+                </div>  
+                <div class="form-group form-group-required">
+                    {{form_row(form.phone, {'label': 'Numéro de téléphone', 'attr': {'placeholder':'Sous la forme XXXXXXXXXX'}})}}
+                </div>
+                <div class="form-group">
+                    {{form_row(form.imageFile, {'label': 'Photo de profil', 'attr' : {'class':'inpFile'}})}}
+                    <img class="js-imagePreview" src="" alt="">
+                </div>
+                <div class="form-group form-group-required">
+                    {{form_label(form.password, 'Mot de passe')}}
+                    <span id="condition" style="margin: 5px 0 10px 15px;display: block;font-size: 15px;color:#111">- Le mot de passe doit contenir au moins 8 caractères</span>
+                    {{form_widget(form.password, {'attr': {'placeholder':'Mot de passe'}})}}
+                </div>  
+                <div class="form-group form-group-required">
+                    {{form_row(form.confirm_password, {'label': 'Répétez le mot de passe', 'attr': {'placeholder':'Mot de passe'}})}}
+                </div>  
+                <div class="form-group form-group-inline form-group-required">
+                    {{form_row(form.checkAge, {'label': 'Je certifie avoir au moins 18 ans'})}}
+                </div>
+                <div class="form-group form-group-inline form-group-required">
+                    {{form_row(form.PrivacyPolicies, {'label': 'J\'accepte les confitions d\'utilisation de Comptoir des Voisins'})}}
+                </div>
+                <button type="submit" class="btn btn--center-form">M'inscrire</button>
+            </fieldset>
+            {{form_end(form)}}
+        </article>
+    </section>
     
-    <a href="{{path('login')}}">Se connecter</a>
+    <a class="block-width" href="{{path('login')}}">Me connecter</a>
     </div>
 {% endblock %}

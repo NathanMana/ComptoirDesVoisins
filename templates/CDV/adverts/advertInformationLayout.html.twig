@@ -1,34 +1,36 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Demande de {{advert.user.name}}{% endblock %}
+{% block title %}Annonce de {{advert.user.name}}{% endblock %}
 
 {% block body %}
 
-    <div class="card">
-        {% set difference = date("now").diff(date(advert.createdAt)) %}
-        {% set leftDays = difference.days %}
-        {% if leftDays <= 1 %}
-            {% if leftDays < 1 %}
-                <span>Aujourd'hui</span>
+    <section class="global__container">
+        <div class="card">
+            {% if advert.user.filename %}
+                <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="">  
             {% else %}
-                <span>Il y a un jour</span>
+                <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
             {% endif %}
-        {% else %}
-            <span>Il y a {{ leftDays }} jours</span>
-        {% endif %}   
 
-        <h2>Demande de </h2>
-        {% if advert.user.filename %}
-            <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-        {% else %}
-            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
-        {% endif %}
+            {% set difference = date("now").diff(date(advert.createdAt)) %}
+            {% set leftDays = difference.days %}
+            {% if leftDays <= 1 %}
+                {% if leftDays < 1 %}
+                    <p>Aujourd'hui</p>
+                {% else %}
+                    <p>Il y a un jour</p>
+                {% endif %}
+            {% else %}
+                <p>Il y a {{ leftDays }} jours</p>
+            {% endif %}   
+            <h2>Demande de </h2>
 
-        <h3>{{advert.user.name}}</h3>
-        <h5>{{advert.city}}</h5>
-        <p>{{advert.message}}</p>
-        <a href="{{path('delivery',{id:advert.id})}}">Aider {{advert.user.name}}</a>
-    </div>
+            <p>{{advert.user.name}}</p>
+            <p>{{advert.city}}</p>
+            <p>{{advert.message}}</p>
+            <a href="{{path('delivery',{id:advert.id})}}"><button class="btn btn--card">Je livre</button></a>
+        </div>
+    </section>
 
 
 {% endblock %}

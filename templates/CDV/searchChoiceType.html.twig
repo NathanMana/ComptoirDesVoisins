@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Que recherchez-vous ?{% endblock %}
+
+{% block body %}
+
+    <h1>Que recherchez-vous ?</h1>
+
+    <div class="flex-container" style="align-items: stretch;">
+        <div class="border-block-purple">
+            <h2 class="block-inline">Vous voulez livrer ?</h2>
+            <p>Dans le cas où vous aimeriez aider des personnes. Nous vous conseillons d'aller d'abord jeter un oeil à la liste des demandes d'aide. Si vous ne trouvez personne à aider, allez proposer vos services <a href="">en créant votre proposition de livraison !</a></p>
+            <div class="flex-container">
+                <a href="{{path('adverts')}}"><button class="btn btn--card">Voir les demandes d'aide</button></a>
+                <a href="{{path('offerCreation')}}"><button class="btn btn--card">Proposer de livrer</button></a>
+            </div>
+        </div>
+        <div class="border-block-blue">
+            <h2 class="block-inline">Vous voulez vous faire livrer ?</h2>
+            <p>Si vous avez besoin d'aide, recherchez si quelqu'un ne propose pas ses services dans vos environs. Si vous ne trouvez aucune proposition qui vous convienne <a href="">créez votre demande !</a></p>
+            <div class="flex-container">
+                <a href="{{path('offers')}}"><button class="btn btn--card">Voir les propositions de livraison</button></a>
+                <a href="{{path('createAdvert')}}"><button class="btn btn--card">Créer ma demande</button></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

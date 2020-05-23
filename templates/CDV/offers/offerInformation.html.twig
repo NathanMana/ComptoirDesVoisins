@@ -1,33 +1,26 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Course proposée par {{offer.user.name}}{% endblock %}
+{% block title %}Annonce de {{offer.user.name}}{% endblock %}
 
 {% block body %}
+    <section class="global__container">
+        <div class="card">
+            {% if offer.user.filename %}
+                <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="">  
+            {% else %}
+                <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+            {% endif %}
 
-    <div class="card">
-        <h2>Course du {{offer.dateDelivery | date("j F Y")}} à {{offer.dateDelivery | date("H:i")}}</h2>
-        <h5>{{offer.citiesDelivery}}</h5>
+            <p>Livraison du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('M') | trans}} {{offer.dateDelivery | date('Y')}}</p>
+            <p>{{offer.citiesDelivery}}</p>
 
-        {% if offer.user.filename %}
-            <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-        {% else %}
-            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
-        {% endif %}
-
-        <h3>{{offer.user.name}}</h3>
-        {% if offer.user.points > 0 %}
-            <span>{{offer.user.points}} livraison(s) effectuée(s)</span>
-        {% endif %}
-        <h3>Type de course : {{offer.groceryType}}</h3>
-        <p>{{offer.message}}</p>
-        {% set nbrePlace = offer.limited - offer.available %}
-        {% if offer.available + 1 != offer.limited  %}
-            <h3>{{nbrePlace}} places disponibles</h3>
-        {% else %}
-            <h3>{{nbrePlace}} place disponible</h3>
-        {% endif %}
-        <a href="{{path('offerComing', {id:offer.id})}}">Rejoindre cette course</a>
-    </div>
-
-
+            <h2>{{offer.user.name}}</h2>
+            {% if offer.user.points > 0 %}
+                <p><span>{{offer.user.points}}</span> livraison(s) effectuée(s)</p>
+            {% endif %}
+            <P>Type de course : {{offer.groceryType}}</P>
+            <p>{{offer.message}}</p>
+            <a href="{{path('offerComing', {id:offer.id})}}"><button class="btn btn--card">Se faire livrer</button></a>
+        </div>
+    </section>
 {% endblock %}

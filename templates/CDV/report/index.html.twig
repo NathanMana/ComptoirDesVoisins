@@ -6,13 +6,14 @@
 
     <h1>Signaler un comportement</h1>
 
-    {{form_start(form)}}
-
-    {{form_row(form.content, {'label':'Donnez-nous des précisions sur le comportement à signaler'})}}
-
-    <button type="submit">Envoyer</button>
-
-    {{form_end(form)}}
+    <section class="global__container global__container--column">
+        <article class="form__container">
+            {{form_start(form)}}
+            {{form_row(form.content, {'label':'Donnez-nous des précisions sur le comportement à signaler'})}}
+            <button type="submit">Envoyer</button>
+            {{form_end(form)}}
+        </article>
+    </section>
 
 
 {% endblock %}

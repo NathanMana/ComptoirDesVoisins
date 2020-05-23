@@ -12,40 +12,56 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         {% block metadescription %}{% endblock %}
         {{ encore_entry_link_tags('app') }}
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <header>
-            <div class="icon">
-                <div class="hamburger"></div>
-            </div>
+         <header>
+            <article class="burger">
+                <div class="icon"></div>
+            </article>
             <div class="menu">
-                <a href="{{path('index')}}"><img src="{{ asset('build/images/logo2.png') }}"  alt="Site Icon">	</a>	
-                <nav class="nav">
-                    <ul>
-                        <li><a href="{{path('offers')}}">Propositions de course</a></li>
-                        <li><a href="{{path('adverts')}}">Demandes de course</a></li>
-                        {% if app.user %}
-                            <li><a href="{{path('myAdverts')}}">Mes demandes</a></li>
-                            <li><a href="{{path('myOffers')}}">Mes courses</a></li>
-                            <li><a href="{{path('myDeliveries')}}">Mes échanges</a></li>
-                            <li><a href="{{path('choiceAdvert')}}">Créer une demande / course</a></li>
-                            <li>Bonjour {{app.user.name}}</li>
-                        {% endif %}        
-                    </ul>
-                </nav>
-                <aside>
+                <div class="navIcon">
+                    <a href="{{path('index')}}" class="website-icon"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon"></a>	
+                    <nav class="nav">
+                        {# <a href="{{path('index')}}" class="website-icon"><img src="{{asset('/images/profile/logo2.png')}}"  alt="Site Icon"></a>	 #}
+                        <ul class="links">
+                            <li id="search-link"><a href="{{path('searchChoice')}}" class="nav-link">Rechercher</a></li>
+                            {% if app.user %}
+                                <li id="creation-link"><a href="{{path('choiceAdvert')}}" class="nav-link">Créer une course / demande</a></li>
+                                <li id="counter-link"><a href="{{path('myCounter')}}" class="nav-link">Mon comptoir</a></li>
+                                <li class="nav-link--name">Bonjour {{app.user.name}}</li>
+                            {% endif %}        
+                        </ul>
+                    </nav>
+                </div>
+                <aside class="nav-login">
                     <i class="fas fa-sign-out-alt"></i>
                     {% if app.user %}
-                        <a href="{{path('profile')}}" class="login">Mon compte</a>
-                        <a href="{{path('logout')}}" class="login">Se déconnecter</a>
+                        <a id="profile-link" href="{{path('profile')}}" class="nav-link">Mon compte</a>
+                        <a href="{{path('logout')}}" class="nav-link">Me déconnecter</a>
                     {% else %}
-                        <a href="{{path('login')}}" class="login">Se connecter</a>
-                        <a href="{{path('registration')}}" class="login">S'inscrire</a>
+                        <a href="{{path('login')}}" class="nav-link">Me connecter</a>
+                        <a href="{{path('registration')}}" class="nav-link">M'inscrire</a>
                     {% endif %}
                 </aside>
                 </nav>
+            </div>
+            <div class="mobile-layout">
+                <div class="menu-mobile">
+                    <ul class="menu-mobile__links">
+                        <li class="menu-mobile__link"><a href="{{path('offers')}}">Propositions de course</a></li>
+                        <li class="menu-mobile__link"><a href="{{path('adverts')}}">Demandes d'aide</a></li>
+                        <li class="menu-mobile__link"><a href="{{path('myCounter')}}">Mon comptoir</a></li>
+                        {% if app.user %}
+                            <li class="menu-mobile__link"><a href="{{path('profile')}}">Mon compte</a></li>
+                            <li class="menu-mobile__link"><a href="{{path('logout')}}">Me déconnecter</a></li>
+                        {% else %}
+                            <li class="menu-mobile__link"><a href="{{path('login')}}">Me connecter</a></li>
+                            <li class="menu-mobile__link"><a href="{{path('registration')}}">M'inscrire</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </header>
         
@@ -54,13 +70,33 @@
 
         <footer>
             <ul>
-                <li><a href="{{path('CGU')}}">Nos Conditions Générales d'Utilisation</a></li>
-                <li><a href="{{path('PrivacyPolicies')}}">Nos Politiques de Confidentialité</a></li>
+                <li><a class="underline" href="{{path('CGU')}}">Nos Conditions Générales d'Utilisation</a></li>
+                <li><a class="underline" href="{{path('PrivacyPolicies')}}">Nos Politiques de Confidentialité</a></li>
             </ul>
+            <span>Comptoir des Voisins</span>
         </footer>
 
         {{ encore_entry_script_tags('app') }}
         {% block javascripts %}
         {% endblock %}
+        <script>
+            let h1Title = $('h1').text();
+            switch (h1Title) {
+                case "Mon comptoir":
+                    $('#counter-link').addClass('active-link');
+                    break;
+                case "Que recherchez-vous ?":
+                    $('#search-link').addClass('active-link');
+                    break;
+                case "Choix du type d'annonce":
+                    $('#creation-link').addClass('active-link');
+                    break;
+                case "Profil":
+                    $('#profile-link').addClass('active-link');
+                    break;
+                default:
+                    break;
+            }
+        </script>
     </body>
 </html>

@@ -56,6 +56,19 @@ class AdvertRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * Récupère un tableau de demande de l'utilisateur mais qui n'ont pas de livreurs
+     * @return Advert[]
+     */
+    public function findMyAdvertsWithoutDeliverer(User $user): array
+    {
+        $query = $this  ->createQueryBuilder('a')
+                        ->andWhere("a.user = :user AND a.deliverer is null")
+                        ->setParameter("user", $user);
+        
+        return $query->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Advert[] Returns an array of Advert objects
     //  */

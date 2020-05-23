@@ -109,7 +109,7 @@ class AdvertController extends AbstractController
                 $manager->persist($advert);
                 $manager->flush();
 
-                return $this->redirectToRoute('myAdverts');
+                return $this->redirectToRoute('myCounter');
 
             }
     
@@ -130,7 +130,7 @@ class AdvertController extends AbstractController
         if($this->getUser() === $advert->getUser() && !$advert->getDeliverer()){
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("myAdverts");
+            return $this->redirectToRoute("myCounter");
         } else {
             throw new \Exception("Vous n'avez pas les droits de modification pour cet article !");
         }
@@ -147,10 +147,9 @@ class AdvertController extends AbstractController
             $notification = $notification->advertDelete($advert, $this->getUser());
 
             $manager->persist($notification);
-            $manager->persist($advert);
             $manager->flush();
 
-            return $this->redirectToRoute("myAdverts");
+            return $this->redirectToRoute("myCounter");
         } else {
             throw new \Exception("Vous n'avez pas les droits de modification pour cet article !");
         }
@@ -161,7 +160,7 @@ class AdvertController extends AbstractController
      */
     public function advertInformation(Advert $advert){
         if($advert->getDeliverer() !== null){
-            throw $this->createNotFoundException('Cette annonce n\'existe pas');
+            throw $this->createNotFoundException('Cette demande n\'existe pas');
         } else {
             return $this->render("cdv/adverts/advertInformationLayout.html.twig", [
                 "advert"=>$advert
@@ -212,7 +211,9 @@ class AdvertController extends AbstractController
             $manager->persist($notification);
     
             $manager->flush();
-            return $this->redirectToRoute("myDeliveries");
+            return $this->redirectToRoute("myCounter");
+        } if($advert->getUser() === $this->getUser()){
+            throw $this->createNotFoundException('Vous ne pouvez pas vous livrer !');
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }
@@ -230,7 +231,7 @@ class AdvertController extends AbstractController
             $manager->persist($notification);
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("myDeliveries");
+            return $this->redirectToRoute("myCounter");
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }
@@ -246,7 +247,7 @@ class AdvertController extends AbstractController
             $advert->getDeliverer()->setPoints($points);
             $manager->remove($advert);
             $manager->flush();
-            return $this->redirectToRoute("myDeliveries");
+            return $this->redirectToRoute("myCounter");
         } else {
             throw $this->createNotFoundException('Cette annonce n\'existe pas');
         }

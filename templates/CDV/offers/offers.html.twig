@@ -1,52 +1,74 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Courses proposées{% endblock %}
+{% block title %}Propositions de livraison{% endblock %}
 
 {% block body %}
 
-    <h1>Courses proposées</h1>
+    <h1>Propositions de livraison</h1>
+    <p>Vous retrouverez sur cette page des <b>propositions de livraison</b>. Filtrez ces offres par ville et/ou par type de commerce puis regardez si une personne est susceptible de vous aider ! Cliquez sur le bouton "Voir" d'une proposition pour obtenir plus d'information (message de la personne notamment).</p>
 
-    <a href="{{path('choiceAdvert')}}">Créer une course</a>
+    <section class="global__container">
+        <a href="{{path('choiceAdvert')}}"><button class="btn">Créer</button></a>
 
-    {{form_start(form)}}
-    {{form_row(form.q)}}
-    {{form_row(form.groceryType)}}
-    <button type="submit" class="btn btn-primary">Filtrer</button>
-    {{form_end(form)}}
-
-    {% if propositionsVille %}
-        <div class="proposition">
-            <table>
-                <tbody>
-                {% for item in propositionsVille %}
-                    <tr><td><a href="/offres?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
-
-    {% if offers is not empty %}
-        {% for item in offers %}
-            <div class="card">
-
-                {% if item.user.filename %}
-                    <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-                {% else %}
-                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
-                {% endif %} 
-                <h3>{{item.user.name}}</h3>
-                {% if item.user.points > 0 %}
-                    <span>{{item.user.points}} livraison(s) effectuée(s)</span>
-                {% endif %}
-                <h3>Type de course : {{item.groceryType}}</h3>
-                <h4>{{item.dateDelivery | date("j F Y")}} à {{item.dateDelivery | date("H:i")}}</h4>
-                <h5>{{item.citiesDelivery}}</h5>
-                <a href="{{path('offerInformation', {id:item.id})}}">En savoir plus</a>
+        {{form_start(form)}}
+        <div class="filter">
+            <div class="form-group form-group-sm">
+                <div class="label">
+                    {{form_label(form.q , 'Recherchez par ville')}}
+                </div>
+                {{form_row(form.q, {'attr': {'class':'form-group'}})}}
             </div>
-        {% endfor %}
-    {% else %}
-        <h2>Aucune course</h2>
-    {% endif %}
+            <div class="form-group form-group-md">
+                <div class="label">
+                    {{form_label(form.groceryType , 'Choisissez une ou plusieurs catégorie(s)')}}
+                </div>
+                <div class="group-flex">
+                    {% for groceryType in form.groceryType %}
+                        <div class="input-group">
+                            {{form_row(groceryType)}}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group form-group-large">
+                <button type="submit" class="btn btn--m">Filtrer</button>
+            </div>
+        {{form_end(form)}}
+
+        {% if propositionsVille %}
+            <div class="proposition">
+                <table>
+                    <tbody>
+                    {% for item in propositionsVille %}
+                        <tr><td><a href="/livrer?q={{item.nom}} ({{item.codeDepartement}})">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        </div>
+    </section>
+
+    <section class="global__container">
+        {% if offers is not empty %}
+            {% for item in offers %}
+                <div class="card">
+                    {% if item.user.filename %}
+                        <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                    {% else %}
+                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                    {% endif %} 
+                    <h2>{{item.user.name}}</h2>
+                    {% if item.user.points > 0 %}
+                        <p><span>{{item.user.points}}</span> livraison(s) effectuée(s)</p>
+                    {% endif %}
+                    <p>Type de course : {{item.groceryType}}</p>
+                    <p>{{item.dateDelivery | date('j')}} {{item.dateDelivery | date('M') | trans}} {{item.dateDelivery | date('Y')}}</p>
+                    <h5>{{item.citiesDelivery}}</h5>
+                    <a href="{{path('offerInformation', {id:item.id})}}"><button class="btn btn--card">Voir</button></a>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </section>
 
 {% endblock %}

@@ -4,27 +4,31 @@
 
 {% block body %}
 
-    <h1>Echange du {{offer.dateDelivery | date("j F Y")}} à {{offer.citiesDelivery}}</h1>
+    <h1>Echange du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('M') | trans}} {{offer.dateDelivery | date('Y')}} à {{offer.citiesDelivery}}</h1>
 
-    {% if offer.user.filename %}
-        <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-    {% else %}
-        <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
-    {% endif %}
+    <div class="card block-inline">
+        {% if offer.user.filename %}
+            <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="">  
+        {% else %}
+            <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+        {% endif %}
 
-    <h2>{{offer.user.name}} est votre livreur</h2>
+        <h2>{{offer.user.name}} est votre livreur</h2>
 
-    {% if offer.user.points > 0 %}
-        <span>{{offer.user.points}} livraison(s) effectuée(s)</span>
-    {% endif %}
+        {% if offer.user.points > 0 %}
+            <span>{{offer.user.points}} livraison(s) effectuée(s)</span>
+        {% endif %}
 
-    <h3>Tel : {{offer.user.phone}}</h3>
-    
-    <h2>{{offer.groceryType}}</h2>
+        <h3>Tel : {{offer.user.phone}}</h3>
+        
+        <h2>{{offer.groceryType}}</h2>
 
-    <p>Son message : {{offer.message}}</p>
+        <p>Son message : {{offer.message}}</p>
+    </div>
 
-    <a href="{{path('deleteOffer', {id:offer.id})}}">Supprimer la course de mes échanges</a>
-    <a href="{{path('myDeliveries')}}">Revenir à mes échanges</a>    
+    <div class="block-inline">
+        <a href="{{path('deleteOffer', {id:offer.id})}}"><button class="btn btn--card">Supprimer la course de mes échanges</button></a>
+        <a href="{{path('myCounter')}}"><button class="btn btn--card">Revenir à mon comptoir</button></a>    
+    </div>
 
 {% endblock %}

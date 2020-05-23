@@ -6,18 +6,17 @@
 
     <h1>Vous livrez</h1>
 
-    {% if advert.user.filename %}
-        <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="" style="width:150px;height:100px">  
-    {% else %}
-        <img src="{{asset('images/profile/default-avatar.png')}}" alt="" style="width:150px;height:100px">  
-    {% endif %} 
-
-    <h2>{{advert.user.name}}</h2>
-    <h2>Tel : {{advert.user.phone}}</h2>
-
-    <h3>Livraison prévue à {{advert.city}}</h3>
-
-    <p>Son message : {{advert.message}}</p>
+    <div class="card block-inline">
+        {% if advert.user.filename %}
+            <img src="{{vich_uploader_asset(advert.user, 'imageFile')}}" alt="">  
+        {% else %}
+            <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+        {% endif %} 
+        <h2>{{advert.user.name}}</h2>
+        <h2>Tel : {{advert.user.phone}}</h2>
+        <p>Son message : {{advert.message}}</p>
+        <h5>Livraison prévue à {{advert.city}}</h5>
+    </div>  
     
     {% if advert.cancellation %}
         <h5 style="color:green">Votre voisin a demandé à supprimer cet échange, confirmez-vous la suppression ?</h5>
@@ -25,6 +24,8 @@
         <a href="#">Signaler un abus</a>
     {% endif %} 
 
-    <a href="{{path('myDeliveries')}}">Retourner à mes échanges</a>
+    <a class="block-inline" href="{{path('myCounter')}}">
+        <button class="btn btn--card">Retourner au comptoir</button>
+    </a>
 
 {% endblock %}
