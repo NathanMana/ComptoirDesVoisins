@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Notification;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Notification|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +18,19 @@ class NotificationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Notification::class);
+    }
+
+    /**
+     * @return Notification[]
+     */
+    public function findNotificationForMember(User $user)
+    {
+        $query = $this->createQueryBuilder('n')
+                    ->select('n.id, n.object, n.message')
+                    ->andWhere('n.user = :user')
+                    ->setParameter(':user', $user);
+        
+        return $query->getQuery()->getResult();
     }
 
     // /**

@@ -30,14 +30,41 @@
                             {% if app.user %}
                                 <li id="creation-link"><a href="{{path('choiceAdvert')}}" class="nav-link">Créer une course / demande</a></li>
                                 <li id="counter-link"><a href="{{path('myCounter')}}" class="nav-link">Mon comptoir</a></li>
-                                <li class="nav-link--name">Bonjour {{app.user.name}}</li>
+                                {% if app.user.name | length <= 10 %}
+                                    <li class="nav-link--name">Bonjour {{app.user.name}}</li>
+                                {% endif %}
                             {% endif %}        
                         </ul>
                     </nav>
                 </div>
                 <aside class="nav-login">
-                    <i class="fas fa-sign-out-alt"></i>
                     {% if app.user %}
+                        <a id="notification" href="#" class="nav-link" alt="Mes notifications"><i style="color:var(--bordeau)"class="fas fa-bell"></i></a>
+                        <ul class="ul-notification">
+                            {% for item in app.user.notifications %}
+                                {% if item.seen == false %}
+                                    <li class="row" style="align-items:center">
+                                        {% if item.event == "offerClient" %}
+                                            <a href="{{path('informationForCreator', {id:item.idEvent})}}">
+                                        {% elseif item.event == "advertDelete" %}
+                                            <a href="{{path('informationForDelivererAdvert', {id:item.idEvent})}}">
+                                        {% elseif item.event == "delivererAdvert" %}
+                                            <a href="{{path('informationForCreatorAdvert', {id:item.idEvent})}}">
+                                        {% elseif item.event == "advertDeleteConfirmation" %}
+                                            <a href="{{path('myCounter')}}">
+                                        {% else %}
+                                            <a>
+                                        {% endif %}
+                                            <h3 class="col-10">{{item.object}}</h3>
+                                        </a>
+                                        <i alt="{{item.id}}" class="fas fa-trash-alt col-2"></i>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        {% if app.user.notifications | length > 0 %}
+                            <div id="countNotif">{{app.user.notifications | length}}</div>
+                        {% endif %}
                         <a id="profile-link" href="{{path('profile')}}" class="nav-link">Mon compte</a>
                         <a href="{{path('logout')}}" class="nav-link">Me déconnecter</a>
                     {% else %}
@@ -64,9 +91,11 @@
                 </div>
             </div>
         </header>
-        
+
         {% block body %}       
         {% endblock %}
+
+        {{ render(path('CGUValidation')) }}
 
         <footer>
             <ul>
@@ -97,6 +126,42 @@
                 default:
                     break;
             }
+
+            let notificationOpen = false;
+            let nberNotif = 0;
+            $('#notification').click(()=>{
+                if(notificationOpen){
+                    $('.ul-notification').css({'height':'0'});
+                    notificationOpen = false;
+                } else {
+                    $('.ul-notification').css({'height':'fit-content'});
+                    notificationOpen = true;
+                }
+            });
+
+            $('.fa-trash-alt').click(function(){
+                let el = $(this);
+                let id = el.attr('alt');
+                var result = window.confirm('Voulez-vous vraiment supprimer cette notification ?');
+
+                if(result){
+                    $.ajax({
+                        method:"post",
+                        url:"/profil/notification/supprimer/" + id,
+                        success: (result) => {
+                            el.parent().hide();
+                            let count = parseInt($('#countNotif').text());
+                            let countResult = count - 1;
+                            if(countResult === 0){
+                                $('#countNotif').text('');
+                            } else {
+                                $('#countNotif').text(countResult);
+                            }
+                        }
+                    })
+                }
+            })
+            
         </script>
     </body>
 </html>

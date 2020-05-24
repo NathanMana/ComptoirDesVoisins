@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use Exception;
 use App\Entity\User;
 use App\Entity\Offer;
@@ -10,11 +11,12 @@ use App\Form\SearchType;
 use App\Form\OfferEditType;
 use App\Service\API\GeoApi;
 use App\Entity\Notification;
+use App\Service\MailManager;
 use App\Form\OfferCreationType;
 use App\Repository\OfferRepository;
 use App\Service\NotificationManager;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Swift_Mailer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -212,7 +214,7 @@ class OfferController extends AbstractController
     /**
      * @Route("/annonce/livraison/rejoindre/{id}", name="offerComing")
      */
-    public function offerComing(Offer $offer, EntityManagerInterface $manager, OfferRepository $offerRepository){
+    public function offerComing(Offer $offer, EntityManagerInterface $manager, OfferRepository $offerRepository, Swift_Mailer $mailer){
         $UserInOffer = $offer->getClients()->toArray();
         if($offer->getAvailable() !== $offer->getLimited() && $offer->getUser() !== $this->getUser() && !in_array($this->getUser(), $UserInOffer)){
             $offer  ->setAvailable($offer->getAvailable() + 1)
@@ -220,6 +222,12 @@ class OfferController extends AbstractController
            
             $notif = new NotificationManager();
             $notif = $notif->offerClient($offer, $this->getUser());
+
+            if($offer->getUser()->getMailAuthorization()){
+                $mailManager = new MailManager($offer->getUser()->getEmail(),$mailer);
+                $mailManager->notifIntoMail($notif);
+            }
+
             $manager->persist($notif);
             $manager->flush();
 

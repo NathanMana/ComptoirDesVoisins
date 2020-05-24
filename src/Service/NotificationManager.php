@@ -17,10 +17,12 @@ class NotificationManager
     {
         $notification = new Notification();
 
-        $notification   ->setObject($user->getName(). " aurait besoin de votre aide !")
-                        ->setMessage($user->getName() . " aurait besoin de votre aide !")
+        $notification   ->setObject($user->getName(). " à rejoint votre course")
+                        ->setMessage($user->getName() . " à rejoint votre course. Allez sur le détail de votre course pour obtenir plus d'informations sur cette personne")
                         ->setUser($offer->getUser())
                         ->setSeen(0)
+                        ->setEvent('offerClient')
+                        ->setIdEvent($offer->getId())
                         ->setCreatedAt(new \DateTime());
 
         return $notification;
@@ -31,9 +33,11 @@ class NotificationManager
         $notification = new Notification();
 
         $notification   ->setObject($user->getName(). " veut annuler ça demande")
-                        ->setMessage($user->getName(). " veut annuler cet échange, contactez le si vous n'étiez pas au courant.")
+                        ->setMessage($user->getName(). " veut annuler cet échange, contactez votre voisin si vous n'étiez pas au courant.")
                         ->setUser($advert->getDeliverer())
                         ->setSeen(0)
+                        ->setEvent('advertDelete')
+                        ->setIdEvent($advert->getId())
                         ->setCreatedAt(new \DateTime());
 
         return $notification;
@@ -44,9 +48,11 @@ class NotificationManager
         $notification = new Notification();
 
         $notification   ->setObject("Votre annonce a trouvé preneur !")
-                        ->setMessage("Votre annonce a été prise en charge par ". $user->getName() . ". Elle rentrera bientôt en contact avec vous !")
+                        ->setMessage("Votre annonce a été prise en charge par ". $user->getName() . ". Allez sur le détail de l'annonce pour obtenir le numéro de téléphone de cette personne et discutez avec elle !")
                         ->setSeen(false)
                         ->setUser($advert->getUser())
+                        ->setEvent('delivererAdvert')
+                        ->setIdEvent($advert->getId())
                         ->setCreatedAt(new \DateTime());
 
         return $notification;
@@ -56,10 +62,12 @@ class NotificationManager
     {
         $notification = new Notification();
 
-        $notification   ->setObject("Suppression de l'annonce")
-                        ->setMessage("Votre contact a confirmé l'annulation de l'annonce. Elle est donc supprimée")
+        $notification   ->setObject("Suppression de votre demande")
+                        ->setMessage("Votre contact a confirmé l'annulation de la livraison. Elle est donc supprimée")
                         ->setSeen(false)
                         ->setUser($advert->getUser())
+                        ->setEvent('advertDeleteConfirmation')
+                        ->setIdEvent(null)
                         ->setCreatedAt(new \DateTime());
 
         return $notification;

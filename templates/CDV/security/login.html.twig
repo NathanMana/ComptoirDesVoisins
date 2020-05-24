@@ -3,7 +3,7 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <h1>ME CONNECTER</h1>
+    <h1>Me connecter</h1>
     <section class="login__container">
 
         <article class="login-icon">
@@ -12,6 +12,9 @@
 
         <article class="login-form">
             <form action="{{path('login')}}" method="post">
+                {% if error %}
+                    <div class="error alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
                 <label for="_username">Mail</label>
                 <input class="login-input" type="text" name="_username" placeholder="Adresse mail">
             

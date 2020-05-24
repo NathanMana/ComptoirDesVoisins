@@ -1,12 +1,12 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Informations sur mon offre{% endblock %}
+{% block title %}Informations sur ma proposition{% endblock %}
 
 {% block body %}
 
-    <h1>Informations sur mon offre</h1>
+    <h1>Informations sur ma proposition</h1>
 
-    <h2 class="block-inline">Offre de livraison du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('M') | trans}} {{offer.dateDelivery | date('Y')}}</h2>
+    <h2 class="block-inline">Proposition de livraison du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('F') | trans}} {{offer.dateDelivery | date('Y')}}</h2>
     <h2 class="block-inline">Livraison prévue à {{offer.citiesDelivery}}</h2>
     <h2 class="block-inline">Type de course : {{offer.groceryType}}</h2>
     <p>Votre message : {{offer.message}}</p>
@@ -15,7 +15,7 @@
     {% if offer.limited - offer.available != 0 %}
         <h2 class="block-inline">{{offer.limited - offer.available}} place(s) disponible(s)</h2>
     {% else %}
-        <h2 class="block-inline">Votre offre est complète</h2>
+        <h2 class="block-inline">Votre course est complète</h2>
     {% endif %}
 
     {% if offer.clients is not empty %}
@@ -31,7 +31,7 @@
                     {% endif %} 
                     <h2>{{client.name}}</h2>
                     <h2>Tel : {{client.phone}}</h2>
-                    <a href="{{path('removeClient', {id:offer.id, user:client.id})}}"><button class="btn btn-sm">Retirer cette personne</button></a>
+                    <a class="delete" alt="suppression de la personne" href="{{path('removeClient', {id:offer.id, user:client.id})}}"><button class="btn btn-sm">Retirer cette personne</button></a>
                 </div>  
             {% endfor %}
         </section>
@@ -40,7 +40,7 @@
 
     <div class="block-inline">
         <a href="{{path('editOffer', {id:offer.id})}}"><button class="btn btn--card">Modifier</button></a>
-        <a href="{{path('deleteOffer', {id:offer.id})}}"><button class="btn btn--card btn--card--delete">Supprimer</button></a>
+        <a class="delete" alt="suppresseion de la proposition de livraison" href="{{path('deleteOffer', {id:offer.id})}}"><button class="btn btn--card btn--card--delete">Supprimer</button></a>
         <a href="{{path('myCounter')}}"><button class="btn btn--card">Revenir au comptoir</button></a>
     </div>
 

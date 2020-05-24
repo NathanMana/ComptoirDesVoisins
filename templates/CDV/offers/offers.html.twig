@@ -63,7 +63,7 @@
                         <p><span>{{item.user.points}}</span> livraison(s) effectuée(s)</p>
                     {% endif %}
                     <p>Type de course : {{item.groceryType}}</p>
-                    <p>{{item.dateDelivery | date('j')}} {{item.dateDelivery | date('M') | trans}} {{item.dateDelivery | date('Y')}}</p>
+                    <p>{{item.dateDelivery | date('j')}} {{item.dateDelivery | date('F') | trans}} {{item.dateDelivery | date('Y')}}</p>
                     <h5>{{item.citiesDelivery}}</h5>
                     <a href="{{path('offerInformation', {id:item.id})}}"><button class="btn btn--card">Voir</button></a>
                 </div>

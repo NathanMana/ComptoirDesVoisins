@@ -42,6 +42,16 @@ class Notification
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $event;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $idEvent;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +113,30 @@ class Notification
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getEvent(): ?string
+    {
+        return $this->event;
+    }
+
+    public function setEvent(string $event): self
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    public function getIdEvent(): ?int
+    {
+        return $this->idEvent;
+    }
+
+    public function setIdEvent(?int $idEvent): self
+    {
+        $this->idEvent = $idEvent;
 
         return $this;
     }

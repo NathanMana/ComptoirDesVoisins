@@ -144,4 +144,46 @@ $(document).ready(function(){
         isOpen = !isOpen;
     });
 
+    $('.delete').click(function(e) {
+        let url = $(this).attr('href');
+        let alt = $(this).attr('alt');
+        let obj = "";
+
+        e.preventDefault();
+        switch(alt) {
+            case "suppression de la personne":
+                obj = "Voulez-vous vraiment retirer cette personne de votre proposition ?";
+                break;
+
+            case "suppression de la proposition de livraison":
+                obj = "Voulez-vous vraiment supprimer cette proposition de livraison ?";
+                break;
+            
+            case "annulation de la demande":
+                obj = "Voulez-vous vraiment demander à annuler l'échange ?";
+                break;
+
+            case "suppression de la demande":
+                obj = "Voulez-vous vraiment supprimer cette demande ?";
+                break;
+
+            case "se retirer de la livraison":
+                obj = "Voulez-vous vraiment vous retirer de cette livraison ?";
+                break;
+
+            case "suppression compte":
+                obj = "Voulez-vous supprimer votre compte ? Cette action sera irréversible et entrainera la suppression de toutes vos informations dans nos bases de données";
+                break;
+
+            case "suppression notification":
+                obj = "Voulez-vous vraiment supprimer cette notification ?";
+                break;
+        }
+
+        let result = confirm(obj);
+        if(result){
+            window.location.href = url;
+        }
+    })
+
 })

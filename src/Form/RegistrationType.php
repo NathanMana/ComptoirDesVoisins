@@ -20,6 +20,7 @@ class RegistrationType extends AbstractType
         $builder
             ->add('email')
             ->add('name')
+            ->add('lastname')
             ->add('city')
             ->add('phone', TelType::class)
             ->add('imageFile', FileType::class, [
@@ -33,6 +34,9 @@ class RegistrationType extends AbstractType
             ])
             ->add('PrivacyPolicies', CheckboxType::class, [
                 'required'=>true
+            ])
+            ->add('mailAuthorization', CheckboxType::class, [
+                'required'=>false
             ])
         ;
     }

@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Advert;
-use App\Service\API\GeoApi;
 use App\Data\SearchData;
+use App\Service\API\GeoApi;
+use App\Service\MailManager;
 use App\Form\SearchAdvertType;
 use App\Form\AdvertCreationType;
 use App\Repository\AdvertRepository;
 use App\Service\NotificationManager;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,7 +73,8 @@ class AdvertController extends AbstractController
             $advert = new Advert();
             $checkUser = true;
             $advert ->setCity($this->getUser()->getCity())
-                    ->setCodeCity($this->getUser()->getCodeCity()); //On bind d'entrée la ville de l'annonce avec la ville de l'utilisateur  
+                    ->setCodeCity($this->getUser()->getCodeCity())
+                    ->setDeadline(new DateTime()); //On bind d'entrée la ville de l'annonce avec la ville de l'utilisateur  
         } else {
             if($advert->getUser() !== $this->getUser()){    //Si l'utilisateur qui veut modifier l'annonce n'est pas le proprio de l'annonce
                 $checkUser = false;
@@ -139,12 +142,17 @@ class AdvertController extends AbstractController
     /**
      * @Route("/mesdemandes/annulation/{id}", name="cancelAdvert")
      */
-    public function cancelAdvert(Advert $advert, EntityManagerInterface $manager){
+    public function cancelAdvert(Advert $advert, EntityManagerInterface $manager, \Swift_Mailer $mailer){
         if($this->getUser() === $advert->getUser() && $advert->getDeliverer()){
             $advert->setCancellation(true);
 
             $notification = new NotificationManager();
             $notification = $notification->advertDelete($advert, $this->getUser());
+
+            if($advert->getDeliverer()->getMailAuthorization()){
+                $mailManager = new MailManager($advert->getDeliverer()->getEmail(),$mailer);
+                $mailManager->notifIntoMail($notification);
+            }
 
             $manager->persist($notification);
             $manager->flush();
@@ -200,12 +208,17 @@ class AdvertController extends AbstractController
     /**
      * @Route("/demandes/{id}/livraison", name="delivery")
      */
-    public function delivery(Advert $advert, EntityManagerInterface $manager){
+    public function delivery(Advert $advert, EntityManagerInterface $manager, \Swift_Mailer $mailer){
         if($advert->getDeliverer() === null && $advert->getUser() !== $this->getUser()){
             $advert->setDeliverer($this->getUser());
 
             $notification = new NotificationManager();
             $notification = $notification->delivererAdvert($advert, $this->getUser());
+
+            if($advert->getUser()->getMailAuthorization()){
+                $mailManager = new MailManager($advert->getUser()->getEmail(),$mailer);
+                $mailManager->notifIntoMail($notification);
+            }
 
             $manager->persist($advert);
             $manager->persist($notification);
@@ -222,11 +235,16 @@ class AdvertController extends AbstractController
     /**
      * @Route("/mesdemandes/annulation/{id}", name="confirmCancellationAdvert")
      */
-    public function confirmCancellationAdvert(Advert $advert, EntityManagerInterface $manager){
+    public function confirmCancellationAdvert(Advert $advert, EntityManagerInterface $manager, \Swift_Mailer $mailer){
         if($this->getUser() === $advert->getDeliverer()){
 
             $notification = new NotificationManager();
             $notification = $notification->advertDeleteConfirmation($advert, $this->getUser());
+
+            if($advert->getUser()->getMailAuthorization()){
+                $mailManager = new MailManager($advert->getUser()->getEmail(),$mailer);
+                $mailManager->notifIntoMail($notification);
+            }
            
             $manager->persist($notification);
             $manager->remove($advert);

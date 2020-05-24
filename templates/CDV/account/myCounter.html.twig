@@ -17,7 +17,10 @@
         <div class="my-informations">
             <div class="exchange">
                 <div class="exchange-legend">
-                    <h2>Mes échanges</h2>
+                    <div class="flex-container" style="justify-content:left;width: fit-content;">
+                        <h2>Mes échanges</h2>
+                        <i id="exchange-i" class="fas fa-question-circle"></i>
+                    </div>
                     <div class="exchange-legend__legend">
                         <div>Je livre</div>
                         <div>On me livre</div>
@@ -72,7 +75,7 @@
                                                         {{client.name}},
                                                     {% endif %}
                                                 {% endfor %} 
-                                                à {{item.citiesDelivery}} le {{item.dateDelivery | date('j')}} {{item.dateDelivery | date('M') | trans}} {{item.dateDelivery | date('Y')}}
+                                                à {{item.citiesDelivery}} le {{item.dateDelivery | date('j')}} {{item.dateDelivery | date('F') | trans}} {{item.dateDelivery | date('Y')}}
                                             </span>
                                         </div>
                                         <div class="col-6 col-align">
@@ -133,7 +136,7 @@
                                 <a href="{{path('informationForClient', {id:item.id})}}">
                                     <div class="row col-align a-bordeau">
                                         <div class="col-6">
-                                            <span>{{item.user.name}} vous livre à {{item.citiesDelivery}} le {{item.dateDelivery | date('j')}} {{item.dateDelivery | date('M') | trans}} {{item.dateDelivery | date('Y')}}</span>
+                                            <span>{{item.user.name}} vous livre à {{item.citiesDelivery}} le {{item.dateDelivery | date('j')}} {{item.dateDelivery | date('F') | trans}} {{item.dateDelivery | date('Y')}}</span>
                                         </div>
                                         <div class="col-6 col-align">
                                             <div style="justify-content:flex-end" class="row">
@@ -157,41 +160,43 @@
                             {% endfor %}
                         {% endif %}
                     {% else %}
-                        <div class="row">Vous n'avez pas d'échange de prévu pour le moment</div>
+                        <div class="row" style="margin:5px 0;padding:10px 0;">Vous n'avez pas d'échange de prévu pour le moment</div>
                     {% endif %}
                 </div>
             </div>
             <div class="row">
-                <div style="margin-left:0" class="col-6">
+                <div style="margin-left:0;margin-left:0" class="col-6">
                     <div class="legend">
                         <h2>Mes demandes en ligne</h2>
+                        <i id="advert-i" class="fas fa-question-circle"></i>
                     </div>
                     {% if myAdvertsWithoutDeliverer is not empty %}
                         {% for advert in myAdvertsWithoutDeliverer %}
                             <a style="width:100%" href="{{path('informationForCreatorAdvert', {id:advert.id})}}">
-                                <div class="row" style="margin:5px 0;padding:10px 0;background:#EFE9E9">
-                                    <span>Ma demande du {{advert.createdAt | date('j')}} {{advert.createdAt | date('M') | trans}} {{advert.createdAt | date('Y')}} à {{advert.city}}</span>
+                                <div class="row col-align a-bordeau">
+                                    <span style="padding:10px">Ma demande du {{advert.createdAt | date('j')}} {{advert.createdAt | date('F') | trans}} {{advert.createdAt | date('Y')}} à {{advert.city}}</span>
                                 </div>
                             </a>
                         {% endfor %}
                     {% else %}
-                        <div class="row">Vous n'avez pas de demande d'aide en attente de livreur</div>
+                        <div class="row" style="margin:5px 0;padding:10px 0;">Vous n'avez pas de demande d'aide en attente de livreur</div>
                     {% endif %}
                 </div>
                 <div class="col-6" style="margin-right:0">
                     <div class="legend">
                         <h2>Mes courses en ligne</h2>
+                        <i id="offer-i" class="fas fa-question-circle"></i>
                     </div>
                     {% if myOffersWithPlace is not empty %}
                         {% for offer in myOffersWithPlace %}
                             <a style="width:100%" href="{{path('informationForCreator', {id:offer.id})}}">
-                                <div class="row" style="margin:5px 0;padding:10px 0;background:#EFE9E9">
-                                    <span>Ma course du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('M') | trans}} {{offer.dateDelivery | date('Y')}} à {{offer.citiesDelivery}}</span>
+                                <div class="row col-align a-blue">
+                                    <span style="padding:10px">Ma course du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('F') | trans}} {{offer.dateDelivery | date('Y')}} à {{offer.citiesDelivery}}</span>
                                 </div>
                             </a>
                         {% endfor %}
                     {% else %}
-                        <div class="row">Vous n'avez pas de proposition de livraison en attente</div>
+                        <div class="row" style="margin:5px 0;padding:10px 0;">Vous n'avez pas de proposition de livraison en attente</div>
                     {% endif %}
                 </div>
             </div>

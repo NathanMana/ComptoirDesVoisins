@@ -16,11 +16,14 @@
                 <div class="input-width">
                     {{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Indiquez ce dont vous avez besoin', 'class':'input-container'}})}}
                 </div>
-                    {% if editing %}
-                        <button type="submit" class="btn btn--center">Sauvegarder les modifications</button>
-                    {% else %}
-                        <button type="submit" class="btn btn--center">Créer</button>
-                    {% endif %}
+                <div class="input-width">
+                    {{form_row(form.deadline, {'label': 'Date limite de livraison'})}}
+                </div>
+                {% if editing %}
+                    <button type="submit" class="btn btn--center">Sauvegarder les modifications</button>
+                {% else %}
+                    <button type="submit" class="btn btn--center">Créer</button>
+                {% endif %}
                 {{form_end(form)}}
             </article>
         </section>

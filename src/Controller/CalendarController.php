@@ -11,15 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CalendarController extends AbstractController
 {
-    /**
-     * @Route("/test", name="calendar")
-     */
-    public function index()
-    {
-        return $this->render('cdv/calendar/index.html.twig', [
-            'controller_name' => 'CalendarController',
-        ]);
-    }
 
     /**
      * @Route("/calendrier/evenement", name="calendarEvent")
@@ -35,10 +26,12 @@ class CalendarController extends AbstractController
         $jsonResponse = new JsonListCalendarModel();
 
         if($countElementMyOffers > 0 && $countElementMyOffersAsClient === 0){
-            foreach($myOffers as $item)
+            foreach($myOffers as $item) //Mes offres
             {
+                $id = $item->getId();
                 $calendarModel = new CalendarViewModel();
-                $calendarModel  ->setStart($item->getDateDelivery());
+                $calendarModel  ->setStart($item->getDateDelivery())
+                                ->setUrl('/meslivraisons/offres/'.$id);
     
                 $nberClient = count($item->getClients()->toArray());
     
@@ -60,11 +53,13 @@ class CalendarController extends AbstractController
             
         } else if ($countElementMyOffersAsClient > 0 && $countElementMyOffers === 0){ 
 
-            foreach($myOffersAsClient as $item)
+            foreach($myOffersAsClient as $item) //Livré d'une offre
             {
+                $id = $item->getId();
                 $calendarModel = new CalendarViewModel();
                 $calendarModel  ->setStart($item->getDateDelivery())
-                                ->setTitle($item->getUser()->getName(). " vous livre");
+                                ->setTitle($item->getUser()->getName(). " vous livre")
+                                ->setUrl('/meslivraisons/offres/' .$id);
 
                 $jsonResponse->addCalendarModel($calendarModel);
             }
@@ -75,9 +70,11 @@ class CalendarController extends AbstractController
 
             foreach($myOffersAsClient as $item)
             {
+                $id = $item->getId();
                 $calendarModel = new CalendarViewModel();
                 $calendarModel  ->setStart($item->getDateDelivery())
-                                ->setTitle($item->getUser()->getName(). " vous livre");
+                                ->setTitle($item->getUser()->getName(). " vous livre")
+                                ->setUrl('/meslivraisons/offres/' . $id);
 
                 $jsonResponse->addCalendarModel($calendarModel);
             }
@@ -85,7 +82,8 @@ class CalendarController extends AbstractController
             foreach($myOffers as $item)
             {
                 $calendarModel = new CalendarViewModel();
-                $calendarModel  ->setStart($item->getDateDelivery());
+                $calendarModel  ->setStart($item->getDateDelivery())
+                                ->setUrl("/mesoffres/". $item->getId());
     
                 $nberClient = count($item->getClients()->toArray());
     

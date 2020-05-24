@@ -7,9 +7,12 @@
         <h1 class="custom-font">Comptoir Des Voisins</h1>
         <h2 class="custom-font-secondary between-sec-color">Une plateforme basée sur le partage et la solidarité.</h2>
         {% if app.user %}
-            <a href="{{path('adverts')}}" class="btn--center btn-main main-btn">Livrez</a>
+            <div class="flex-container" style="justify-content:center">
+                <a href="{{path('offers')}}" style="margin:10px"><button class="btn btn--card">Me faire livrer</button></a>
+                <a href="{{path('adverts')}}" style="margin:10px"><button class="btn btn--card">Livrer</button></a>
+            </div>
         {% else %}
-            <a href="{{path('login')}}" class="btn--center btn-main main-btn">Commencer</a>
+            <a href="{{path('login')}}"><button class="btn btn--card">Commencer</button></a>
         {% endif %}
     </section>
     {% if CGUToValidate %}

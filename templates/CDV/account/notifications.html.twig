@@ -9,10 +9,10 @@
     {% if notifications is not empty %}   
         {% for item in notifications %}
             <article class="notification">
-                <span>{{item.createdAt | date('j')}} {{item.createdAt | date('M') | trans}} {{item.createdAt | date('Y')}} à {{ item.createdAt | date("G:h", "Europe/Paris") }}</span>
+                <span>{{item.createdAt | date('j')}} {{item.createdAt | date('F') | trans}} {{item.createdAt | date('Y')}} à {{ item.createdAt | date("G:h", "Europe/Paris") }}</span>
                 <h2>{{item.object}}</h2>
                 <p>{{item.message}}</p>
-                <a class="btn btn-sm" href="{{path('deleteNotification', {id:item.id})}}">Supprimer la notification</a>
+                <a class="delete" alt="suppression notification" href="{{path('deleteNotification', {id:item.id})}}"><button class="btn btn-sm">Supprimer la notification</button></a>
             </article>
         {% endfor %}
     {% else %}

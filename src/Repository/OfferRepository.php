@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use App\Entity\Offer;
 use App\Data\SearchData;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -27,10 +28,14 @@ class OfferRepository extends ServiceEntityRepository
      */
     public function findSearch(SearchData $search): array
     {   
+        $todayWithHours = new DateTime();
+        $today = $todayWithHours->format("Y-m-d");
+
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.available < p.limited")
-            ->orderBy('p.dateDelivery','ASC');
+            ->andWhere("p.available < p.limited AND p.dateDelivery >= :date")
+            ->orderBy('p.dateDelivery','ASC')
+            ->setParameter(':date', $today);
         
         if(!empty($search->q)){
             $query = $query 

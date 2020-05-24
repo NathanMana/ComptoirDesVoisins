@@ -10,7 +10,6 @@ $(document).ready(() => {
         url : "/calendrier/evenement",
         type : 'get',
         success : function(response){
-            console.log(response);
             if(response.calendarModels){
                 var calendarEl = document.getElementById('calendar');  
                 var calendar = new Calendar(calendarEl, {
@@ -22,8 +21,11 @@ $(document).ready(() => {
                     },
                     defaultView: 'listMonth',
                     locale: 'fr',
-                    events: response.calendarModels
-                    
+                    events: response.calendarModels,
+                    eventRender: function(event){
+                        var result = "<td class='fc-list-item-time fc-widget-content'><img style='width: 40px;' src='build/images/icon/camion.31200d24.svg' /></td><td class='fc-list-item-marker fc-widget-content'></td><td class='fc-list-item-title fc-widget-content'><a href='"+ event.event.url +"'>"+ event.event.title +"</a></td>";
+                        $(event.el).html(result);
+                    }
                 });
                 calendar.render();
             } else {
@@ -31,5 +33,6 @@ $(document).ready(() => {
             }
         }
     });
+    
     
 })

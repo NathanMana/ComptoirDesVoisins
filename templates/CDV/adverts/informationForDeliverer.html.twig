@@ -19,9 +19,11 @@
     </div>  
     
     {% if advert.cancellation %}
-        <h5 style="color:green">Votre voisin a demandé à supprimer cet échange, confirmez-vous la suppression ?</h5>
-        <a href="{{path('confirmCancellationAdvert', {id:advert.id})}}">Je confirme l'annulation de cet échange</a>
-        <a href="#">Signaler un abus</a>
+        <h5 class="block-inline" style="color:green">Votre voisin a demandé à supprimer cet échange, confirmez-vous la suppression ?</h5>
+        <div class="block-inline">
+            <a href="{{path('confirmCancellationAdvert', {id:advert.id})}}"><button class="btn btn--card">Je confirme l'annulation de cet échange</button></a>
+            <a href="{{path('report', {id:advert.user.id})}}"><button class="btn btn--card">Signaler un abus</button></a>
+        </div>
     {% endif %} 
 
     <a class="block-inline" href="{{path('myCounter')}}">

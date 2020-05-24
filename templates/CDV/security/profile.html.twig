@@ -30,7 +30,7 @@
                 </div>
                 <div class="flex-container flex-container--margin">
                    <button type="submit" class="btn">Sauvegarder</button>
-                   <a class="margin-vertical block-inline alone-width" href="{{path('deleteAccount', {id:app.user.id})}}"><button class="btn btn-sm">Supprimer mon compte</button></a>
+                   <a alt="suppression compte" class="delete margin-vertical block-inline alone-width" href="{{path('deleteAccount', {id:app.user.id})}}"><button class="btn btn-sm">Supprimer mon compte</button></a>
                 </div>
             {{form_end(form)}}
 

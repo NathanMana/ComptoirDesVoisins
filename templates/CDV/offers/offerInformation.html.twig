@@ -11,7 +11,7 @@
                 <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
             {% endif %}
 
-            <p>Livraison du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('M') | trans}} {{offer.dateDelivery | date('Y')}}</p>
+            <p>Livraison du {{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('F') | trans}} {{offer.dateDelivery | date('Y')}}</p>
             <p>{{offer.citiesDelivery}}</p>
 
             <h2>{{offer.user.name}}</h2>

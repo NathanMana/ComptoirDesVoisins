@@ -18,6 +18,9 @@
                     {{form_row(form.name, {'label': 'Prénom', 'attr': {'placeholder':'Prénom'}} )}}
                 </div> 
                 <div class="form-group form-group-required">
+                    {{form_row(form.lastname, {'label': 'Nom', 'attr': {'placeholder':'Nom'}} )}}
+                </div> 
+                <div class="form-group form-group-required">
                     {{form_row(form.city, {'label': 'Ville', 'attr': {'placeholder':'Ville où vous habitez'}})}}
                     <div class="proposition"></div>
                 </div>  
@@ -41,6 +44,9 @@
                 </div>
                 <div class="form-group form-group-inline form-group-required">
                     {{form_row(form.PrivacyPolicies, {'label': 'J\'accepte les confitions d\'utilisation de Comptoir des Voisins'})}}
+                </div>
+                <div class="form-group form-group-inline">
+                    {{form_row(form.mailAuthorization, {'label': 'Je veux recevoir des mails pour me tenir informer de nouvelles informations me concernant'})}}
                 </div>
                 <button type="submit" class="btn btn--center-form">M'inscrire</button>
             </fieldset>

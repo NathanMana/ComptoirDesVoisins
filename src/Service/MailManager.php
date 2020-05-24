@@ -2,20 +2,20 @@
 
 namespace App\Service;
 
+use App\Entity\Notification;
+
 class MailManager
 {
 
     private $mailer;
     private $message;
     private $To;
-    private $token;
-    private $from = 'contact@comptoirdesvoisins.fr';
+    private $from = 'comptoirdesvoisins@gmail.com';
 
-    public function __construct(string $To, ?string $token, \Swift_Mailer $mailer)
+    public function __construct(string $To, \Swift_Mailer $mailer)
     {
         $this->mailer = $mailer;
         $this->To = $To;
-        $this->token = $token;
     }
 
     public function registration()
@@ -34,14 +34,27 @@ class MailManager
         $this->mailer->send($this->message);
     }
 
-    public function passwordRecuperation()
+    public function passwordRecuperation(string $token)
     {
 
         $this->message = (new \Swift_Message('Récupération du mot de passe'))
                         ->setFrom($this->from)
                         ->setTo($this->To)
                         ->setBody(
-                            "Suivez ce lien pour réinitialiser votre mot de passe : ". " https://localhost:8000/connexion/motdepasse/reinitialisation/".$this->token
+                            "Suivez ce lien pour réinitialiser votre mot de passe : ". " https://localhost:8000/connexion/motdepasse/reinitialisation/".$token
+                        );
+
+        $this->mailer->send($this->message);
+    }
+
+    public function notifIntoMail(Notification $notif)
+    {
+
+        $this->message = (new \Swift_Message())
+                        ->setFrom($this->from)
+                        ->setTo($this->To)
+                        ->setBody(
+                            "<h1>". $notif->getObject() ."</h1><p>". $notif->getMessage() ."</p>"
                         );
 
         $this->mailer->send($this->message);

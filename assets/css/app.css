@@ -62,6 +62,7 @@ h2 {
   font-family: Muli, sans-serif;
   font-weight: 300;
   font-size: 20px;
+  width: fit-content;
 }
 
 h5 {
@@ -611,7 +612,7 @@ fieldset {
 
 /* PROPOSITION DE VILLE */
 .proposition {
-  margin: 5px 0;
+  margin: -5px 0 15px 0;
   width: 100%;
 }
 
@@ -624,8 +625,9 @@ fieldset {
   padding: 5px 15px;
   border-bottom: 2px solid #fff;
   cursor: pointer;
-  background: var(--white-grey);
+  background: rgba(63, 81, 148, 0.616);
   transition: 0.2s;
+  color: #fff;
 }
 
 .proposition tr td {
@@ -636,8 +638,8 @@ fieldset {
 }
 
 .proposition tr:hover {
-  background: rgba(63, 81, 148, 0.616);
-  color: #fff;
+  background: var(--white-grey);
+  color: var(--blue);
 }
 
 /* CONTAINER */
@@ -827,13 +829,24 @@ section p {
   border: 1.5px solid var(--bordeau);
 }
 
+.a-bordeau:hover .col-2,
+.a-blue:hover .col-2 {
+  opacity: 1;
+}
+
+.a-bordeau .col-2,
+.a-blue .col-2 {
+  opacity: 0;
+  transition: 0.2s;
+  color: #fff;
+}
+
 .a-bordeau:hover {
   color: var(--bordeau);
   border-radius: 3px;
   background: var(--white-grey);
   transition: 0.2s;
 }
-
 
 .profile-img {
   width: 100px;
@@ -1091,10 +1104,10 @@ button[type="submit"]
     padding: 0;
     box-shadow: none;
   }
-  .flex-container {
+  /* .flex-container {
     flex-direction: column;
     height: 150px;
-  }
+  } */
 
   .profile-img {
     width: 60%;
@@ -1199,7 +1212,6 @@ button[type="submit"]
 .container-calendar .title-calendar {
   width: 100%;
   text-align: center;
-  padding: 0.5em 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1208,7 +1220,7 @@ button[type="submit"]
 }
 
 .title-calendar img {
-  margin: 10px;
+  margin: 0 10px;
   width: 40px;
   height: 40px;
 }
@@ -1224,11 +1236,16 @@ button[type="submit"]
   justify-content: space-around;
   align-items: center;
   flex-wrap: nowrap;
-  padding: 1.5em 0;
+  padding: 15px 0;
+}
+
+.fc-listMonth-view {
+  padding: 0!important;
 }
 
 .fc-scroller {
-  height: 400px!important;
+  min-height: 400px!important;
+  height:auto!important;
 }
 
 .fc button {
@@ -1345,6 +1362,50 @@ button[type="submit"]
   border: 1px solid #111;
 }
 
+.exchange-legend i,
+.legend i {
+  font-size: 30px;
+  color: var(--bordeau);
+  position: relative;
+  cursor: pointer;
+}
+
+.exchange-legend i::after,
+.legend i::after{
+  position: absolute;
+  width: 300px;
+  background: var(--bordeau);
+  color: #fff;
+  padding: 15px;
+  font-size: 16px;
+  right: 0;
+  transform: translateX(100%);
+  font-family: Muli, sans-serif;
+  font-weight: 200;
+  line-height: 1.2;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+}
+
+#exchange-i::after {
+  content:"Dans cette section, vous retrouverez vos différentes situation de livraison. Que vous soyez le livré (annonce en bordeau) ou le livreur (annonce bleu).";
+}
+
+#advert-i::after {
+  content:"Dans cette partie, vous pourrez voir toutes vos demandes encore en ligne. Une demande en ligne est une demande qui n'a pas encore de livreur.";
+}
+
+#offer-i::after {
+  content:"Dans cette partie, vous pourrez voir toutes vos offres encore en ligne. Votre offre est en ligne tant que la limite de personnes à livrer que vous avez fixé n'a pas été atteinte.";
+}
+
+.exchange-legend i:hover::after,
+.legend i:hover::after{
+  visibility: initial;
+  opacity: 1;
+}
+
 .exchange-legend h2 {
   margin: 0 15px;
 }
@@ -1385,7 +1446,13 @@ button[type="submit"]
 .legend {
   width: 100%;
   border: 1px solid #111;
+  display: flex;
   padding: 10px 15px;
+  align-items: center;
+}
+
+.legend h2 {
+  margin-right: 15px;
 }
 
 .schedule {
@@ -1398,6 +1465,8 @@ button[type="submit"]
   width: 100%;
   margin: 10px 0;
   display: block;
+  overflow-y: scroll;
+  height: 300px;
 }
 
 .exchange-items img {
@@ -1426,7 +1495,7 @@ button[type="submit"]
 
 .floating-message 
 {
-  position: absolute;
+  position: fixed;
   background: #fff;
   bottom: 0;
   width: 100%;
@@ -1448,7 +1517,7 @@ button[type="submit"]
 }
 
 .col-12 {
-  flex : 1 1 100%;
+  flex : 1 1 calc(100% - 20px);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -1456,11 +1525,34 @@ button[type="submit"]
 }
 
 .col-6 {
-  flex: 1 0 300px;
+  flex: 1 0 calc(50% - 20px);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
   height: fit-content;
+}
+
+.col-10 {
+  flex: 0 0 calc(84% - 20px);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  height: fit-content;
+}
+
+.col-2 {
+  flex: 0 0 16%;
+  display: flex;
+  flex-wrap: wrap;
+  height: fit-content;
+}
+
+.col-4 {
+  flex: 0 0 calc(32% - 20px);
+  display: flex;
+  flex-wrap: wrap;
+  height: fit-content;
+  margin: 10px;
 }
 
 .small-img {
@@ -1470,6 +1562,50 @@ button[type="submit"]
 }
 
 /* NOTIFICATIONS */
+#countNotif {
+  color: var(--bordeau);
+  position: fixed;
+  top: 15px;
+  right: 260px;
+}
+
+.ul-notification {
+  position: fixed;
+  top: 70px;
+  right: 260px;
+  width: 300px;
+  list-style: none;
+  background: var(--white-grey);
+  height: 0;
+  overflow-y: scroll;
+  transition: 0.2s;
+}
+
+.ul-notification li {
+  transition: 0.2s;
+  padding: 5px 0;
+  cursor: pointer;
+  border-bottom: .5px solid #d8d8d5;
+}
+
+.ul-notification li:hover {
+  background-color: rgba(63, 81, 148, 0.616);
+  color: #fff;
+}
+
+.ul-notification h3 {
+  text-align: center;
+  font-weight: 400;
+  font-size:20px;
+}
+
+.ul-notification p {
+  margin: 5px 0;
+  text-align: left;
+  font-size:15px;
+  word-wrap: none;
+  overflow: hidden;
+}
 
 .notification {
   width: 90%;

@@ -49,6 +49,13 @@ class User implements UserInterface, Serializable
      * @Assert\Regex("/^[^<>#§µ]+$/",
      *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
      */
+    private $lastname;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^[^<>#§µ]+$/",
+     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
+     */
     private $city;
 
     /**
@@ -165,6 +172,11 @@ class User implements UserInterface, Serializable
      * @ORM\JoinColumn(nullable=false)
      */
     private $latestCGUVersionValidated;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $mailAuthorization;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="user")
@@ -649,6 +661,30 @@ class User implements UserInterface, Serializable
             $this->salt,
             $this->password
         ) = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getMailAuthorization(): ?bool
+    {
+        return $this->mailAuthorization;
+    }
+
+    public function setMailAuthorization(bool $mailAuthorization): self
+    {
+        $this->mailAuthorization = $mailAuthorization;
+
+        return $this;
     }
 
     

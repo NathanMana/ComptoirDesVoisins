@@ -109,8 +109,8 @@ class SecurityController extends AbstractController
                 $manager->persist($user);
                 $manager->flush();
 
-                $mailer = new MailManager($email, $token, $mailer);
-                $mailer->passwordRecuperation();
+                $mailer = new MailManager($email, $mailer);
+                $mailer->passwordRecuperation($token);
 
                 return $this->redirectToRoute("emailSent");
             } else {

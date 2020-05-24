@@ -68,6 +68,11 @@ class Advert
      */
     private $codeCity;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $deadline;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +158,18 @@ class Advert
     public function setCodeCity(string $codeCity): self
     {
         $this->codeCity = $codeCity;
+
+        return $this;
+    }
+
+    public function getDeadline(): ?\DateTimeInterface
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline(\DateTimeInterface $deadline): self
+    {
+        $this->deadline = $deadline;
 
         return $this;
     }

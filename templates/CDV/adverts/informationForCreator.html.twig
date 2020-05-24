@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    <h1>Demande de course du {{advert.createdAt | date('j')}} {{advert.createdAt | date('M') | trans}} {{advert.createdAt | date('Y')}}</h1>
+    <h1>Demande de course du {{advert.createdAt | date('j')}} {{advert.createdAt | date('F') | trans}} {{advert.createdAt | date('Y')}}</h1>
 
     <p>Votre message: {{advert.message}}</p>
 
@@ -27,7 +27,7 @@
             <a href="{{path('givenAdvert', {id:advert.id})}}">
                 <button class="btn btn--card">J'ai reçu ma demande</button>
             </a>
-            <a href="{{path('cancelAdvert', {id:advert.id})}}">
+            <a class="delete" alt="annulation de la demande" href="{{path('cancelAdvert', {id:advert.id})}}">
                 <button class="btn btn--card">Annuler la demande</button>
             </a>
         {% else %}
@@ -36,7 +36,7 @@
         {% endif %}
     {% else %}
         <div class="block-inline">
-            <a href="{{path('deleteAdvert', {id:advert.id})}}"><button class="btn btn--card btn--card--delete">Supprimer ma demande</button></a>
+            <a class="delete" alt="suppression de la demande" href="{{path('deleteAdvert', {id:advert.id})}}"><button class="btn btn--card btn--card--delete">Supprimer ma demande</button></a>
             <a href="{{path('editAdvert', {id:advert.id})}}"><button class="btn btn--card">Modifier ma demande</button></a>
     {% endif %}
 

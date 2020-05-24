@@ -9,6 +9,7 @@ class CalendarViewModel
     private $start;
     private $end;
     private $title;
+    private $url;
 
     public function getStart(): DateTimeInterface
     {
@@ -40,6 +41,17 @@ class CalendarViewModel
     public function setEnd(?DateTimeInterface $end): ?self
     {
         $this->end = $end;
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): ?self
+    {
+        $this->url = $url;
         return $this;
     }
 

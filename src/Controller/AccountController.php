@@ -3,11 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Offer;
+use NotificationViewModel;
 use App\Entity\Notification;
+use App\Data\JsonListNotification;
 use App\Repository\OfferRepository;
 use App\Repository\AdvertRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\NotificationRepository;
+use App\Service\MailManager;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AccountController extends AbstractController
@@ -26,7 +34,7 @@ class AccountController extends AbstractController
       /**
      * @Route("/meslivraisons/supprimer/{id}", name="deleteOffer")
      */
-    public function delete_offer(Offer $offer, EntityManagerInterface $manager){
+    public function delete_offer(Offer $offer, EntityManagerInterface $manager, \Swift_Mailer $mailer){
 
         if($this->getUser() === $offer->getUser()){
             if(!empty($offer->getClients())){
@@ -35,11 +43,18 @@ class AccountController extends AbstractController
 
                 $clients = $offer->getClients();
                 foreach($clients as $client){
+
                     $notification   ->setObject("Suppression de l'annonce")
                                     ->setMessage($this->getUser()->getName()." a supprimé l'annonce à laquelle vous vous étiez rattaché")
                                     ->setSeen(false)
                                     ->setUser($client)
                                     ->setCreatedAt(new \DateTime());
+
+                    if($client->getMailAuthorization()){
+                        $mailManager = new MailManager($client->getEmail(),$mailer);
+                        $mailManager->notifIntoMail($notification);
+                    }
+                                    
                     $manager->persist($notification);
                 }
             }
@@ -89,4 +104,5 @@ class AccountController extends AbstractController
             "myOffersWithPlace"=>$myOffersWithPlace                     //Mes courses pas remplies au max
         ]);
     }
+
 }

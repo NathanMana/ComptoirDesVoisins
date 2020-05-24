@@ -29,8 +29,7 @@ class AdvertRepository extends ServiceEntityRepository
     {   
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.deliverer is null")
-            ->andWhere("p.City is not null")
+            ->andWhere("p.deliverer is null AND p.City is not null")
             ->orderBy('p.createdAt','DESC');
         
         if(!empty($search->q)){
