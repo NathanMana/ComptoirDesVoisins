@@ -1,0 +1,102 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Création de ma proposition - CDV{% endblock %}
+
+{% block body %}
+
+    <h1 class="color-offer">Création de ma proposition</h1>
+    <span id="required__offer" class="block color-offer">obligatoire</span>
+
+    <article>
+        {{form_start(form, {'attr': {'class':'form'}})}}
+            <div class="col-12">
+                {{form_label(form.title, 'Donnez un titre à votre demande', {'label_attr': {'class': 'label form-required__offer'}})}}
+                {{form_widget(form.title, {'attr': {'placeholder':'Je livre aux alentours de Sainte-Suzanne'}})}}
+            </div>
+            <div class="flex">
+                <div class="col-6">
+                    <div class="city">
+                        {{form_label(form.citiesDeliveryName, 'Ville où vous livrez', {'label_attr': {'class': 'label form-required__offer'}})}}
+                        {{form_widget(form.citiesDeliveryName, {'label': 'Ville où vous livrez', 'attr':{ 'placeholder': 'Quelle est la ville que vous voulez livrer ?'}})}}
+                        <div class="proposition"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    {{form_label(form.dateDelivery, 'Date', {'label_attr': {'class': 'label form-required__offer'}})}}
+                    {{form_widget(form.dateDelivery)}}
+                </div>
+            </div>
+            <div class="col-12">
+                {{form_label(form.groceryTypeArray, 'Quel type de course ?', {'label_attr': {'class': 'label form-required__offer'}})}}
+                <div class="checkbox">
+                    {% for groceryType in form.groceryTypeArray %}
+                        <div class="checkbox-item">
+                            {{form_widget(groceryType)}}
+                            {{form_label(groceryType)}}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-12">
+                {{form_label(form.message, 'Message', {'label_attr': {'class': 'label form-required__offer'}})}}
+                {{form_widget(form.message, {'attr':{'placeholder':'Information supplémentaire, condition, prix maximal par personne, etc..'}})}}
+            </div>
+            <div class="col-12">
+                {{form_label(form.limited, 'Combien de personnes pouvez-vous livrer ?', {'label_attr': {'class': 'label form-required__offer'}})}}
+                {{form_widget(form.limited, {'attr': {'class':'col-4'}})}}
+            </div>
+            <button type="submit" style="background: #008D93;">Créer ma proposition</button>
+        {{form_end(form)}}
+
+    </article>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function(){
+
+            $('#offer_creation_timezone').val(timezone);
+            const apiUrl = "https://geo.api.gouv.fr/communes?nom=";
+            const format = "&format=json";
+            let timeout = null;
+            $("#offer_creation_citiesDeliveryName").keyup(function(){
+                clearTimeout(timeout);
+                $('.proposition').empty();
+                timeout = setTimeout(() => {
+    
+                let cityName = $("#offer_creation_citiesDeliveryName").val();
+                let url = apiUrl + cityName + format;
+    
+                if(cityName != "" && cityName.length > 1){
+                    fetch(url, {method: "get"}).then(response=>response.json()).then(results => {
+                        if(results.length > 0){
+    
+                            $('.proposition').append('<table><tbody>');
+                            $.each(results.slice(0,5), function(key, value){
+                                $('tbody').append('<tr class="CityVal"><td alt="'+value.code+'">'+ value.nom +' ('+ value.codeDepartement +')</td></tr>');
+                            });
+                            $('.proposition').append('</tbody></table>');
+    
+                            $('.CityVal').click(function(){
+    
+                                let CityValue = $(this).children().text();
+                                let CityCode = $(this).children().attr('alt');
+                                $('#offer_creation_citiesDeliveryName').val(CityValue);
+                                $('#offer_creation_codeCities').val(CityCode);          
+                                $('.proposition').empty();
+                            });
+    
+                        } else {
+                            $('.proposition').append('<table><tbody><tr><td class="error">Nous ne trouvons pas cette ville</td></tr></table></tbody>');
+                        }
+                    });
+                }
+            }, 500);
+
+        })
+    });
+
+    </script>
+
+{% endblock %}

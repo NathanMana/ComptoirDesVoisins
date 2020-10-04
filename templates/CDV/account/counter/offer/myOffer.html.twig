@@ -1,0 +1,64 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ma Proposition {{offer.title}}{% endblock %}
+
+{% block body %}
+
+    <h1>Information sur ma proposition</h1>
+    <section class="md-section section__margin-side">
+        <article class="result article-offer">
+            <div class="article__content">
+                <div class="article__header">
+                    <div class="article__header__title">
+                        <h4>{{offer.title}}</h4>
+                        <span>{{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('F') | trans}} {{offer.dateDelivery | date('Y')}}</span>
+                    </div>
+                    <img src="http://placehold.it/75x75" alt="">
+                </div>
+                <div class="flex">
+                    <ul>
+                        {% for groceryType in offer.groceryType %}
+                            <li>{{groceryType}}</li>
+                        {% endfor %}
+                        {% for city in offer.citiesDelivery %}
+                            <li>{{city.name}}</li>
+                        {% endfor %}
+                    </ul>
+                    <p>{{offer.message}}...</p>
+                </div>
+            </div>
+            <div class="article__information">
+                <div class="article__information__creator">
+                    {% if offer.user.filename %}
+                        <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="">  
+                    {% else %}
+                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                    {% endif %}
+                    <div>
+                        <h5>{{offer.user.name}} {{offer.user.lastname}}</h5>
+                        <span style="order:2;font-size: 1.2em;display: block;width: 100%;">Téléphone: {{offer.user.phone}}</span>
+                        <span>A livré {{offer.user.points}} fois</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <div class="flex block">
+            <a href="{{path('myCounter')}}" class="btn btn-primary" >Revenir à mon comptoir</a>   
+            <a onclick="deleteOffer({{offer.id}})" class="btn btn-primary" >Supprimer cette proposition</a>  
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+function deleteOffer(id){
+    if(confirm('Voulez-vous vraiment supprimer cette proposition ?')){
+        document.location.href="/comptoir/activites/proposition/supprimer/" + id; 
+    }
+}
+</script>
+
+{% endblock %}

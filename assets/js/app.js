@@ -21,18 +21,17 @@ $(document).ready(function(){
     const format = "&format=json";
 
 
-    if(h1 === "Inscription"){
-        cityInput = $('#registration_city');
+    if(h1 === "M'inscrire"){
+        cityInput = $('#registration_cityName');
     } else if (h1 === "Profil") {
         cityInput = $('#profile_city');
     } else if (h1 === "Création de ma demande") {
-        cityInput = $('#advert_creation_city');
+        cityInput = $('#advert_creation_cityName');
     } else if (h1 === "Création de ma course"){
-        cityInput = $('#offer_creation_citiesDelivery');
+        cityInput = $('#offer_creation_citiesDeliveryName');
     }
 
     let timeout = null;
-
 
     $(cityInput).keyup(function(){
         clearTimeout(timeout);
@@ -61,14 +60,14 @@ $(document).ready(function(){
                             if(h1 === "Profil"){
                                 $('#profile_city').val(CityValue);
                                 $('#profile_codeCity').val(CityCode);
-                            } else if (h1 === "Inscription") {
-                                $('#registration_city').val(CityValue);
+                            } else if (h1 === "M'inscrire") {
+                                $('#registration_cityName').val(CityValue);
                                 $('#registration_codeCity').val(CityCode);
                             } else if (h1 === "Création de ma demande"){
-                                $('#advert_creation_city').val(CityValue);
+                                $('#advert_creation_cityName').val(CityValue);
                                 $('#advert_creation_codeCity').val(CityCode);
                             } else if (h1 === "Création de ma course"){
-                                $('#offer_creation_citiesDelivery').val(CityValue);
+                                $('#offer_creation_citiesDeliveryName').val(CityValue);
                                 $('#offer_creation_codeCities').val(CityCode);
                             }            
                             $('.proposition').empty();
@@ -167,8 +166,8 @@ $(document).ready(function(){
                 obj = "Voulez-vous vraiment supprimer cette demande ?";
                 break;
 
-            case "se retirer de la livraison":
-                obj = "Voulez-vous vraiment vous retirer de cette livraison ?";
+            case "se retirer de ce service":
+                obj = "Voulez-vous vraiment vous retirer de ce service ?";
                 break;
 
             case "suppression compte":
@@ -183,6 +182,25 @@ $(document).ready(function(){
         let result = confirm(obj);
         if(result){
             window.location.href = url;
+        }
+    });
+
+    $('#js__search__choice .btn').click(function() {
+        $("button[type='submit']").css({'display':'block'});
+        var el = $(this).prop('id');
+        if(el === "btnDelivery"){
+            $('#btnHelp .fa-check').remove();
+            $(this).append("<i class='fas fa-check'></i>");
+            $('#type').val(true);
+            $('.js__search:not(#js__search__choice, #js__search__city)').css({'display':'none'});
+            $('#js__search__city').css({'display':'block'});
+            $('#js__search__city label').text('Où voulez-vous livrer ?');
+        } else {
+            $('#btnDelivery .fa-check').remove();
+            $(this).append("<i class='fas fa-check'></i>");
+            $('#type').val(false);
+            $('#js__search__city label').text('Où voulez-vous vous faire livrer ?');
+            $('.js__search').css({'display':'block'});
         }
     })
 

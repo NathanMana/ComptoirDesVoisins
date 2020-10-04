@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comptoir des Voisins - Une plateforme pour les commerçants et leurs communautés{% endblock %}
+
+{% block body %}
+    {% if app.user %}
+    <div class="feedback">
+        Bonjour {{app.user.name}} !
+    </div>
+    {% endif %}
+    <section class="homepage">
+        <h1>Simplifiez-vous la vie et celle de votre voisinage</h1>
+        {% if not app.user %}
+            <div class="homepage__form">
+                <form action="{{path('login')}}" method="post">
+                    <fieldset>Connectez-vous !</fieldset>
+                    {% if error %}
+                        <div class="error alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+                    <label for="_username">Mail</label>
+                    <input class="login-input" type="text" name="_username" placeholder="Adresse mail">
+                
+                    <label class="" for="_password">Mot de passe</label>
+                    <input class="login-input" type="password" name="_password" placeholder="Mot de passe">
+                
+                    <span class="block" style="font-size:0.8em;margin:0 auto 20px auto;"><a style="color:#111;" href="{{path('forgottenPassword')}}">Mot de passe oublié ?</a></span>
+                    
+                    <button type="submit" class="btn btn--center-form">Me connecter</button>
+                </form>
+                <p class="block" style="font-size:0.8em;margin:20px auto 10px auto;">Pas de compte ? Première visite ?</p>
+                <a class="block" style="text-decoration:underline;color:#111;" href="{{path('registration')}}">Inscrivez-vous !</a>
+            </div>
+        {% endif %}
+        <div class="homepage__link" class="col-12">
+            <a class="btn btn-primary" href="{{path('login')}}">Connectez-vous !</a>
+        </div>
+        <div class="homepage__registration homepage__link">
+            <p>Pas de compte ? Première visite ?</p>
+            <a href="{{path('registration')}}" class="btn btn-border-offer">Inscrivez-vous !</a>
+        </div>
+    </section>
+    <section style="margin: 15px 0;" id="tutorial">
+        <h2 class="block">Vous avez besoin d'aide</h2>
+        <span class="block" style="font-size: 1.3em;">2 possibilités</span>
+        <article id="find-offers">
+            <h3 style="text-align:center;">Trouvez un voisin qui propose ses services</h3>
+            <div class="flex-row-c">
+                <div class="explanation col-4">
+                    <img src="http://placehold.it/200x300" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod soluta harum omnis, et vitae nesciunt tempora eius ipsam rem, consectetur illum nam voluptatibus, dolor tenetur ipsum beatae. Autem, similique praesentium!</p>
+                </div>
+                <div class="explanation col-4">
+                    <img src="http://placehold.it/200x300" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod soluta harum omnis, et vitae nesciunt tempora eius ipsam rem, consectetur illum nam voluptatibus, dolor tenetur ipsum beatae. Autem, similique praesentium!</p>
+                </div>
+                <div class="explanation col-4">
+                    <img src="http://placehold.it/200x300" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod soluta harum omnis, et vitae nesciunt tempora eius ipsam rem, consectetur illum nam voluptatibus, dolor tenetur ipsum beatae. Autem, similique praesentium!</p>
+                </div>
+            </div>
+        </article>
+        <article id="create-help">
+            <h3 style="text-align:center;">Trouvez un voisin qui propose ses services</h3>
+            <div class="flex-row-c">
+                <div class="explanation col-4">
+                    <img src="http://placehold.it/200x300" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod soluta harum omnis, et vitae nesciunt tempora eius ipsam rem, consectetur illum nam voluptatibus, dolor tenetur ipsum beatae. Autem, similique praesentium!</p>
+                </div>
+                <div class="explanation col-4">
+                    <img src="http://placehold.it/200x300" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod soluta harum omnis, et vitae nesciunt tempora eius ipsam rem, consectetur illum nam voluptatibus, dolor tenetur ipsum beatae. Autem, similique praesentium!</p>
+                </div>
+                <div class="explanation col-4">
+                    <img src="http://placehold.it/200x300" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod soluta harum omnis, et vitae nesciunt tempora eius ipsam rem, consectetur illum nam voluptatibus, dolor tenetur ipsum beatae. Autem, similique praesentium!</p>
+                </div>
+            </div>
+        </article>
+    </section>
+    <section id="qui-sommes-nous">
+        <h3 class="text-center">Qui sommes-nous ?</h3>
+        <div class="flex-row-c-c">
+            <div class="col-6">
+                <img class="block" style="width:60%;height:300px;object-fit:contain;" src="http://placehold.it/300x400" alt="">
+            </div>
+            <div class="col-6">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem in et obcaecati hic, maiores consequatur culpa natus architecto numquam blanditiis impedit minima mollitia? Dolores voluptatum beatae minus ipsam nulla odit.</p>
+                <h4 class="__background-purple" class="text-center " style="margin-top:20px;">Nos réseaux sociaux</h4>
+                <div class="flex-row-c">
+                    <img src="http://placehold.it/50x50" alt="">
+                    <img src="http://placehold.it/50x50" alt="">
+                    <img src="http://placehold.it/50x50" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+{% endblock %}

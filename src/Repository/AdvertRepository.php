@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use DateTime;
+use DateInterval;
 use App\Entity\User;
 use App\Entity\Advert;
-use App\Data\SearchData;
+use App\ViewModel\SearchData;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -22,21 +24,70 @@ class AdvertRepository extends ServiceEntityRepository
     }
 
     /**
+     * Récupère les produits en ligne d'un utilisateur
+     * @return Advert[]
+     */
+    public function findOnlineAdvertsForUser(User $user){
+        $todayWithHours = new DateTime();
+        $today = $todayWithHours->format("Y-m-d");
+
+        $query= $this   
+                ->createQueryBuilder('p')
+                ->andWhere("p.deadline >= :today AND p.user = :user")
+                ->orderBy('p.deadline','DESC')
+                ->setParameter(':today', $today)
+                ->setParameter(':user', $user);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * Récupère les produits en lien avec une recherche
      * @return Advert[]
      */
     public function findSearch(SearchData $search): array
     {   
+        $todayWithHours = new DateTime();
+        $today = $todayWithHours->format("Y-m-d");
+
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.deliverer is null AND p.City is not null")
-            ->orderBy('p.createdAt','DESC');
-        
-        if(!empty($search->q)){
+            ->leftJoin("p.city", "c")
+            ->andWhere("p.deliverer is null AND c is not null AND p.deadline >= :today ")
+            ->orderBy('p.createdAt','DESC')
+            ->setParameter(':today', $today);
+
+        if(!empty($search->q) && empty($search->distance)){
             $query = $query 
-                ->andWhere("p.City LIKE :q")
+                ->andWhere("c.name LIKE :q")
                 ->setParameter("q", "%{$search->q}%");
         }
+
+        if(!empty($search->distance)){
+            $oneDegInOneKmLon = 111*cos(deg2rad($search->lat)); //60km pour la france
+            $degForGivenKmLon = $search->distance / $oneDegInOneKmLon;
+
+            $oneDegInOneKmLat = 111;
+            $degForGivenKmLat = $search->distance / $oneDegInOneKmLat;
+
+            $lonInf = $search->lon - $degForGivenKmLon;
+            $lonSup = $search->lon + $degForGivenKmLon;
+            $latInf = $search->lat - $degForGivenKmLat;
+            $latSup = $search->lat + $degForGivenKmLat;
+
+            $query = $query 
+                ->andWhere("c.longitude BETWEEN :lonInf AND :lonSup AND c.latitude BETWEEN :latInf AND :latSup")
+                ->andWhere("(((c.longitude - :lon ) * :unityLon) * ((c.longitude - :lon ) * :unityLon)) + (((c.latitude - :lat ) * 111) * ((c.latitude - :lat ) * 111)) < :distance * :distance")
+                ->setParameter(":lonInf", $lonInf)
+                ->setParameter(":lonSup", $lonSup)
+                ->setParameter(":latInf", $latInf)
+                ->setParameter(":latSup", $latSup)
+                ->setParameter(":unityLon", $oneDegInOneKmLon)
+                ->setParameter(":distance", $search->distance)
+                ->setParameter(":lon", $search->lon)
+                ->setParameter(":lat", $search->lat);
+        }
+
         return $query->getQuery()->getResult();
     }
 
@@ -46,11 +97,14 @@ class AdvertRepository extends ServiceEntityRepository
      */
     public function findAdvertsWithDeliverer(User $user): array
     {   
+        $date = new DateTime();
+        $dateWithoutHours = $date->format('Y-m-d');
+
         $query= $this   
             ->createQueryBuilder('p')
-            ->andWhere("p.deliverer is not null")
-            ->andWhere("p.user = :user")
-            ->setParameter("user", $user);
+            ->andWhere("p.deliverer is not null AND p.user = :user AND p.deadline >= :date AND p.isDelivered = false")
+            ->setParameter("user", $user)
+            ->setParameter("date", $dateWithoutHours);
         
         return $query->getQuery()->getResult();
     }
@@ -67,6 +121,43 @@ class AdvertRepository extends ServiceEntityRepository
         
         return $query->getQuery()->getResult();
     }
+
+    /**
+     * Récupère un tableau de demande dépassée
+     * @return Advert[]
+     */
+    public function findWaste(): array
+    {
+
+        $date = new DateTime();
+        $date->sub(new DateInterval('P15D'));
+
+        $query = $this  ->createQueryBuilder('a')
+                        ->andWhere("a.deadline < :date AND a.deliverer is null")
+                        ->setParameter(':date', $date);
+        
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Récupère un tableau d'échanges qui se sont passés 
+     * @return Advert[]
+     */
+    public function findHistorical(User $user): array
+    {
+
+        $date = new DateTime();
+        $dateWithoutHours = $date->format('Y-m-d');
+
+        $query = $this  ->createQueryBuilder('a')
+                        ->andWhere("(a.isDelivered = true OR (a.deadline < :date AND a.deliverer is not null)) AND a.user = :user")
+                        ->setParameter(':date', $dateWithoutHours)
+                        ->setParameter(':user', $user);
+        
+        return $query->getQuery()->getResult();
+    }
+
+
 
     // /**
     //  * @return Advert[] Returns an array of Advert objects

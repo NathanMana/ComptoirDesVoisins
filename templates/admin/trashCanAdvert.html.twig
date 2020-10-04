@@ -1,0 +1,23 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Supprimer les demandes{% endblock %}
+
+{% block body %}
+
+    <h1>Supprimer les demandes périmées</h1>
+
+    <a href="{{path('trashCan_DeleteAdvertAll')}}" class="block-inline"><button class="btn btn--card">Tout supprimer</button></a>
+
+    <table>
+        <tbody>
+        {% for advert in adverts %}
+            <tr>
+                <td>{{advert.id}}</td>
+                <td>{{advert.deadline | date('j / m / Y')}}</td>
+                <td><a href="{{path('trashCan_DeleteAdvert', {id:advert.id})}}">Supprimer</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

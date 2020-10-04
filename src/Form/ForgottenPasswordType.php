@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Data\ForgottenPassword;
+use App\ViewModel\ForgottenPassword;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

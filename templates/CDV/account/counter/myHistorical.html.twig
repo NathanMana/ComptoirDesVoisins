@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+{% block title %}Mon historique{% endblock %}
+
+{% block body %}
+
+    <h1>Mon historique</h1>
+
+    <section class="global__container">
+    {% if model is not empty %}   
+        {% for item in model %}
+            <div class="card">
+                {% if model.user.filename %}
+                    <img src="{{vich_uploader_asset(model.user, 'imageFile')}}" alt="">  
+                {% else %}
+                    <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                {% endif %}
+                <h2>Livré vers le {{model.deadline | date('j')}} {{model.deadline | date('F') | trans}} {{model.deadline | date('Y')}}</h2>
+
+                <p>{{model.deliverer.name}}</p>
+                <p>{{model.city.name}}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Vous n'avez pas encore réalisé d'échanges</p>
+    {% endif %}
+    </section>
+
+{% endblock %}

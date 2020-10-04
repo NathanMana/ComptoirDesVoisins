@@ -8,160 +8,142 @@
         <meta name="language" content="fr">
         <link rel="shortcut icon" href="{{asset('build/images/favicon.png')}}">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <link href="https://fonts.googleapis.com/css2?family=Manrope&family=Montserrat&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
         {% block metadescription %}{% endblock %}
         {{ encore_entry_link_tags('app') }}
         <title>{% block title %}{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
+    <script>
+
+            var tz = jstz.determine();
+            var timezone = tz.name();
+
+    </script>
     <body>
-         <header>
+        <header>
+            <article>
+                <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}" alt="Logo de Comptoir Des Voisins - plateforme livraison de petits commerçants et d'entraide entre voisin"></a>
+            </article>
+            <nav>
+                <ul>
+                    {% if app.user %}
+                        <li><a href="{{path('search')}}">Rechercher</a></li>
+                        <li><a href="{{path('choiceCreation')}}" class="nav-link">Créer mon annonce</a></li>
+                        <li><a href="{{path('myCounter')}}" class="nav-link">Mon comptoir</a></li>
+                    {% endif %} 
+                </ul>
+                <ul>
+                    {% if app.user %}
+                        <li><a href="{{path('profile')}}">Mon compte</a></li>
+                        <li><a href="{{path('logout')}}">Me déconnecter</a></li>
+                    {% else %}
+                        <li><a href="{{path('login')}}">Me connecter</a></li>
+                        <li><a href="{{path('registration')}}">M'inscrire</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
             <article class="burger">
                 <div class="icon"></div>
             </article>
-            <div class="menu">
-                <div class="navIcon">
-                    <a href="{{path('index')}}" class="website-icon"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon"></a>	
-                    <nav class="nav">
-                        {# <a href="{{path('index')}}" class="website-icon"><img src="{{asset('/images/profile/logo2.png')}}"  alt="Site Icon"></a>	 #}
-                        <ul class="links">
-                            <li id="search-link"><a href="{{path('searchChoice')}}" class="nav-link">Rechercher</a></li>
-                            {% if app.user %}
-                                <li id="creation-link"><a href="{{path('choiceAdvert')}}" class="nav-link">Créer une course / demande</a></li>
-                                <li id="counter-link"><a href="{{path('myCounter')}}" class="nav-link">Mon comptoir</a></li>
-                                {% if app.user.name | length <= 10 %}
-                                    <li class="nav-link--name">Bonjour {{app.user.name}}</li>
-                                {% endif %}
-                            {% endif %}        
-                        </ul>
-                    </nav>
-                </div>
-                <aside class="nav-login">
-                    {% if app.user %}
-                        <a id="notification" href="#" class="nav-link" alt="Mes notifications"><i style="color:var(--bordeau)"class="fas fa-bell"></i></a>
-                        <ul class="ul-notification">
-                            {% for item in app.user.notifications %}
-                                {% if item.seen == false %}
-                                    <li class="row" style="align-items:center">
-                                        {% if item.event == "offerClient" %}
-                                            <a href="{{path('informationForCreator', {id:item.idEvent})}}">
-                                        {% elseif item.event == "advertDelete" %}
-                                            <a href="{{path('informationForDelivererAdvert', {id:item.idEvent})}}">
-                                        {% elseif item.event == "delivererAdvert" %}
-                                            <a href="{{path('informationForCreatorAdvert', {id:item.idEvent})}}">
-                                        {% elseif item.event == "advertDeleteConfirmation" %}
-                                            <a href="{{path('myCounter')}}">
-                                        {% else %}
-                                            <a>
-                                        {% endif %}
-                                            <h3 class="col-10">{{item.object}}</h3>
-                                        </a>
-                                        <i alt="{{item.id}}" class="fas fa-trash-alt col-2"></i>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                        {% if app.user.notifications | length > 0 %}
-                            <div id="countNotif">{{app.user.notifications | length}}</div>
-                        {% endif %}
-                        <a id="profile-link" href="{{path('profile')}}" class="nav-link">Mon compte</a>
-                        <a href="{{path('logout')}}" class="nav-link">Me déconnecter</a>
-                    {% else %}
-                        <a href="{{path('login')}}" class="nav-link">Me connecter</a>
-                        <a href="{{path('registration')}}" class="nav-link">M'inscrire</a>
-                    {% endif %}
-                </aside>
-                </nav>
-            </div>
-            <div class="mobile-layout">
-                <div class="menu-mobile">
-                    <ul class="menu-mobile__links">
-                        <li class="menu-mobile__link"><a href="{{path('offers')}}">Propositions de course</a></li>
-                        <li class="menu-mobile__link"><a href="{{path('adverts')}}">Demandes d'aide</a></li>
-                        <li class="menu-mobile__link"><a href="{{path('myCounter')}}">Mon comptoir</a></li>
-                        {% if app.user %}
-                            <li class="menu-mobile__link"><a href="{{path('profile')}}">Mon compte</a></li>
-                            <li class="menu-mobile__link"><a href="{{path('logout')}}">Me déconnecter</a></li>
-                        {% else %}
-                            <li class="menu-mobile__link"><a href="{{path('login')}}">Me connecter</a></li>
-                            <li class="menu-mobile__link"><a href="{{path('registration')}}">M'inscrire</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
         </header>
+        <div class="mobile-layout">
+            <div class="menu-mobile">
+                <ul class="menu-mobile__links">
+                    <li><i class="fas fa-search"></i><a href="search.html">Rechercher</a></li>
+                    {% if app.user %}
+                        <li><a href="{{path('choiceCreation')}}" class="nav-link">Créer mon annonce</a></li>
+                        <li><a href="{{path('myCounter')}}" class="nav-link">Mon comptoir</a></li>
+                        <li class="menu-mobile__link"><a href="{{path('profile')}}">Mon compte</a></li>
+                        <li class="menu-mobile__link"><a href="{{path('logout')}}">Me déconnecter</a></li>
+                    {% else %}
+                        <li class="menu-mobile__link"><a href="{{path('login')}}">Me connecter</a></li>
+                        <li class="menu-mobile__link"><a href="{{path('registration')}}">M'inscrire</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
 
-        {% block body %}       
-        {% endblock %}
+        <div class="content">
+            {% block body %}       
+            {% endblock %}
+        </div>
 
         {{ render(path('CGUValidation')) }}
 
         <footer>
             <ul>
-                <li><a class="underline" href="{{path('CGU')}}">Nos Conditions Générales d'Utilisation</a></li>
-                <li><a class="underline" href="{{path('PrivacyPolicies')}}">Nos Politiques de Confidentialité</a></li>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Rechercher</a></li>
+                <li><a href="#">Me connecter</a></li>
+                <li><a href="#">M'inscrire</a></li>
             </ul>
-            <span>Comptoir des Voisins</span>
+            <span class="block">Comptoir des Voisins &copy; 2020 - Tous droits réservés</span>
         </footer>
 
+        {% block javascripts %}{% endblock %}
         {{ encore_entry_script_tags('app') }}
-        {% block javascripts %}
-        {% endblock %}
+        
         <script>
-            let h1Title = $('h1').text();
-            switch (h1Title) {
-                case "Mon comptoir":
-                    $('#counter-link').addClass('active-link');
-                    break;
-                case "Que recherchez-vous ?":
-                    $('#search-link').addClass('active-link');
-                    break;
-                case "Choix du type d'annonce":
-                    $('#creation-link').addClass('active-link');
-                    break;
-                case "Profil":
-                    $('#profile-link').addClass('active-link');
-                    break;
-                default:
-                    break;
-            }
 
-            let notificationOpen = false;
-            let nberNotif = 0;
-            $('#notification').click(()=>{
-                if(notificationOpen){
-                    $('.ul-notification').css({'height':'0'});
-                    notificationOpen = false;
-                } else {
-                    $('.ul-notification').css({'height':'fit-content'});
-                    notificationOpen = true;
+            $(document).ready(function() {
+
+                let h1Title = $('h1').text();
+                switch (h1Title) {
+                    case "Mon comptoir":
+                        $('#counter-link').addClass('active-link');
+                        break;
+                    case "Que recherchez-vous ?":
+                        $('#search-link').addClass('active-link');
+                        break;
+                    case "Choix du type d'annonce":
+                        $('#creation-link').addClass('active-link');
+                        break;
+                    case "Profil":
+                        $('#profile-link').addClass('active-link');
+                        break;
+                    default:
+                        break;
                 }
-            });
 
-            $('.fa-trash-alt').click(function(){
-                let el = $(this);
-                let id = el.attr('alt');
-                var result = window.confirm('Voulez-vous vraiment supprimer cette notification ?');
+                let notificationOpen = false;
+                let nberNotif = 0;
+                $('#notification').click(()=>{
+                    if(notificationOpen){
+                        $('.ul-notification').css({'height':'0'});
+                        notificationOpen = false;
+                    } else {
+                        $('.ul-notification').css({'height':'fit-content'});
+                        notificationOpen = true;
+                    }
+                });
 
-                if(result){
-                    $.ajax({
-                        method:"post",
-                        url:"/profil/notification/supprimer/" + id,
-                        success: (result) => {
-                            el.parent().hide();
-                            let count = parseInt($('#countNotif').text());
-                            let countResult = count - 1;
-                            if(countResult === 0){
-                                $('#countNotif').text('');
-                            } else {
-                                $('#countNotif').text(countResult);
+                $('.fa-trash-alt').click(function(){
+                    let el = $(this);
+                    let id = el.attr('alt');
+                    var result = window.confirm('Voulez-vous vraiment supprimer cette notification ?');
+
+                    if(result){
+                        $.ajax({
+                            method:"post",
+                            url:"/profil/notification/supprimer/" + id,
+                            success: (result) => {
+                                el.parent().hide();
+                                let count = parseInt($('#countNotif').text());
+                                let countResult = count - 1;
+                                if(countResult === 0){
+                                    $('#countNotif').text('');
+                                } else {
+                                    $('#countNotif').text(countResult);
+                                }
                             }
-                        }
-                    })
-                }
+                        })
+                    }
+                });
             })
-            
         </script>
     </body>
 </html>

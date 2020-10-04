@@ -3,29 +3,26 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <h1>Me connecter</h1>
-    <section class="login__container">
 
-        <article class="login-icon">
-            <img style="object-fit:contain" src="{{asset('build/images/favicon.png')}}">
-        </article>
-
-        <article class="login-form">
-            <form action="{{path('login')}}" method="post">
+    <div class="sm-section">
+        <h1 class="block color-primary">Me connecter</h1>
+        <article>
+            <form class="form" action="{{path('login')}}" method="post">
                 {% if error %}
                     <div class="error alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
-                <label for="_username">Mail</label>
-                <input class="login-input" type="text" name="_username" placeholder="Adresse mail">
-            
-                <label class="" for="_password">Mot de passe</label>
-                <input class="login-input" type="password" name="_password" placeholder="Mot de passe">
-            
-                <span style="text-align:center"><a href="{{path('forgottenPassword')}}">Mot de passe oublié ?</a></span>
-                
-                <button type="submit" class="btn btn--center-form">Me connecter</button>
-                <a style="text-align:center;" href="{{path('registration')}}">M'inscrire</a>
+                <div class="col-12">
+                    <label for="_username">Mail</label>
+                    <input class="login-input" type="text" name="_username" placeholder="Adresse mail">
+                </div>
+                <div class="col-12">
+                    <label class="" for="_password">Mot de passe</label>
+                    <input class="login-input" type="password" name="_password" placeholder="Mot de passe">
+                </div>
+                <span style="font-size:1.05em;margin:0 auto 20px auto;padding-left:15px"><a class="sm-link" href="{{path('forgottenPassword')}}">Mot de passe oublié ?</a></span>
+                <input type="hidden" name="_target_path" value="/"/>
+                <button type="submit">Me connecter</button>
             </form>
         </article>
-    </section>
+    </div>
 {% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+    <h1>Mes propositions en ligne</h1>
+    <a href="{{path('myCounter')}}" class="btn btn-primary block">Revenir à mon comptoir</a>
+
+    <section class="section__margin-side" id="result">
+
+    {% if model is not empty %}
+        {% for item in model %}
+            <article class="result">
+                <div class="article__content">
+                    <div class="article__header">
+                        <div class="article__header__title">
+                            <h4>{{item.title}}</h4>
+                            <span>{{item.dateDelivery | date('j')}} {{item.dateDelivery | date('F') | trans}} {{item.dateDelivery | date('Y')}}</span>
+                        </div>
+                        <img src="http://placehold.it/75x75" alt="">
+                    </div>
+                    <div class="flex">
+                        <ul>
+                            {% for groceryType in item.groceryType %}
+                                <li>{{groceryType}}</li>
+                            {% endfor %}
+                            {% for city in item.citiesDelivery %}
+                                <li>{{city.name}}</li>
+                            {% endfor %}
+                        </ul>
+                        <p>{{item.message}}...</p>
+                    </div>
+                </div>
+                <div class="article__information">
+                    <div class="article__information__creator">
+                        {% if item.user.filename %}
+                            <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                        {% else %}
+                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                        {% endif %}
+                        <div>
+                            <h5>{{item.user.name}} {{item.user.lastname}}</h5>
+                            <span>A livré {{item.user.points}} fois</span>
+                        </div>
+                    </div>
+                    <a href="{{path('myOffer', {id: item.id})}}" class="btn btn-offer">Voir toutes les informations</a>
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p class="text-center">Vous n'avez pas de propositions en ligne pour le moment ! Foncez, les commerces vous attendent !</p>
+    {% endif %}
+
+    </section>
+
+{% endblock %}

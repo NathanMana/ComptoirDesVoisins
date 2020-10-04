@@ -1,0 +1,21 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Signalements CDV{% endblock %}
+
+{% block body %}
+
+    <h1>Signalements CDV</h1>
+
+    <table>
+        <tbody>
+        {% for report in reports %}
+            <tr>
+                <td>{{report.id}}</td>
+                <td><a href="{{path('adminUserProfile', {id:report.user.id})}}">{{report.user.name}}</a></td>
+                <td>{{report.content}}</td>
+                <td><a href="{{path('adminUserProfile', {id:report.target.id})}}">{{report.target.id}}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

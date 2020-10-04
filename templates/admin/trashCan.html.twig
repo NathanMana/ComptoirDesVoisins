@@ -1,0 +1,12 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Corbeille{% endblock %}
+
+{% block body %}
+
+    <h1>Corbeille</h1>
+
+    <a href="{{path('trashCanAdvert')}}" class="block-inline"><button class="btn btn--card">Voir les demandes à supprimer</button></a>
+    <a href="{{path('trashCanOffer')}}" class="block-inline"><button class="btn btn--card">Voir les propositions à supprimer</button></a>
+
+{% endblock %}

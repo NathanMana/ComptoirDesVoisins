@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\ViewModel\Security\ProfileViewModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,6 +15,12 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('name', TextType::class, [
+                'required'=>false
+            ])
+            ->add('lastname', TextType::class, [
+                'required'=>false
+            ])
             ->add('city', TextType::class, [
                 'required'=>false
             ])
@@ -33,7 +39,10 @@ class ProfileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => ProfileViewModel::class,
+            'method'=>"POST",
+            'csrf_protection'=> true
         ]);
     }
+
 }

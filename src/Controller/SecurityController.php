@@ -3,28 +3,25 @@
 namespace App\Controller;
 
 use Exception;
-use App\Data\Cities;
-use App\Entity\Role;
+use App\Entity\City;
 use App\Entity\User;
-use App\Entity\Advert;
-use App\Form\CitiesType;
+use App\Entity\Report;
 use App\Form\ProfileType;
 use App\Service\API\GeoApi;
-use App\Data\ChangePassword;
 use App\Entity\Notification;
 use App\Service\MailManager;
 use App\Form\RegistrationType;
-use App\Data\ForgottenPassword;
 use App\Form\ResetPasswordType;
 use App\Form\ChangePasswordType;
+use App\Repository\cguRepository;
+use App\ViewModel\ChangePassword;
+use App\Repository\CityRepository;
+use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Form\ForgottenPasswordType;
-use App\Repository\OfferRepository;
-use App\Repository\AdvertRepository;
-use App\Repository\cguRepository;
-use App\Repository\RoleRepository;
+use App\ViewModel\ForgottenPassword;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpClient\HttpClient;
+use App\ViewModel\Security\ProfileViewModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,37 +34,46 @@ class SecurityController extends AbstractController
     /**
      * @Route("/inscription", name="registration")
      */
-    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, RoleRepository $roleRepo, cguRepository $cguRepo){
+    public function registration(Request $request, CityRepository $cityRepository,EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, RoleRepository $roleRepo, cguRepository $cguRepo){
+       
         $user = new User();
+        
         $form=$this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
            
         if($form->isSubmitted() && $form->isValid()){
-            if($user->getCodeCity()){
+            
+            if($user->getCodeCity()){ //Si on a renseigné une ville
                 $apiGeo = new GeoApi();
                 $response = $apiGeo->RequestApi("code", $user->getCodeCity())->toArray();
 
-                if($response && $response[0]['nom']." (".$response[0]['codeDepartement'].")" === $user->getCity()){
+                $responseName = $response[0]['nom']." (".$response[0]['codeDepartement'].")";
 
-                    $role = $roleRepo->findOneBy(['id'=>1]);//Role : ROLE_USER
-                    
-                    $hash = $encoder->encodePassword($user, $user->getPassword());
-                    $user   ->setPassword($hash)
-                            ->setPoints(0)
-                            ->setUpdatedAt(new \DateTime)
-                            ->setLastLogin($user->getUpdatedAt())
-                            ->setLatestVersionCGUValidationDate($user->getUpdatedAt())
-                            ->setLatestCGUVersionValidated($cguRepo->findOneBy([],['id'=>'DESC']))
-                            ->addRole($role);
-                            
-                    $manager->persist($user);
-                    $manager->flush();    
+                if($response && $responseName === $user->getCityName()){
+                   
+                    $city = $apiGeo->setCity($response, $cityRepository, $manager);
+                    $user->setCity($city);
+                  
                 } else {
-                    throw new \Exception("Une erreur est intervenue, l'inscription n'a pas été prise en compte");
+                    $user->setCity(null);
                 }
             } else {
-                throw new \Exception("Veuillez sélectionner une ville valide");
+                $user->setCity(null);
             }
+
+            $role = $roleRepo->findOneBy(['id'=>1]);//Role : ROLE_USER
+            
+            $hash = $encoder->encodePassword($user, $user->getPassword());
+            $user   ->setPassword($hash)
+                    ->setPoints(0)
+                    ->setUpdatedAt(new \DateTime)
+                    ->setLastLogin(new \DateTime)
+                    ->setLatestVersionCGUValidationDate(new \DateTime)
+                    ->setLatestCGUVersionValidated($cguRepo->findOneBy([],['id'=>'DESC']))
+                    ->addRole($role);
+                    
+            $manager->persist($user);
+            $manager->flush();    
            
             return $this->redirectToRoute("login");
         }
@@ -183,65 +189,51 @@ class SecurityController extends AbstractController
     /**
      * @Route("/deconnexion", name="logout")
      */
-    public function logout(){}
-
-  
+    public function logout(){}  
 
     /**
-     * @Route("/profil", name="profile")
+     * @Route("/signalement/confirmation", name="confirmReport")
      */
-    public function profile(Request $request, EntityManagerInterface $manager){
-        $user = $this->getUser();
-
-        if(!$user){
-            throw new \Exception('Something went wrong!');
-        } else {
-            $form=$this->createForm(ProfileType::class, $user);
-            $form->handleRequest($request);
-
-            if($form->isSubmitted() && $form->isValid()){
-                $apiGeo = new GeoApi();
-                $response = $apiGeo->RequestApi("code", $user->getCodeCity())->toArray();
+    public function confirmReport()
+    {
+        return $this->render("cdv/report/confirmReport.html.twig");
+    }
     
-                if($response && $response[0]['nom']." (".$response[0]['codeDepartement'].")" === $user->getCity())
-                {
-                    $manager->persist($user);
-                    $manager->flush();
-                }
-            }     
-            
-            return $this->render("cdv/security/profile.html.twig", [
-                'form'=>$form->createView()
+    /**
+     * @Route("/signalement/{id}", name="report")
+     */
+    public function report(User $user, UserRepository $userRepo, Request $request, EntityManagerInterface $manager)
+    {   
+        $target = $userRepo->findOneBy(['id'=>$user]);
+        if($target && $target !== $this->getUser()){
+            $report = new Report();
+            $form = $this->createForm(ReportType::class, $report);
+            $form->handleRequest($request);
+    
+            if($form->isSubmitted() && $form->isValid())
+            {
+                $report ->setUser($this->getUser())
+                        ->setTarget($target);
+
+                $manager->persist($report);
+                $manager->flush();
+
+                return $this->redirectToRoute('confirmReport');
+            }
+    
+            return $this->render('cdv/report/index.html.twig', [
+                'form'=>$form->createView(),
             ]);
-        }
 
-    }
-
-    /**
-     * @Route("/profil/supprimer/{id}",name="deleteAccount")
-     */
-    public function deleteAccount(User $user, EntityManagerInterface $manager, Request $request){
-        if($user === $this->getUser()){
-            $this->get('security.token_storage')->setToken(null);
-            $request->getSession()->invalidate();
-            $manager->remove($user);
-            $manager->flush();
-            return $this->redirectToRoute("index");
         } else {
-            throw $this->createNotFoundException('Cette page n\'existe pas');
+            throw new Exception("Une erreur est survenue");
         }
     }
 
     /**
-     * @Route("/profil/notification/supprimer/{id}",name="deleteNotification")
+     * @Route("/connexion/motdepasse/envoi", name="emailSent")
      */
-    public function deleteNotification(Notification $notification, EntityManagerInterface $manager){
-        if($notification->getUser() === $this->getUser()){
-            $manager->remove($notification);
-            $manager->flush();
-            return $this->redirectToRoute("notifications");
-        } else {
-            throw $this->createNotFoundException('Cette page n\'existe pas');
-        }
+    public function emailSent(){
+        return $this->render("cdv/account/emailSent.html.twig");
     }
 }

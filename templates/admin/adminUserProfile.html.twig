@@ -1,0 +1,42 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+
+    <h1>Profil</h1>
+
+    <section class="global__container global__container--column">
+    <article class="form__container">
+        <h2>{{user.name}} {{user.lastname}}</h2>
+        {% if user.filename %}
+            <img src="{{vich_uploader_asset(user, 'imageFile')}}" alt="" class="profile-img">  
+        {% else %}
+            <img src="{{asset('images/profile/default-avatar.png')}}" alt="" class="profile-img">  
+        {% endif %}
+
+        {{form_start(form, {'attr': {'class':'login-form'}})}} 
+            <div class="input-width">
+                {{form_row(form.name, {'label': 'Prénom', 'attr': {'class':'input-container'}})}}
+            </div>  
+            <div class="input-width">
+                {{form_row(form.lastname, {'label': 'Nom', 'attr': {'class':'input-container'}})}}
+            </div>  
+            <div class="input-width">
+                {{form_row(form.city, {'label': 'Ville', 'attr': {'placeholder':'Ville où vous habitez', 'class':'input-container'}})}}
+            </div>  
+            <div class="proposition"></div>
+            <div class="input-width">
+                {{form_row(form.phone, {'label': 'Numéro de téléphone', 'attr': {'placeholder':'0254872123', 'class':'input-container'}})}}
+            </div>
+            <div class="input-width">
+                {{form_row(form.imageFile, {'label': 'Photo de profil', 'attr' : {'class':'inpFile', 'class':'input-container'}})}}    
+            </div>
+            <div class="flex-container flex-container--margin">
+                <button type="submit" class="btn">Sauvegarder</button>
+            </div>
+        {{form_end(form)}}
+
+        </article>
+    </section>
+{% endblock %}

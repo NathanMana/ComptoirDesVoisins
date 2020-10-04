@@ -1,0 +1,131 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Comptoir des Voisins - Proposition de {{offer.user.name}}{% endblock %}
+
+{% block body %}
+
+      <section id="result__filter" class="">
+        <article>
+            <span id="filter__close" class="block" style="text-decoration:underline">fermer</span>
+            {{form_start(form, {'attr': {'class':'form'}})}}
+                <fieldset>Ma recherche</fieldset>
+                <div class="js__search" id="js__search__choice">
+                    <label class="label" for="">Que voulez-vous faire ?</label>
+                    <div class="flex-row-c">
+                        <a id="btnDelivery" class="btn btn-primary">Livrer</a>
+                        <a id="btnHelp" class="btn btn-primary">Me faire livrer</a>
+                    </div>
+                </div>
+                <div class="js__search" id="js__search__city">
+                    {{form_label(form.q, 'Où voulez-vous vous faire livrer ?',  { 'label_attr': {'class': 'label'}})}}
+                    {{form_widget(form.q)}}
+                </div>
+                <div class="js__search"  id="js__search__grocery">
+                    {{form_label(form.groceryType, 'Quel type de course ?', {'label_attr': {'class': 'label'}})}}
+                    <div class="checkbox">
+                        {% for groceryType in form.groceryType %}
+                            <div class="checkbox-item">
+                                {{form_widget(groceryType)}}
+                                {{form_label(groceryType)}}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit">Rechercher</button>
+            {{form_end(form)}}
+        </article>
+    </section>
+    <section style="min-height: 80vh;" class="section__margin-side" id="offerInformation">
+
+        <a id="searchFilter" class="research btn btn-advert">Continuer ma recherche</a>
+
+        <article class="result">
+            <div class="article__content">
+                <div class="block article__header">
+                    <div class="block article__header__title">
+                        <h4 class="block">{{offer.title}}</h4>
+                        <span style="font-size: 1.7em;" class="block">{{offer.dateDelivery | date('j')}} {{offer.dateDelivery | date('F') | trans}} {{offer.dateDelivery | date('Y')}}</span>
+                    </div>
+                </div>
+                <div class="article__content__location block">
+                    <span>{{offer.groceryType}}</span>
+                    {% for city in offer.citiesDelivery %}
+                        <span>{{city.name}}</span>
+                    {% endfor %}
+                </div>
+                <p style="min-height: 70px;">{{offer.message}}...</p>
+                <a href="{{path('offerAcceptation', {id: offer.id})}}" class="btn btn-offer">Rentrer en contact avec cette personne</a>
+            </div>
+            <div style="border-top: 1px solid #25484930;margin-top: 10px;" class="article__information">
+                <div class="article__information__creator">
+                    {% if offer.user.filename %}
+                        <img src="{{vich_uploader_asset(offer.user, 'imageFile')}}" alt="">  
+                    {% else %}
+                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                    {% endif %}
+                    <div>
+                        <h5>{{offer.user.name}} {{offer.user.lastname}}</h5>
+                        <span>A livré {{offer.user.points}} fois</span>
+                    </div>
+                </div>
+                <img style="order:2;" class="sm-sq-img" src="http://placehold.it/300x300" alt="">
+            </div>
+        </article>
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            var filterOpen = false;
+            $('.research').click(() => {
+                if(!filterOpen) {
+                    $('#result__filter').css({'display':'flex'});
+                    filterOpen = true;
+                }
+            });
+    
+            $("#filter__close").click(() => {
+                if(filterOpen)
+                    $('#result__filter').hide();
+                    filterOpen = false;
+            });
+    
+            /* Gère l'affichage du formulaire selon la requête */
+            var type = $('#type').val();
+            if(type === "true"){
+                $('#btnDelivery').append("<i class='fas fa-check'></i>");
+                $('.js__search:not(#js__search__choice, #js__search__city)').css({'display':'none'});
+                $('#js__search__city').css({'display':'block'});
+                $('#js__search__city label').text('Où voulez-vous livrer ?');
+            } else {
+                $('#btnHelp').append("<i class='fas fa-check'></i>");
+                $('#js__search__city label').text('Où voulez-vous vous faire livrer ?');
+                $('.js__search').css({'display':'block'});
+            }
+        })
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+
+        .article__content__location span {
+            margin: 15px 5px;
+            display: inline-block;
+            font-size: 1.5em;
+        }
+
+        .article__content p {
+            min-height: 70px;
+            font-size: 1.3em;
+            margin: 15px;
+        }
+
+        .article__content .article__header .article__header__title h4 {
+            font-size: 2em;
+        }
+
+    </style>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Advert;
+use App\Entity\Help;
 use App\Entity\User;
 use App\Entity\Notification;
 use App\Entity\Offer;
@@ -28,45 +28,45 @@ class NotificationManager
         return $notification;
     }
 
-    public function advertDelete(Advert $advert, User $user)
+    public function HelpDelete(Help $Help, User $user)
     {
         $notification = new Notification();
 
         $notification   ->setObject($user->getName(). " veut annuler ça demande")
                         ->setMessage($user->getName(). " veut annuler cet échange, contactez votre voisin si vous n'étiez pas au courant.")
-                        ->setUser($advert->getDeliverer())
+                        ->setUser($Help->getDeliverer())
                         ->setSeen(0)
-                        ->setEvent('advertDelete')
-                        ->setIdEvent($advert->getId())
+                        ->setEvent('HelpDelete')
+                        ->setIdEvent($Help->getId())
                         ->setCreatedAt(new \DateTime());
 
         return $notification;
     }
 
-    public function delivererAdvert(Advert $advert, User $user)
+    public function delivererHelp(Help $Help, User $user)
     {
         $notification = new Notification();
 
         $notification   ->setObject("Votre annonce a trouvé preneur !")
                         ->setMessage("Votre annonce a été prise en charge par ". $user->getName() . ". Allez sur le détail de l'annonce pour obtenir le numéro de téléphone de cette personne et discutez avec elle !")
                         ->setSeen(false)
-                        ->setUser($advert->getUser())
-                        ->setEvent('delivererAdvert')
-                        ->setIdEvent($advert->getId())
+                        ->setUser($Help->getUser())
+                        ->setEvent('delivererHelp')
+                        ->setIdEvent($Help->getId())
                         ->setCreatedAt(new \DateTime());
 
         return $notification;
     }
 
-    public function advertDeleteConfirmation(Advert $advert, User $user)
+    public function HelpDeleteConfirmation(Help $Help, User $user)
     {
         $notification = new Notification();
 
         $notification   ->setObject("Suppression de votre demande")
-                        ->setMessage("Votre contact a confirmé l'annulation de la livraison. Elle est donc supprimée")
+                        ->setMessage("Votre contact a confirmé l'annulation de l'échange. L'échange est donc supprimé")
                         ->setSeen(false)
-                        ->setUser($advert->getUser())
-                        ->setEvent('advertDeleteConfirmation')
+                        ->setUser($Help->getUser())
+                        ->setEvent('HelpDeleteConfirmation')
                         ->setIdEvent(null)
                         ->setCreatedAt(new \DateTime());
 

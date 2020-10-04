@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Création de ma demande{% endblock %}
+
+{% block body %}
+
+    <div class="floating-group">
+        <h1>Création de ma demande</h1>
+        <section class="global__container global__container--column">
+            <article class="form__container">
+                {{form_start(form, {'attr': {'class':'login-form'}})}}
+                 <div class="input-width">
+                    {{form_row(form.title, {'label': 'Donnez un titre à votre demande', 'attr':{'placeholder':'J\'aimerai me faire livrer à Evron','class':'login-input'}})}}
+                </div>
+                <div class="input-width">
+                    {{form_row(form.cityName, {'label': 'Ville où vous voulez vous faire livrer', 'attr':{'class':'login-input'}})}}
+                </div>
+                <div class="proposition"></div>
+                <div class="input-width">
+                    {{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Indiquez ce dont vous avez besoin', 'class':'input-container'}})}}
+                </div>
+                <div class="input-width">
+                    {{form_row(form.dateHelp, {'label': 'Date limite de livraison'})}}
+                </div>
+                {% if editing %}
+                    <button type="submit" class="btn btn--center">Sauvegarder les modifications</button>
+                {% else %}
+                    <button type="submit" class="btn btn--center">Créer</button>
+                {% endif %}
+                {{form_end(form)}}
+            </article>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        var tz = jstz.determine();
+        var timezone = tz.name();
+        $('#help_creation_timezone').val(timezone);
+    </script>
+
+{% endblock %}

@@ -16,6 +16,9 @@ class OfferEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add("title", TextType::class, [
+                "required" => true
+            ])
             ->add('message', TextareaType::class, [
                 "required"=>true
             ])
@@ -32,6 +35,7 @@ class OfferEditType extends AbstractType
                     4=>4
                 ]
             ])
+            ->add('timezone', HiddenType::class)
         ;
     }
 

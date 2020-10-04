@@ -39,46 +39,24 @@ class User implements UserInterface, Serializable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[^<>#§µ]+$/",
-     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
+     * @Assert\Regex("/^[^<>#§µ]+$/", message="Les caractères spéciaux suivant ne sont pas autorisés : ^,<,>,#,§,µ")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[^<>#§µ]+$/",
-     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
+     * @Assert\Regex("/^[^<>#§µ]+$/", message="Les caractères spéciaux suivant ne sont pas autorisés : ^,<,>,#,§,µ")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex("/^[^<>#§µ]+$/",
-     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
-     */
-    private $city;
-
-    /**
-     * @Assert\Length(
-     *                 min="5", max="5", 
-     *                 minMessage = "Rentrez une ville valide",
-     *                 maxMessage = "Rentrez une ville valide"
-     * )
-     * @Assert\Regex(
-     *              "/^[0-9]+$/",
-     *              message="Rentrez une ville valide"
-     * )
-     * @ORM\Column(type="string",length=5, nullable=false)
-     */
-    private $codeCity;
-
-    /**
-     * @ORM\Column(type="string", length=255)
      * @Assert\Regex("/^[0-9\s]+$/")
-     * @Assert\Length(min="10",
-     *                max="10", 
-     *                minMessage="Veuillez entrer un numéro de téléphone valide sous la forme XXXXXXXXXX",
-     *                maxMessage="Veuillez entrer un numéro de téléphone valide sous la forme XXXXXXXXXX",
+     * @Assert\Length(
+     *      min="10",
+     *      max="10", 
+     *      minMessage="Veuillez entrer un numéro de téléphone valide sous la forme XXXXXXXXXX",
+     *      maxMessage="Veuillez entrer un numéro de téléphone valide sous la forme XXXXXXXXXX",
      * )
      */
     private $phone;
@@ -121,16 +99,6 @@ class User implements UserInterface, Serializable
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $resetPassword;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="deliverer", cascade={"persist", "remove"})
-     */
-    private $myDeliveries;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Advert", mappedBy="user", orphanRemoval=true, cascade={"persist", "remove"})
-     */
-    private $myAdverts;
 
     /**
      * @ORM\Column(type="integer")
@@ -183,17 +151,24 @@ class User implements UserInterface, Serializable
      */
     private $roles;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="users")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $city;
+
+    /* NECESSAIRE POUR LE TOKEN */
     private $username;
     private $salt;
 
-    private $checkAge = false;
-    private $privacyPolicies = false;
-
+    /* NECESSAIRE POUR LE FORMULAIRE INSCRIPTION */
+    private $_checkAge = false;
+    private $_privacyPolicies = false;
+    private $_codeCity;
+    private $_cityName;
 
     public function __construct()
     {
-        $this->myDeliveries = new ArrayCollection();
-        $this->myAdverts = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->clientOffers = new ArrayCollection();
@@ -229,30 +204,6 @@ class User implements UserInterface, Serializable
         return $this;
     }
 
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
-    public function setCity(string $city): self
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    public function getCodeCity(): ?string
-    {
-        return $this->codeCity;
-    }
-
-    public function setCodeCity(string $codeCity): self
-    {
-        $this->codeCity = $codeCity;
-
-        return $this;
-    }
-
     public function getPhone(): ?string
     {
         return $this->phone;
@@ -262,6 +213,40 @@ class User implements UserInterface, Serializable
     {
         $this->phone = $phone;
 
+        return $this;
+    }
+
+    /* PROPRIETE EN BDD */
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): self
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    public function getCityName(): ?string
+    {
+        return $this->_cityName;
+    }
+
+    public function setCityName(?string $cityName): self
+    {
+        $this->_cityName = $cityName;
+        return $this;
+    }
+
+    public function getCodeCity(): ?string
+    {
+        return $this->_codeCity;
+    }
+
+    public function setCodeCity(string $codeCity): self
+    {
+        $this->_codeCity = $codeCity;
         return $this;
     }
 
@@ -371,68 +356,6 @@ class User implements UserInterface, Serializable
         return $this->username;
     }
 
-    /**
-     * @return Collection|Advert[]
-     */
-    public function getMyDeliveries(): Collection
-    {
-        return $this->myDeliveries;
-    }
-
-    public function addMyDeliveries(Advert $myDeliveries): self
-    {
-        if (!$this->myDeliveries->contains($myDeliveries)) {
-            $this->myDeliveries[] = $myDeliveries;
-            $myDeliveries->setDeliverer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMyDeliveries(Advert $myDeliveries): self
-    {
-        if ($this->myDeliveries->contains($myDeliveries)) {
-            $this->myDeliveries->removeElement($myDeliveries);
-            // set the owning side to null (unless already changed)
-            if ($myDeliveries->getDeliverer() === $this) {
-                $myDeliveries->setDeliverer(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Advert[]
-     */
-    public function getMyAdverts(): Collection
-    {
-        return $this->myAdverts;
-    }
-
-    public function addMyAdvert(Advert $myAdvert): self
-    {
-        if (!$this->myAdverts->contains($myAdvert)) {
-            $this->myAdverts[] = $myAdvert;
-            $myAdvert->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMyAdvert(Advert $myAdvert): self
-    {
-        if ($this->myAdverts->contains($myAdvert)) {
-            $this->myAdverts->removeElement($myAdvert);
-            // set the owning side to null (unless already changed)
-            if ($myAdvert->getUser() === $this) {
-                $myAdvert->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getPoints(): ?int
     {
         return $this->Points;
@@ -478,6 +401,28 @@ class User implements UserInterface, Serializable
     {
         $this->LatestVersionCGUValidationDate = $LatestVersionCGUValidationDate;
 
+        return $this;
+    }
+
+    public function getCheckAge(): bool
+    {
+        return $this->_checkAge;
+    }
+
+    public function setCheckAge(bool $checkAge): self
+    {
+        $this->_checkAge = $checkAge;
+        return $this;
+    }
+
+    public function getPrivacyPolicies(): bool
+    {
+        return $this->_privacyPolicies;
+    }
+
+    public function setPrivacyPolicies(bool $privacyPolicies): self
+    {
+        $this->_privacyPolicies = $privacyPolicies;
         return $this;
     }
 
@@ -568,28 +513,6 @@ class User implements UserInterface, Serializable
             $clientOffer->removeClient($this);
         }
 
-        return $this;
-    }
-
-    public function getCheckAge(): bool
-    {
-        return $this->checkAge;
-    }
-
-    public function setCheckAge(bool $checkAge): self
-    {
-        $this->checkAge = $checkAge;
-        return $this;
-    }
-
-    public function getPrivacyPolicies(): bool
-    {
-        return $this->privacyPolicies;
-    }
-
-    public function setPrivacyPolicies(bool $privacyPolicies): self
-    {
-        $this->privacyPolicies = $privacyPolicies;
         return $this;
     }
 
@@ -686,6 +609,8 @@ class User implements UserInterface, Serializable
 
         return $this;
     }
+
+   
 
     
 }

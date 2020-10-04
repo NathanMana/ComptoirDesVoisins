@@ -1,0 +1,247 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Liste des annonces{% endblock %}
+
+{% block body %}
+
+    <section id="result__filter" class="">
+        <article>
+            <span id="filter__close" class="block" style="text-decoration:underline">fermer</span>
+            {{form_start(form, {'attr': {'class':'form'}})}}
+                <fieldset>Ma recherche</fieldset>
+                <div class="js__search" id="js__search__choice">
+                    <label class="label" for="">Que voulez-vous faire ?</label>
+                    <div class="flex-row-c">
+                        <a id="btnDelivery" class="btn btn-primary">Livrer</a>
+                        <a id="btnHelp" class="btn btn-primary">Me faire livrer</a>
+                    </div>
+                </div>
+                <div class="js__search" id="js__search__city">
+                    {{form_label(form.q, 'Où voulez-vous vous faire livrer ?',  { 'label_attr': {'class': 'label'}})}}
+                    {{form_widget(form.q)}}
+                </div>
+                <div class="js__search"  id="js__search__grocery">
+                    {{form_label(form.groceryType, 'Quel type de course ?', {'label_attr': {'class': 'label'}})}}
+                    <div class="checkbox">
+                        {% for groceryType in form.groceryType %}
+                            <div class="checkbox-item">
+                                {{form_widget(groceryType)}}
+                                {{form_label(groceryType)}}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit">Rechercher</button>
+            {{form_end(form)}}
+        </article>
+    </section>
+
+    <section class="section__margin-side" id="result">
+        <div class="research__container">
+            <div class="research">
+                <div class="research__content">
+                    <h2>Ma recherche</h2>
+                    <p>{{search}}</p>
+                </div>
+                <a class="btn btn-help">Modifier</a>
+            </div>
+            {% if propositionsVille is not null %}
+                <div class="proposition">
+                    <table>
+                        <tbody>
+                        {% set urlGroceries = "" %}
+                        {% for item in listGrocery %}
+                            {% set urlGroceries = urlGroceries ~ "&groceryType%5B%5D=" ~ item %}
+                        {% endfor %}
+                        {% if type == "offer" %}
+                            {% for item in propositionsVille %}
+                                <tr><td><a href="/rechercher/resultats?q={{item.nom}} ({{item.codeDepartement}})&type=false{{urlGroceries}}">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for item in propositionsVille %}
+                                <tr><td><a href="/rechercher/resultats?q={{item.nom}} ({{item.codeDepartement}})&type=true{{urlGroceries}}">{{item.nom}} ({{item.codeDepartement}})</a></td></tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="result__perimeter"></div>
+        <h3 class="margin-TP-sm">Résultats</h3>
+        {% if type is not empty %}
+            {% if type == "offer" %}
+                {% if ad is not empty %}
+                    {% for item in ad %}
+                        <article class="result">
+                            <div class="article__content">
+                                <div class="article__header">
+                                    <div class="article__header__title">
+                                        <h4>{{item.title}}</h4>
+                                        <span>{{item.dateDelivery | date('j')}} {{item.dateDelivery | date('F') | trans}} {{item.dateDelivery | date('Y')}}</span>
+                                    </div>
+                                    <img src="http://placehold.it/75x75" alt="">
+                                </div>
+                                <div class="flex">
+                                    <ul>
+                                        <li>{{item.groceryType}}</li>
+                                        {% for city in item.citiesDelivery %}
+                                            <li>{{city.name}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <p>{{item.message}}...</p>
+                                </div>
+                            </div>
+                            <div class="article__information">
+                                <div class="article__information__creator">
+                                    {% if item.user.filename %}
+                                        <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                                    {% else %}
+                                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                                    {% endif %}
+                                    <div>
+                                        <h5>{{item.user.name}} {{item.user.lastname}}</h5>
+                                        <span>A livré {{item.user.points}} fois</span>
+                                    </div>
+                                </div>
+                                <a href="{{path('offerInformation', {id: item.id})}}" class="btn btn-offer">Voir</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                {% else %}  
+                    <span class="block">il n'y a pas de proposition de livraison pour le moment</span>
+                {% endif %}
+            {% else %}
+                {% if ad is not empty %}
+                    {% for item in ad %}
+                        <article class="result">
+                            <div class="article__content">
+                                <div class="article__header">
+                                    <div class="article__header__title">
+                                        <h4>{{item.title}}</h4>
+                                        <span>{{item.dateHelp | date('j')}} {{item.dateHelp | date('F') | trans}} {{item.dateHelp | date('Y')}}</span>
+                                    </div>
+                                    <img src="http://placehold.it/75x75" alt="">
+                                </div>
+                                <div class="flex">
+                                    <ul>
+                                        <li>{{item.city.name}}</li>
+                                    </ul>
+                                    <p>{{item.message}}...</p>
+                                </div>
+                            </div>
+                            <div class="article__information">
+                                <div class="article__information__creator">
+                                    {% if item.user.filename %}
+                                        <img src="{{vich_uploader_asset(item.user, 'imageFile')}}" alt="">  
+                                    {% else %}
+                                        <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                                    {% endif %}
+                                    <div>
+                                        <h5>{{item.user.name}} {{item.user.lastname}}</h5>
+                                    </div>
+                                </div>
+                                <a href="{{path('helpInformation', {id: item.id})}}" class="btn btn-offer">Voir</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                {% else %}    
+                    <span class="block">il n'y a pas de demande de livraison pour le moment</span>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            var filterOpen = false;
+            $('.research').click(() => {
+                if(!filterOpen) {
+                    $('#result__filter').css({'display':'flex'});
+                    filterOpen = true;
+                }
+            });
+    
+            $("#filter__close").click(() => {
+                if(filterOpen)
+                    $('#result__filter').hide();
+                    filterOpen = false;
+            });
+    
+            /* Gère l'affichage du formulaire selon la requête */
+            var type = $('#type').val();
+            if(type === "true"){
+                $('#btnDelivery').append("<i class='fas fa-check'></i>");
+                $('.js__search:not(#js__search__choice, #js__search__city)').css({'display':'none'});
+                $('#js__search__city').css({'display':'block'});
+                $('#js__search__city label').text('Où voulez-vous livrer ?');
+            } else {
+                $('#btnHelp').append("<i class='fas fa-check'></i>");
+                $('#js__search__city label').text('Où voulez-vous vous faire livrer ?');
+                $('.js__search').css({'display':'block'});
+            }
+
+            var listGrocery = '{{listGrocery | json_encode}}';
+            var urlGrocery = "";
+            var countElementInListGrocery = 0;
+            if(listGrocery.indexOf("Supermarché") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Supermarché";
+                countElementInListGrocery++;
+            }
+            if(listGrocery.indexOf("Boulangerie") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Boulangerie";
+                countElementInListGrocery++;
+            }
+            if(listGrocery.indexOf("Boucherie") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Boucherie";
+                countElementInListGrocery++;
+            }
+            if(listGrocery.indexOf("Pharmacie") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Pharmacie";
+                countElementInListGrocery++;
+            }
+            if(listGrocery.indexOf("Epicerie") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Epicerie";
+                countElementInListGrocery++;
+            }
+            if(listGrocery.indexOf("Papeterie") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Papeterie";
+                countElementInListGrocery++;
+            }
+            if(listGrocery.indexOf("Autre") != -1){
+                urlGrocery += "&groceryType%5B"+ countElementInListGrocery +"%5D=Autre";
+                countElementInListGrocery++;
+            }
+    
+            var q = $('#q').val();
+    
+            if(q && q.length > 1){
+                const apiUrl = "https://geo.api.gouv.fr/communes?nom=";
+                const format = "&format=json";
+                const search = q + "&fields=centre";
+    
+                const request = apiUrl + search + format;
+    
+                fetch(request, {method: "get"}).then(response=>response.json()).then(results => {
+                    if(results.length === 1){
+    
+                        const longitude = results[0].centre.coordinates[0];
+                        const lattitude = results[0].centre.coordinates[1];
+                        
+                        $('#result__perimeter').append("<a id='perimeter-1' class='perimeter' href='/rechercher/resultats?type="+ type +"&q="+ q + urlGrocery +"&distance=5&lon="+ longitude +"&lat="+ lattitude +"'>Etendre ma recherche à 5km</a><a id='perimeter-2' class='perimeter' href='/rechercher/resultats?type="+ type +"&q="+ q + urlGrocery +"&distance=10&lon="+ longitude +"&lat="+ lattitude +"'>Etendre ma recherche à 10km</a><a id='perimeter-3' class='perimeter' href='/rechercher/resultats?type="+ type +"&q="+ q + urlGrocery +"&distance=20&lon="+ longitude +"&lat="+ lattitude +"'>Etendre ma recherche à 20km</a>");
+                        $('.btn').click(() => {
+                            type = $('#type').val();
+                            $('#result__perimeter').text("");
+                            $('#result__perimeter').append("<a id='perimeter-1' class='perimeter' href='/rechercher/resultats?type="+ type +"&q="+ q + urlGrocery +"&distance=5&lon="+ longitude +"&lat="+ lattitude +"'>Etendre ma recherche à 5km</a><a id='perimeter-2' class='perimeter' href='/rechercher/resultats?type="+ type +"&q="+ q + urlGrocery +"&distance=10&lon="+ longitude +"&lat="+ lattitude +"'>Etendre ma recherche à 10km</a><a id='perimeter-3' class='perimeter' href='/rechercher/resultats?type="+ type +"&q="+ q + urlGrocery +"&distance=20&lon="+ longitude +"&lat="+ lattitude +"'>Etendre ma recherche à 20km</a>");
+                        });
+                    }
+                });
+            }
+
+        })
+    </script>
+{% endblock %} 

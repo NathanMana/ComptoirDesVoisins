@@ -1,0 +1,64 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mon comptoir{% endblock %}
+
+{% block body %}
+
+    <section class="counter">
+        <h1 class="text-center">Mon comptoir</h1>
+        <p class="block" style="width: 80%;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor sed totam nulla. Voluptates aliquam ipsam aspernatur! Accusantium dignissimos explicabo fugiat reiciendis dolore nemo eum numquam saepe magni rerum. Similique, sit.</p>
+        <section class="flex-space counter__articles text-center">
+            <article id="counter__calendar">
+                <h3>Mon agenda</h3>
+            </article>
+            <article id="counter__warning">
+                <h3>AUJOURD'HUI</h3>
+                <div class="counter__card card__offer">
+                    <h5>Vous livrez Gael</h5>
+                    <span>A chammes</span>
+                    <a href="">Revoir son annonce</a>
+                </div>
+                <div class="counter__card card__help">
+                    <h5>Vous livrez Gael</h5>
+                    <span>A chammes</span>
+                    <a href="">Revoir son annonce</a>
+                </div>
+            </article>
+            <article id="counter__activities">
+                <h3>Mes activités</h3>
+                <a class="counter__activities__item card__offer" href="{{path('myOffers')}}">Voir mes propositions en ligne</a>
+                <a class="counter__activities__item card__help" href="{{path('myHelps')}}">Voir mes demandes en ligne</a>
+                <a class="counter__activities__item card__primary" href="{{path('comingActivities')}}">Voir mes activités à venir</a>
+            </article> 
+        </section>
+        <section id="counter__lastActivities">
+            <h3>Mes dernières activités</h3>
+            <div class="counter__lastActivities__items">
+                <div class="counter__lastActivities__items__article">
+                    <article>
+                        <img src="http://placehold.it/200x200" alt="">
+                        <h4>Livraison de gael</h4>
+                    </article>
+                    <article>
+                        <img src="http://placehold.it/200x200" alt="">
+                        <h4>Livraison de gael</h4>
+                    </article>
+                    <article>
+                        <img src="http://placehold.it/200x200" alt="">
+                        <h4>Livraison de gael</h4>
+                    </article>
+                    <article>
+                        <img src="http://placehold.it/200x200" alt="">
+                        <h4>Livraison de gael</h4>
+                    </article>
+                </div>
+                <div class="counter__lastActivities__items__moreArticles"><i class="fas fa-arrow-circle-right"></i></div>
+            </div>
+        </section>
+    </section>
+
+    {% block javascript %}
+        {{ encore_entry_script_tags('calendar') }}
+    {% endblock %}
+
+{% endblock %}

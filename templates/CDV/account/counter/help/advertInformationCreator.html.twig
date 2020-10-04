@@ -1,0 +1,69 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Information sur votre demande d'aide{% endblock %}
+
+{% block body %}
+
+    <h1>Information sur votre demande d'aide</h1>
+    <a href="{{path('myCounter')}}" class="btn btn-primary block" >Revenir à mon comptoir</a>    
+
+    <section class="md-section section__margin-side">
+        
+        <article class="result article-help">
+            <div class="article__content">
+                <div class="article__header">
+                    <div class="article__header__title">
+                        <h4>{{advert.title}}</h4>
+                        <span>{{advert.deadline | date('j')}} {{advert.deadline | date('F') | trans}} {{advert.deadline | date('Y')}}</span>
+                    </div>
+                    <img src="http://placehold.it/75x75" alt="">
+                </div>
+                <div class="flex">
+                    <ul>
+                        <li>{{advert.city.name}}</li>
+                    </ul>
+                    <p style="height:auto">{{advert.message}}</p>
+                </div>
+            </div>
+            <div class="article__information">
+                <div class="article__information__creator">
+                    {% if advert.deliverer %}
+                        {% if advert.deliverer.filename %}
+                            <img src="{{vich_uploader_asset(advert.deliverer, 'imageFile')}}" alt="">  
+                        {% else %}
+                            <img src="{{asset('images/profile/default-avatar.png')}}" alt="">  
+                        {% endif %}
+                        <div>
+                            <h5>{{advert.deliverer.name}} {{advert.deliverer.lastname}}</h5>
+                            <span style="order:2;font-size: 1.2em;display: block;width: 100%;">Téléphone: {{advert.deliverer.phone}}</span>
+                            <span>A livré {{advert.deliverer.points}} fois</span>
+                        </div>
+                    {% else %}
+                        <div>
+                            <h5 style="text-align:center;width:100%;">Vous n'avez pas de livreur pour le moment</h5>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+        <div class="flex block">
+            <a href="" class="btn btn-primary" >Modifier la demande</a>  
+            <a onclick="deleteAdvert({{advert.id}}, this)" class="btn btn-primary" >Supprimer la demande</a>    
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+
+        function deleteAdvert(id, element){
+            if (confirm("Voulez-vous vraiment supprimer cette demande ?")) {
+                window.location.href = "/comptoir/demande/supprimer/" + id;
+            }
+        }
+
+    </script>
+
+{% endblock %}

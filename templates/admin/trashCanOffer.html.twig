@@ -1,0 +1,23 @@
+{% extends "baseAdministrateur.html.twig" %}
+
+{% block title %}Supprimer les propositions{% endblock %}
+
+{% block body %}
+
+    <h1>Supprimer les propositions périmées</h1>
+
+    <a href="{{path('trashCan_DeleteOfferAll')}}" class="block-inline"><button class="btn btn--card">Tout supprimer</button></a>
+
+    <table>
+        <tbody>
+        {% for offer in offers %}
+            <tr>
+                <td>{{offer.id}}</td>
+                <td>{{offer.dateDelivery | date('j / m / Y')}}</td>
+                <td><a href="{{path('trashCan_DeleteOffer', {id:offer.id})}}">Supprimer</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

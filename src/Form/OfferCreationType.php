@@ -20,7 +20,10 @@ class OfferCreationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('groceryType', ChoiceType::class, [
+            ->add("title", TextType::class, [
+                "required" => true
+            ])
+            ->add('groceryTypeArray', ChoiceType::class, [
                 "required"=>true, 
                 "choices"=>[
                     "Supermarché"=>"Supermarché",
@@ -32,9 +35,11 @@ class OfferCreationType extends AbstractType
                     "Magasin de bricolage"=>"Magasin de bricolage",
                     "Magasin de jardinage"=>"Magasin de jardinage",
                     "Autres"=>"Autres"
-                ]
+                ],
+                "expanded"=>true,
+                "multiple"=>true
             ])
-            ->add('citiesDelivery', TextType::class, [
+            ->add('citiesDeliveryName', TextType::class, [
                 'required'=>true
             ])
             ->add('message', TextareaType::class, [
@@ -56,6 +61,7 @@ class OfferCreationType extends AbstractType
             ->add('codeCities', HiddenType::class, [
                 'required'=>true
             ])
+            ->add('timezone', HiddenType::class)
         ;
     }
 

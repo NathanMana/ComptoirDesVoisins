@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Choix du type d'annonce - CDV{% endblock %}
+
+{% block body %}
+
+    <h1>Choissez le type d'annonce</h1>
+
+    <section class="flex-btw">
+        <article class="card__advert flex-col-c-c" style="flex:1 0 400px;margin-right: 10px;min-height:50vh;color:#fff;">
+            <h3>Je veux me faire livrer</h3>
+            <p style="margin:20px;">lorem</p>
+            <a href="" class="btn btn-white" style="color:#FF9170;">Créer ma demande</a>
+        </article>
+        <article class="card__offer flex-col-c-c" style="flex:1 0 400px;margin-left: 10px;min-height:50vh;color:#fff;">
+            <h3>Je propose de livrer</h3>
+            <p style="margin:20px;">lorem</p>
+            <a href="{{path('offerCreation')}}" class="btn btn-white" style="color:#008D93;">Créer ma proposition</a>
+        </article>
+    </section>
+
+{% endblock %}

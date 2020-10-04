@@ -21,7 +21,7 @@ class RegistrationType extends AbstractType
             ->add('email')
             ->add('name')
             ->add('lastname')
-            ->add('city')
+            ->add('cityName')
             ->add('phone', TelType::class)
             ->add('imageFile', FileType::class, [
                 'required'=>false

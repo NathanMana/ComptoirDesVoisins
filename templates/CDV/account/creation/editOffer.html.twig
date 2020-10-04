@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modification de ma course{% endblock %}
+
+{% block body %}
+
+    <h1>Modification de ma course</h1>
+
+    <section class="global__container">
+        <article class="form__container">
+            {{form_start(form, {'attr': {'class':'login-form'}})}}
+                <div class="input-width">
+                    {{form_row(form.title, {'label': 'Donnez un titre à votre demande', 'attr':{'placeholder':'Livraison de 3 personnes à Sainte-Suzanne','class':'login-input'}})}}
+                </div>
+                <div class="input-width">
+                    {{form_row(form.dateDelivery, {'label': 'Date'})}}
+                </div>
+                <div class="input-width">
+                    {{form_row(form.message, {'label': 'Message', 'attr':{'placeholder':'Information supplémentaire, condition, prix maximal par personne, etc..'}})}}
+                </div>
+                <div class="input-width">
+                    {{form_row(form.limited, {'label': 'Combien de personnes pouvez-vous livrer ?','attr':{ 'class':'login-input select'}})}}
+                </div>
+                <button type="submit" class="btn btn--center">Modifier</button>
+            {{form_end(form)}}
+        </article>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        var tz = jstz.determine();
+        var timezone = tz.name();
+        $('#advert_creation_timezone').val(timezone);
+    </script>
+
+{% endblock %}

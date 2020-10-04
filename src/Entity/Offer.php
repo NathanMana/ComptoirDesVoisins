@@ -20,11 +20,14 @@ class Offer
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Regex("/^[^<>#§µ]+$/",
-     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
+     * @ORM\ManyToMany(targetEntity="App\Entity\City", inversedBy="offers")
      */
     private $citiesDelivery;
+
+    /**
+     * @Assert\Regex("/^[^<>#§µ]+$/", message="Les caractères spéciaux suivant ne sont pas autorisés : ^,<,>,#,§,µ")
+     */
+    private $citiesDeliveryName;
 
     /**
      * @Assert\Length(
@@ -40,12 +43,13 @@ class Offer
     private $codeCities;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=600)
      */
     private $groceryType;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Regex("/^[^<>#§µ]+$/", message = "Les caractères spéciaux suivants ne sont pas autorisés : <,>,#,§,µ")
      */
     private $message;
 
@@ -66,7 +70,7 @@ class Offer
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="offers")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $user;
 
@@ -80,9 +84,17 @@ class Offer
      */
     private $createdAt;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^[^<>#§µ]+$/", message="Les caractères spéciaux suivant ne sont pas autorisés : ^,<,>,#,§,µ")
+     */
+    private $title;
+
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
+        $this->citiesDelivery = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,14 +102,37 @@ class Offer
         return $this->id;
     }
 
-    public function getCitiesDelivery(): ?string
+    public function getCitiesDelivery(): Collection
     {
         return $this->citiesDelivery;
     }
 
-    public function setCitiesDelivery(?string $citiesDelivery): self
+    public function addCitiesDelivery(City $citiesDelivery): self
     {
-        $this->citiesDelivery = $citiesDelivery;
+        if (!$this->citiesDelivery->contains($citiesDelivery)) {
+            $this->citiesDelivery[] = $citiesDelivery;
+        }
+
+        return $this;
+    }
+
+    public function removeCitiesDelivery(City $citiesDelivery): self
+    {
+        if ($this->citiesDelivery->contains($citiesDelivery)) {
+            $this->citiesDelivery->removeElement($citiesDelivery);
+        }
+
+        return $this;
+    }
+
+    public function getCitiesDeliveryName(): ?string
+    {
+        return $this->citiesDeliveryName;
+    }
+
+    public function setCitiesDeliveryName(string $citiesDeliveryName): self
+    {
+        $this->citiesDeliveryName = $citiesDeliveryName;
 
         return $this;
     }
@@ -223,4 +258,46 @@ class Offer
 
         return $this;
     }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+
+    /* PAS EN BDD */
+    private $timezone;
+    private $groceryTypeArray;
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): self
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    public function getGroceryTypeArray(): ?array
+    {
+        return $this->groceryTypeArray;
+    }
+
+    public function setGroceryTypeArray(array $groceryTypeArray): self
+    {
+        $this->groceryTypeArray = $groceryTypeArray;
+
+        return $this;
+    }
+
 }

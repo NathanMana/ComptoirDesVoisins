@@ -13,28 +13,37 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         {% block metadescription %}{% endblock %}
         {{ encore_entry_link_tags('app') }}
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
         <header>
-            <div class="icon">
-                <div class="hamburger"></div>
-            </div>
+            <article class="burger">
+                <div class="icon"></div>
+            </article>
             <div class="menu">
-                <a href="{{path('index')}}"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon">	</a>	
-                <nav class="nav">
-                    <ul>
-                        <li><a href="{{path('adminUsers')}}">Utilisateurs</a></li>
-                        <li><a href="{{path('adminOffers')}}">Courses</a></li>
-                        <li><a href="{{path('adminAdverts')}}">Demandes</a></li>
-                        <li><a href="{{path('adminReports')}}">Signalements</a></li>
-                    </ul>
-                </nav>
-                <aside>
-                    <i class="fas fa-sign-out-alt"></i>
-                    <a href="{{path('profile')}}" class="login">Mon compte</a>
-                     <a href="{{path('logout')}}" class="login">Se déconnecter</a>
+                <div class="navIcon">
+                    <a href="{{path('index')}}" class="website-icon"><img src="{{asset('build/images/logo2.png')}}"  alt="Site Icon"></a>	
+                    <nav class="nav">
+                        <ul class="links">
+                            {% if app.user %}
+                                <li><a href="{{path('adminUsers')}}"  class="nav-link">Utilisateurs</a></li>
+                                <li><a href="{{path('adminOffers')}}"  class="nav-link">Courses</a></li>
+                                <li><a href="{{path('adminAdverts')}}"  class="nav-link">Demandes</a></li>
+                                <li><a href="{{path('adminReports')}}"  class="nav-link">Signalements</a></li>
+                                <li><a href="{{path('trashCan')}}"  class="nav-link">Corbeille</a></li>
+                            {% endif %}        
+                        </ul>
+                    </nav>
+                </div>
+                <aside class="nav-login">
+                    {% if app.user %}
+                        <a id="profile-link" href="{{path('profile')}}" class="nav-link">Mon compte</a>
+                        <a href="{{path('logout')}}" class="nav-link">Me déconnecter</a>
+                    {% else %}
+                        <a href="{{path('login')}}" class="nav-link">Me connecter</a>
+                        <a href="{{path('registration')}}" class="nav-link">M'inscrire</a>
+                    {% endif %}
                 </aside>
                 </nav>
             </div>

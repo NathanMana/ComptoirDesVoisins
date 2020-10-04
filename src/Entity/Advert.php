@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\HelpRepository")
  */
 class Advert
 {
@@ -19,8 +19,7 @@ class Advert
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\Regex("/^[^<>#§µ]+$/",
-     *              message = "Les caractères spéciaux suivants ne sont pas autorisés : <,>,#,§,µ")
+     * @Assert\Regex("/^[^<>#§µ]+$/", message = "Les caractères spéciaux suivants ne sont pas autorisés : <,>,#,§,µ")
      */
     private $message;
 
@@ -36,9 +35,8 @@ class Advert
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="myAdverts")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      * 
-     
-     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
@@ -48,23 +46,23 @@ class Advert
     private $Cancellation;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Regex("/^[^<>#§µ]+$/",
-     *                  message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
+     * @ORM\ManyToOne(targetEntity="App\Entity\City", inversedBy="adverts")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $City;
+    private $city;
+
+    /**
+     * @Assert\Regex("/^[^<>#§µ]+$/", message="Les caractères spéciaux autorisés sont les suivants : ^,<,>,#,§,µ")
+     */
+    private $_cityName;
 
     /**
      * @Assert\Length(
-     *                 min="5", max="5", 
-     *                 minMessage = "Rentrez une ville valide",
-     *                 maxMessage = "Rentrez une ville valide"
+    *                 min="5", max="5", 
+    *                 minMessage = "Rentrez une ville valide",
+    *                 maxMessage = "Rentrez une ville valide"
      * )
-     * @Assert\Regex(
-     *              "/^[0-9]+$/",
-     *              message="Rentrez une ville valide"
-     * )
-     * @ORM\Column(type="string",length=5, nullable=false)
+     * @Assert\Regex("/^[0-9]+$/", message="Rentrez une ville valide")
      */
     private $codeCity;
 
@@ -72,6 +70,21 @@ class Advert
      * @ORM\Column(type="datetime")
      */
     private $deadline;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDelivered;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^[^<>#§µ]+$/", message="Les caractères spéciaux suivant ne sont pas autorisés : ^,<,>,#,§,µ")
+     */
+    private $title;
+
+
+    /* PAS EN BDD */
+    private $timezone;
 
     public function getId(): ?int
     {
@@ -138,14 +151,14 @@ class Advert
         return $this;
     }
 
-    public function getCity(): ?string
+    public function getCityName(): ?string
     {
-        return $this->City;
+        return $this->_cityName;
     }
 
-    public function setCity(?string $City): self
+    public function setCityName(?string $cityName): self
     {
-        $this->City = $City;
+        $this->_cityName = $cityName;
 
         return $this;
     }
@@ -170,6 +183,55 @@ class Advert
     public function setDeadline(\DateTimeInterface $deadline): self
     {
         $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    public function getIsDelivered(): ?bool
+    {
+        return $this->isDelivered;
+    }
+
+    public function setIsDelivered(bool $isDelivered): self
+    {
+        $this->isDelivered = $isDelivered;
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /* PAS EN BDD */
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): self
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

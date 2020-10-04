@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Comptoir des Voisins - Rechercher{% endblock %}
+
+{% block body %}
+
+    <h1 class="block">Rechercher</h1>
+    <section id="search" class="md-section">
+        {{form_start(form, {'attr': {'class':'form'}})}}
+            <div class="js__search" id="js__search__choice">
+                <label class="label" for="">Que voulez-vous faire ?</label>
+                <div class="flex-row-c">
+                    <a id="btnDelivery" class="btn btn-primary">Livrer</a>
+                    <a id="btnHelp" class="btn btn-primary">Me faire livrer</a>
+                </div>
+            </div>
+            <div class="js__search" id="js__search__city">
+                {{form_label(form.q, 'Où voulez-vous vous faire livrer ?',  { 'label_attr': {'class': 'label'}})}}
+                {{form_widget(form.q)}}
+            </div>
+            <div class="js__search"  id="js__search__grocery">
+                {{form_label(form.groceryType, 'Quel type de course ?', {'label_attr': {'class': 'label'}})}}
+                <div class="checkbox">
+                    {% for groceryType in form.groceryType %}
+                        <div class="checkbox-item">
+                            {{form_widget(groceryType)}}
+                            {{form_label(groceryType)}}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit">Rechercher</button>
+        {{form_end(form)}}
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(() => {
+            $(".js__search:not(#js__search__choice), button[type='submit']").css({'display':'none'});
+
+            $('#js__search__choice .btn').click(function() {
+                $("button[type='submit']").css({'display':'block'});
+                var el = $(this).prop('id');
+                if(el === "btnDelivery"){
+                    $('#type').val(true);
+                    $('.js__search:not(#js__search__choice, #js__search__city)').css({'display':'none'});
+                    $('#js__search__city').css({'display':'block'});
+                    $('#js__search__city label').text('Où voulez-vous livrer ?');
+                } else {
+                    $('#type').val(false);
+                    $('#js__search__city label').text('Où voulez-vous vous faire livrer ?');
+                    $('.js__search').css({'display':'block'});
+                }
+            })
+        })
+    </script>
+{% endblock %}
